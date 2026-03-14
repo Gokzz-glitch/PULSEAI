@@ -1,0 +1,456 @@
+
+[2026-03-13T22:26:59.189230] WARNING: CPU usage exceeded 60% (90.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:02.856163] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:06.459351] WARNING: CPU usage exceeded 60% (91.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:10.009676] WARNING: CPU usage exceeded 60% (99.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:13.592169] WARNING: CPU usage exceeded 60% (77.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:17.116106] WARNING: CPU usage exceeded 60% (73.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:20.663932] WARNING: CPU usage exceeded 60% (78.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:24.226806] WARNING: CPU usage exceeded 60% (62.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:30.765780] WARNING: CPU usage exceeded 60% (80.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:34.299691] WARNING: CPU usage exceeded 60% (67.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:40.839684] WARNING: CPU usage exceeded 60% (71.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:27:57.792774] WARNING: CPU usage exceeded 60% (77.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:01.330260] WARNING: CPU usage exceeded 60% (84.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:04.879585] WARNING: CPU usage exceeded 60% (90.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:08.544364] WARNING: CPU usage exceeded 60% (89.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:12.243971] WARNING: CPU usage exceeded 60% (94.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:15.790437] WARNING: CPU usage exceeded 60% (89.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:19.315511] WARNING: CPU usage exceeded 60% (95.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:22.866990] WARNING: CPU usage exceeded 60% (84.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:26.458894] WARNING: CPU usage exceeded 60% (61.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:30.036240] WARNING: CPU usage exceeded 60% (98.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:34.111019] WARNING: CPU usage exceeded 60% (99.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:38.029281] WARNING: CPU usage exceeded 60% (88.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:41.722030] WARNING: CPU usage exceeded 60% (80.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:45.608261] WARNING: CPU usage exceeded 60% (97.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:49.344327] WARNING: CPU usage exceeded 60% (86.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:53.047774] WARNING: CPU usage exceeded 60% (89.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:28:56.817434] WARNING: CPU usage exceeded 60% (86.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:00.603822] WARNING: CPU usage exceeded 60% (94.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:04.327830] WARNING: CPU usage exceeded 60% (82.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:07.906633] WARNING: CPU usage exceeded 60% (83.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:11.502117] WARNING: CPU usage exceeded 60% (92.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:15.211999] WARNING: CPU usage exceeded 60% (85.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:18.861717] WARNING: CPU usage exceeded 60% (77.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:22.503754] WARNING: CPU usage exceeded 60% (81.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:26.100981] WARNING: CPU usage exceeded 60% (94.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:29.929509] WARNING: CPU usage exceeded 60% (91.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:33.614168] WARNING: CPU usage exceeded 60% (87.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:37.305805] WARNING: CPU usage exceeded 60% (91.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:41.062615] WARNING: CPU usage exceeded 60% (84.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:44.768450] WARNING: CPU usage exceeded 60% (79.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:48.429964] WARNING: CPU usage exceeded 60% (85.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:52.090639] WARNING: CPU usage exceeded 60% (87.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:55.755775] WARNING: CPU usage exceeded 60% (91.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:29:59.422010] WARNING: CPU usage exceeded 60% (80.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:03.286837] WARNING: CPU usage exceeded 60% (84.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:06.890848] WARNING: CPU usage exceeded 60% (79.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:10.505695] WARNING: CPU usage exceeded 60% (74.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:14.170478] WARNING: CPU usage exceeded 60% (92.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:17.907655] WARNING: CPU usage exceeded 60% (89.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:21.612045] WARNING: CPU usage exceeded 60% (92.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:25.242351] WARNING: CPU usage exceeded 60% (90.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:28.896015] WARNING: CPU usage exceeded 60% (87.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:32.510786] WARNING: CPU usage exceeded 60% (89.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:36.181523] WARNING: CPU usage exceeded 60% (90.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:39.842714] WARNING: CPU usage exceeded 60% (92.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:43.518963] WARNING: CPU usage exceeded 60% (92.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:47.214552] WARNING: CPU usage exceeded 60% (87.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:50.885814] WARNING: CPU usage exceeded 60% (92.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:54.554466] WARNING: CPU usage exceeded 60% (75.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:30:58.237376] WARNING: CPU usage exceeded 60% (86.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:01.844378] WARNING: CPU usage exceeded 60% (87.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:05.536898] WARNING: CPU usage exceeded 60% (93.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:09.190682] WARNING: CPU usage exceeded 60% (74.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:12.829182] WARNING: CPU usage exceeded 60% (88.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:16.450076] WARNING: CPU usage exceeded 60% (88.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:20.169607] WARNING: CPU usage exceeded 60% (98.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:24.001425] WARNING: CPU usage exceeded 60% (93.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:27.780535] WARNING: CPU usage exceeded 60% (92.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:31.490845] WARNING: CPU usage exceeded 60% (89.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:35.191644] WARNING: CPU usage exceeded 60% (94.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:39.074376] WARNING: CPU usage exceeded 60% (93.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:43.010755] WARNING: CPU usage exceeded 60% (94.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:46.793270] WARNING: CPU usage exceeded 60% (84.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:50.535690] WARNING: CPU usage exceeded 60% (92.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:54.259278] WARNING: CPU usage exceeded 60% (98.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:31:58.204130] WARNING: CPU usage exceeded 60% (98.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:02.219717] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:06.212558] WARNING: CPU usage exceeded 60% (99.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:10.952437] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:16.797355] WARNING: CPU usage exceeded 60% (99.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:20.642946] WARNING: CPU usage exceeded 60% (99.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:24.437333] WARNING: CPU usage exceeded 60% (97.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:28.439059] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:32.570920] WARNING: CPU usage exceeded 60% (99.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:36.471398] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:40.350413] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:44.578999] WARNING: CPU usage exceeded 60% (99.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:49.519975] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:53.619894] WARNING: CPU usage exceeded 60% (99.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:32:57.689049] WARNING: CPU usage exceeded 60% (97.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:01.554815] WARNING: CPU usage exceeded 60% (96.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:05.272357] WARNING: CPU usage exceeded 60% (97.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:08.961032] WARNING: CPU usage exceeded 60% (96.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:12.850413] WARNING: CPU usage exceeded 60% (94.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:16.614109] WARNING: CPU usage exceeded 60% (98.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:20.399489] WARNING: CPU usage exceeded 60% (98.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:24.458478] WARNING: CPU usage exceeded 60% (97.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:28.348163] WARNING: CPU usage exceeded 60% (96.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:32.399692] WARNING: CPU usage exceeded 60% (98.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:36.463660] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:40.568458] WARNING: CPU usage exceeded 60% (99.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:45.201597] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:49.254371] WARNING: CPU usage exceeded 60% (98.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:53.055775] WARNING: CPU usage exceeded 60% (99.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:33:57.086606] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:00.920378] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:04.895926] WARNING: CPU usage exceeded 60% (98.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:08.803568] WARNING: CPU usage exceeded 60% (98.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:12.733795] WARNING: CPU usage exceeded 60% (99.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:16.688685] WARNING: CPU usage exceeded 60% (99.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:20.483387] WARNING: CPU usage exceeded 60% (99.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:24.297364] WARNING: CPU usage exceeded 60% (95.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:28.076089] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:31.844117] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:36.475720] WARNING: CPU usage exceeded 60% (99.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:40.757182] WARNING: CPU usage exceeded 60% (99.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:44.988094] WARNING: CPU usage exceeded 60% (96.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:49.335169] WARNING: CPU usage exceeded 60% (99.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:53.867570] WARNING: CPU usage exceeded 60% (99.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:34:58.188553] WARNING: CPU usage exceeded 60% (99.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:02.691300] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:06.762465] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:11.149938] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:15.517661] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:19.971091] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:24.788986] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:29.132173] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:33.612888] WARNING: CPU usage exceeded 60% (99.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:37.966979] WARNING: CPU usage exceeded 60% (99.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:42.262552] WARNING: CPU usage exceeded 60% (99.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:46.481798] WARNING: CPU usage exceeded 60% (92.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:50.566215] WARNING: CPU usage exceeded 60% (96.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:54.908951] WARNING: CPU usage exceeded 60% (97.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:35:58.927876] WARNING: CPU usage exceeded 60% (94.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:03.107738] WARNING: CPU usage exceeded 60% (96.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:07.137930] WARNING: CPU usage exceeded 60% (99.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:12.387400] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:16.854844] WARNING: CPU usage exceeded 60% (99.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:21.522843] WARNING: CPU usage exceeded 60% (99.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:25.782732] WARNING: CPU usage exceeded 60% (97.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:30.039147] WARNING: CPU usage exceeded 60% (92.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:33.972964] WARNING: CPU usage exceeded 60% (99.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:38.025384] WARNING: CPU usage exceeded 60% (96.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:42.076342] WARNING: CPU usage exceeded 60% (87.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:46.034554] WARNING: CPU usage exceeded 60% (93.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:50.218000] WARNING: CPU usage exceeded 60% (96.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:54.493047] WARNING: CPU usage exceeded 60% (98.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:36:59.153807] WARNING: CPU usage exceeded 60% (96.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:03.252790] WARNING: CPU usage exceeded 60% (99.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:07.296392] WARNING: CPU usage exceeded 60% (97.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:12.143902] WARNING: CPU usage exceeded 60% (93.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:16.279612] WARNING: CPU usage exceeded 60% (99.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:20.448449] WARNING: CPU usage exceeded 60% (100.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:24.791548] WARNING: CPU usage exceeded 60% (99.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:29.109033] WARNING: CPU usage exceeded 60% (99.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:33.356213] WARNING: CPU usage exceeded 60% (98.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:37.768364] WARNING: CPU usage exceeded 60% (94.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:41.702610] WARNING: CPU usage exceeded 60% (94.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:46.481591] WARNING: CPU usage exceeded 60% (90.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:50.579301] WARNING: CPU usage exceeded 60% (98.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:54.790893] WARNING: CPU usage exceeded 60% (99.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:37:59.435310] WARNING: CPU usage exceeded 60% (98.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:03.502793] WARNING: CPU usage exceeded 60% (96.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:07.620384] WARNING: CPU usage exceeded 60% (90.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:11.434519] WARNING: CPU usage exceeded 60% (92.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:15.439665] WARNING: CPU usage exceeded 60% (92.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:19.481314] WARNING: CPU usage exceeded 60% (91.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:23.472614] WARNING: CPU usage exceeded 60% (96.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:27.426260] WARNING: CPU usage exceeded 60% (97.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:31.623302] WARNING: CPU usage exceeded 60% (92.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:35.803102] WARNING: CPU usage exceeded 60% (92.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:39.716951] WARNING: CPU usage exceeded 60% (96.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:43.636911] WARNING: CPU usage exceeded 60% (89.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:47.664667] WARNING: CPU usage exceeded 60% (96.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:51.492558] WARNING: CPU usage exceeded 60% (96.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:38:55.655621] WARNING: CPU usage exceeded 60% (89.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:00.256998] WARNING: CPU usage exceeded 60% (98.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:04.479138] WARNING: CPU usage exceeded 60% (93.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:08.392321] WARNING: CPU usage exceeded 60% (97.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:12.539737] WARNING: CPU usage exceeded 60% (94.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:16.529016] WARNING: CPU usage exceeded 60% (99.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:20.508749] WARNING: CPU usage exceeded 60% (97.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:24.381030] WARNING: CPU usage exceeded 60% (96.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:28.431813] WARNING: CPU usage exceeded 60% (94.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:32.552593] WARNING: CPU usage exceeded 60% (97.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:37.122718] WARNING: CPU usage exceeded 60% (94.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:41.194354] WARNING: CPU usage exceeded 60% (98.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:45.154432] WARNING: CPU usage exceeded 60% (97.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:48.920408] WARNING: CPU usage exceeded 60% (97.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:52.943446] WARNING: CPU usage exceeded 60% (99.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:39:57.211757] WARNING: CPU usage exceeded 60% (97.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:01.310441] WARNING: CPU usage exceeded 60% (69.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:04.971436] WARNING: CPU usage exceeded 60% (66.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:08.652074] WARNING: CPU usage exceeded 60% (81.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:12.364584] WARNING: CPU usage exceeded 60% (76.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:16.064624] WARNING: CPU usage exceeded 60% (72.5%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:19.941350] WARNING: CPU usage exceeded 60% (74.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:23.832356] WARNING: CPU usage exceeded 60% (64.0%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:27.594821] WARNING: CPU usage exceeded 60% (72.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:31.365331] WARNING: CPU usage exceeded 60% (76.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:35.278387] WARNING: CPU usage exceeded 60% (77.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:39.045868] WARNING: CPU usage exceeded 60% (80.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:42.824324] WARNING: CPU usage exceeded 60% (69.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:46.540102] WARNING: CPU usage exceeded 60% (79.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:50.292446] WARNING: CPU usage exceeded 60% (72.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:40:57.076438] WARNING: CPU usage exceeded 60% (80.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:00.956082] WARNING: CPU usage exceeded 60% (69.3%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:04.714332] WARNING: CPU usage exceeded 60% (79.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:11.530586] WARNING: CPU usage exceeded 60% (71.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:15.295626] WARNING: CPU usage exceeded 60% (64.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:19.052693] WARNING: CPU usage exceeded 60% (63.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:22.799268] WARNING: CPU usage exceeded 60% (63.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:26.562922] WARNING: CPU usage exceeded 60% (73.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:30.334482] WARNING: CPU usage exceeded 60% (68.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:34.293779] WARNING: CPU usage exceeded 60% (63.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:37.893434] WARNING: CPU usage exceeded 60% (63.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:41.566870] WARNING: CPU usage exceeded 60% (73.9%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:45.236564] WARNING: CPU usage exceeded 60% (97.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:48.808475] WARNING: CPU usage exceeded 60% (74.8%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:52.353822] WARNING: CPU usage exceeded 60% (72.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:55.896552] WARNING: CPU usage exceeded 60% (75.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:41:59.426933] WARNING: CPU usage exceeded 60% (92.2%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:42:02.992144] WARNING: CPU usage exceeded 60% (80.6%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:42:06.557885] WARNING: CPU usage exceeded 60% (84.4%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:42:10.104884] WARNING: CPU usage exceeded 60% (81.7%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:42:13.653868] WARNING: CPU usage exceeded 60% (85.1%). Please ensure tasks are offloaded to Colab.
+
+[2026-03-13T22:42:17.275381] WARNING: CPU usage exceeded 60% (81.4%). Please ensure tasks are offloaded to Colab.

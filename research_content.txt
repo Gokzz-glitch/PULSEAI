@@ -1,0 +1,245 @@
+Here's the complete list of all 38 research papers from our search, 
+organized by category for your hackathon prep. I've starred ( 
+note: prioritized with " 
+note: prioritized with **") the most relevant ones for your project. 
+ 
+--- 
+ 
+## Category 1: Reviews & Surveys (Start Here) 
+ 
+| # | Paper | Year | Venue | Why Read It | 
+|---|---|---|---|---| 
+| 1 | **[A Review on Classification of Cardiac Arrhythmia in ICU 
+Patients](https://www.semanticscholar.org/paper/f6a7a7c91b77093403bbfc6bb
+b026edb1851ebbe)** — Rasagnya et al. | 2024 | — | Reviews 25 studies 
+(2021-2024); great for understanding the landscape 
+<citations>0</citations> | 
+| 2 | **[Exploring the Future of AI-Enhanced Wearable Electronics for 
+Real-Time Arrhythmia 
+Detection](https://assets.cureusjournals.com/artifacts/upload/review_arti
+cle/pdf/10001/20251210-98385-x6jvjr.pdf)** — Sharma et al. | 2025 | 
+Cureus J. Computer Science | Comprehensive review of wearable sensor tech 
++ AI integration <citations>1</citations> | 
+| 3 | **[From ECG Signals to Intelligent Diagnosis: A Survey on DL-Based 
+Arrhythmia Classification and 
+Deployment](https://doi.org/10.48175/ijarsct-31004)** — Saravanan | 2026 
+| IJARSCT | Most recent survey covering preprocessing, architectures, 
+deployment <citations>2</citations> | 
+ 
+--- 
+ 
+## Category 2: CNN-Based ECG Classification (Core Models) 
+ 
+| # | Paper | Year | Venue | Key Result | 
+|---|---|---|---|---| 
+| 4 | **[An Automated ECG Beat Classification System Using 
+CNNs](https://www.semanticscholar.org/paper/6b2bac0c0f598d423d4bc0e9e2502
+8d5d1795463)** — Zubair et al. | 2016 | ICITCS | **204 citations**; 
+foundational CNN for 5-class AAMI on MIT-BIH <citations>3</citations> | 
+| 5 | [Sensor-Enhanced DL for ECG Arrhythmia Detection: Multiscale CNN + 
+Self-Attentive 
+GRU](https://www.semanticscholar.org/paper/c7f7e5e44f785d8ebdb9ffc8e32886
+20e9baa843) — Kondaveeti & Sailaja | 2024 | IEEE Sensors Journal | 99.63% 
+accuracy; CNN+GRU+attention <citations>4</citations> | 
+| 6 | [A Deep Learning Approach for Arrhythmia Detection Based on IoT 
+Wearable 
+Technology](https://www.semanticscholar.org/paper/69f50b6dad67c72c45f172b
+11143378b156a6e82) — Bechinia & Benmerzoug | 2022 | BIWA | IoT + Fog 
+computing pipeline for athletes <citations>5</citations> | 
+| 7 | [Diagnosis and Classification of Cardiac Arrhythmias Using 
+CNNs](https://www.semanticscholar.org/paper/3a6561cf8b94bd925ed4e1bd8e07f
+b76aad40278) — Azeroual et al. | 2023 | ICECET | 99.24% accuracy, 4-class 
+on MIT-BIH <citations>6</citations> | 
+| 8 | [A Novel Arrhythmia Classification Method Based on CNN 
+Interpretation of ECG 
+Images](https://www.semanticscholar.org/paper/f82b2de67e04db4f816405c4a7d
+e6aa8f42df7f3) — Oliveira & Nóbrega | 2019 | ICIT | 2D wavelet transform 
+→ image → CNN approach; 95.3% <citations>7</citations> | 
+| 9 | [Multiclass Heartbeat Classification using ECG Signals and 
+CNNs](https://biblio.ugent.be/publication/8755702/file/8755705.pdf) — 
+Qureshi et al. | 2022 | ICoDT2 | Multi-class beyond binary; MIT-BIH 
+<citations>8</citations> | 
+| 10 | [CNN-Based DNN Model for ECG Records 
+Classification](https://www.semanticscholar.org/paper/cc92caeace54149b3df
+005ba6fa192aa256d20a5) — Khudhur et al. | 2023 | ICFNDS | 16-layer 1D-
+CNN; 5-class MIT-BIH <citations>9</citations> | 
+| 11 | [Cardiac Arrhythmia Classification in ECG Signals with 
+CNNs](https://doi.org/10.5220/0011682800003411) — Souza & Dantas | 2023 | 
+ICPRAM | 5-class CNN on noisy signals <citations>10</citations> | 
+| 12 | [Cardiac Arrhythmia Diagnosis based on Features Extraction and 
+CNN](https://www.semanticscholar.org/paper/4dab3069b95872e1d8ad62cb041675
+3bfe0ec5c1) — Mohonta & Ali | 2021 | ICEEICT | CWT scalogram + AlexNet 
+approach <citations>11</citations> | 
+| 13 | [Classification of ECG Arrhythmia Using a 
+CNN](https://www.semanticscholar.org/paper/5bfba0e3eb5a72be497737b1400098
+256b7a49d4) — Reethunandh et al. | 2023 | ICSSES | CNN vs SVM comparison 
+(98.7% vs 94%) <citations>12</citations> | 
+| 14 | [Modified Cardiac Arrhythmia Classification Using CNN 
+Model](https://ejournal.yasin-
+alsys.org/AJSTEA/article/download/5905/4704) — Abdulhafiz et al. | 2025 | 
+AJSTEA | AlexNet feature extractor + backprop | 
+| 15 | [Employing CNN Model in Predicting Heart 
+Diseases](https://www.semanticscholar.org/paper/edc046865481e221b97ba57c0
+3304e9a967d8842) — Alshreif et al. | 2024 | ISTJ | 1D-CNN on MIT-BIH; 
+97.7% accuracy | 
+ 
+--- 
+ 
+## Category 3: Edge Computing & Wearable Deployment (Most Relevant for 
+Hackathon) 
+ 
+| # | Paper | Year | Venue | Key Result | 
+|---|---|---|---|---| 
+| 16 | **[A Smart Wearable for Real-Time Cardiac Disease Detection Using 
+Edge Computing 
+AI](https://www.semanticscholar.org/paper/edcc1f8e69ded892be96ee3e9b31e1e
+a73bbff5c)** — Rahman & Morshed | 2024 | BSN | 90.6% on-device; 6ms 
+latency; 128mW power <citations>13</citations> | 
+| 17 | **[Resource-Constrained On-Chip AI Classifier for Beat-by-Beat 
+Arrhythmia Detection](https://www.mdpi.com/2079-9292/14/13/2654/pdf)** — 
+Rahman & Morshed | 2025 | Electronics | ANN/CNN/LSTM comparison on ARM 
+Cortex; 99.5% QRS F1 <citations>14</citations> | 
+| 18 | **[Cardio-Edge: LSTM-Based ECG Classification on Wearable 
+Devices](http://thesai.org/Downloads/Volume16No7/Paper_86-
+Cardio_Edge_Hardware_Software_Co_design_Implementation.pdf)** — Akhtar et 
+al. | 2025 | IJACSA | FPGA co-design; 10× speedup; 99% accuracy 
+<citations>15</citations> | 
+| 19 | **[Automated Arrhythmia Classification: Lightweight Model on 
+Ultra-Edge Device](https://doi.org/10.1109/access.2024.3473323)** — Kim 
+et al. | 2024 | IEEE Access | Knowledge distillation + pruning + 
+quantization <citations>16</citations> | 
+| 20 | [Real-Time Arrhythmia Detection on Wearables Using Quantized 
+Transformers](https://mrcis.org/index.php/journal/article/download/174/29
+0) — Zhu | 2025 | MRCIS | 8-bit quantized Transformer; noise-robust 
+training <citations>17</citations> | 
+| 21 | [Real Time Arrhythmia Monitoring Based on Edge Computing and 
+DNN](https://downloads.hindawi.com/journals/wcmc/2021/5563338.pdf) — Liu 
+et al. | 2021 | WCMC | 99.03% accuracy; CNN + attention ResNet at edge 
+<citations>18</citations> | 
+| 22 | [Edge-Optimized Weightless Neural Network for Low-Power Wearable 
+Arrhythmia 
+Detection](https://www.semanticscholar.org/paper/9fc9d79332523594cf99b26e
+636bc05b4e1d54e1) — Pillai et al. | 2025 | DCAS | WNN on 45nm CMOS; 
+ultra-low-power patch <citations>19</citations> | 
+| 23 | [Lightweight Element-wise Product Enhanced NN for Arrhythmia 
+Detection on Embedded 
+Devices](https://www.semanticscholar.org/paper/d92566f66f6858427c83128f0f
+abe391f5560127) — Tang et al. | 2025 | Comp. Methods Programs Biomed. | 
+Depthwise separable CNN; tested on MIT-BIH, SVDB, INCART, PTB 
+<citations>20</citations> | 
+| 24 | [A Wearable ECG Monitoring System for Real-Time Arrhythmia 
+Detection](https://www.semanticscholar.org/paper/d133aa0a95e339d64aebf20f
+df6da495ebbcfe74) — Clark et al. | 2018 | MWSCAS | Pan-Tompkins + wavelet 
+on Raspberry Pi; email alerts <citations>21</citations> | 
+ 
+--- 
+ 
+## Category 4: Transformer-Based Models (Cutting Edge) 
+ 
+| # | Paper | Year | Venue | Key Result | 
+|---|---|---|---|---| 
+| 25 | **[Patient-Adaptive Beat-Wise Temporal Transformer for AF 
+Classification](https://www.semanticscholar.org/paper/29cc97f771f1cd37d42
+05fd1e2dd4343c40c2dfe)** — Kim et al. | 2024 | IEEE Access | F1=0.982; 
+patient-specific symbolic tokens <citations>22</citations> | 
+| 26 | **[Automated Diagnosis of AF Using ECG Component-Aware 
+Transformer](https://www.semanticscholar.org/paper/a2a724a9ec12176cdfd950
+4ce1dd5188081c47f9)** — Yang et al. | 2022 | Comp. Biol. Medicine | **24 
+citations**; segments P-wave/QRS/T-wave like a cardiologist 
+<citations>23</citations> | 
+| 27 | [Transformer-based Temporal Sequence Learners for Arrhythmia 
+Classification](https://www.semanticscholar.org/paper/33cde44ade4b87811c9
+83e81ae002e455124263c) — Varghese et al. | 2023 | MBEC | DistilBERT on 
+ECG; 99.92% accuracy on MIT-BIH <citations>24</citations> | 
+| 28 | [TransMixer-AF: Real-Time AF Detection Using Single-Lead 
+ECG](https://doi.org/10.1109/access.2024.3467181) — Mahim et al. | 2024 | 
+IEEE Access | ConvMixer + Transformer; GradCAM++ explainability 
+<citations>25</citations> | 
+| 29 | [Transformer-based ECG Classification for Early Detection of 
+Cardiac 
+Arrhythmias](https://www.frontiersin.org/journals/medicine/articles/10.33
+89/fmed.2025.1600855/pdf) — Ikram et al. | 2025 | Frontiers in Medicine | 
+PCA + t-SNE + Transformer pipeline <citations>26</citations> | 
+| 30 | [Deciphering Heartbeat Signatures: Vision Transformer for 
+Explainable AF Detection](https://arxiv.org/pdf/2402.09474) — Mohan et 
+al. | 2024 | IEEE EMBC | Vision Transformer on Chapman-Shaoxing; 
+explainability focus <citations>27</citations> | 
+| 31 | [AF Classification and Prediction Explanation using Transformer 
+NN](https://www.semanticscholar.org/paper/b0767e08d03c7e066d23fe444710a1c
+1888f86f6) — Nankani & Baruah | 2022 | IEEE IJCNN | TNN highlights absent 
+P-wave; F1=0.87 <citations>28</citations> | 
+| 32 | [Self-supervised Learning for AF Detection with CNN-
+Transformer](https://www.semanticscholar.org/paper/82e4b2e914275a72302eda
+6a62c38e546a20dfb7) — Zou et al. | 2023 | IEEE BIBM | Self-supervised 
+'nextclip' pretraining; state-of-the-art results 
+<citations>29</citations> | 
+| 33 | [EndAFD: End-to-End System for ECG Based AF 
+Detection](https://www.semanticscholar.org/paper/1a53f6eab58772e910904efd
+438bf1f6c92eaafa) — Basak et al. | 2022 | SSRN | End-to-end Transformer 
+pipeline; single-lead focus | 
+ 
+--- 
+ 
+## Category 5: Federated Learning & Privacy (Differentiator) 
+ 
+| # | Paper | Year | Venue | Key Result | 
+|---|---|---|---|---| 
+| 34 | **[Asynchronous Federated Learning-based ECG Analysis for 
+Arrhythmia 
+Detection](https://www.semanticscholar.org/paper/8404f9ddf18e474769e26d2d
+61d9f73585b84d4b)** — Sakib et al. | 2021 | MeditCom | **50 citations**; 
+async FL on ultra-edge nodes <citations>30</citations> | 
+| 35 | **[Federated Learning for Arrhythmia Detection of Non-IID 
+ECG](https://www.semanticscholar.org/paper/b3cd99e528763381d9d47b0f098f75
+923ed90f8c)** — Zhang et al. | 2020 | IEEE ICCC | **40 citations**; 
+addresses non-IID data challenge <citations>31</citations> | 
+| 36 | [Privacy-preserving Federated Learning for In-Home Monitoring of 
+Elderly](https://www.semanticscholar.org/paper/05f445edae3b752aedbe1256cd
+1e66b567ba5dbc) — Bochicchio & Zeleke | 2023 | AIxAS | PPFL applied to 
+elderly ECG wearables <citations>32</citations> | 
+| 37 | [Fusion of Personalized FL with Differential Privacy for 
+Arrhythmia 
+Diagnosis](https://www.semanticscholar.org/paper/e5e3b71dcc17b76f8e3d0c3a
+09a0d226a9daed3d) | 2024 | — | GRU + differential privacy + federated 
+learning | 
+ 
+--- 
+ 
+## Category 6: Novel Sensor Hardware + AI 
+ 
+| # | Paper | Year | Venue | Key Result | 
+|---|---|---|---|---| 
+| 38 | [AI-Enhanced Diagnosis of Atrial Arrhythmia Using 3D-Printed 
+Origami ECG 
+Sensors](https://www.semanticscholar.org/paper/3f45e4209334a2711118649209
+0038214f40c085) — Chen et al. | 2025 | Biosensors & Bioelectronics | 
+Reusable 3D-printed sensor; CWT+CNN for 11 rhythm types 
+<citations>33</citations> | 
+| 39 | [A Novel Multi-Modal DL Framework Using ECG and PPG 
+Signals](https://www.semanticscholar.org/paper/faac2d5a25e74ee24096a08256
+2d94a21444202a) — Gupta et al. | 2025 | CISES | Fuses ECG + PPG with 
+Transformer; optimized for wearables <citations>34</citations> | 
+| 40 | [Real-time Cardiac Arrhythmia Detection Using ML and Wearable 
+Devices](https://healthinformaticsjournal.com/index.php/IJMI/article/down
+load/36/37) | 2024 | Frontiers in Health Informatics | CNN + SVM hybrid; 
+cloud-based pipeline | 
+| 41 | [Real Time Arrhythmia Detecting Wearable using a Novel DL 
+Model](https://www.semanticscholar.org/paper/9f9f3e98e340352292cf01e0523d
+5a63cdb34a05) — Banerjee et al. | 2020 | ICPS | 1D-CNN + LSTM; mobile 
+notification system <citations>35</citations> | 
+ 
+--- 
+ 
+## Recommended Reading Order for Your Hackathon 
+ 
+1. Start with **Paper #3** (2026 survey) for a landscape overview 
+2. Then **Paper #4** (Zubair, 204 citations) for the foundational CNN 
+approach you'll implement 
+3. Then **Papers #16-17** (Rahman & Morshed) for edge deployment 
+architecture 
+4. Then **Paper #20** (Quantized Transformers) if you want a 
+differentiating model choice 
+5. Then **Paper #34** (Sakib, 50 citations) if you want to add a 
+federated learning angle 
+6. Finally **Paper #28** (TransMixer-AF) for the GradCAM++ explainability 
+technique 
