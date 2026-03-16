@@ -31,7 +31,14 @@ jobs:
           sleep 20
           curl --fail http://localhost:8000/health
 
+      - name: Start frontend for smoke test
+        run: |
+          docker run -d --name pulseai-frontend-test -p 8080:80 pulseai-frontend-ci
+          sleep 10
+          curl --fail http://localhost:8080
+
       - name: Cleanup
         if: always()
         run: |
           docker rm -f pulseai-backend-test || true
+          docker rm -f pulseai-frontend-test || true

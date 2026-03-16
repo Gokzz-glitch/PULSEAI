@@ -2,12 +2,13 @@ import logging
 import json
 import os
 import asyncio
+import time
 import httpx
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from pydantic import BaseModel
 import paho.mqtt.client as mqtt
 from signal_processing import process_ecg, extract_beat_window, FS, SEGMENT_LEN
-from ml_model import predict_arrhythmia
+from ml_model import predict_arrhythmia, get_model_status
 from fhir_generator import generate_fhir_diagnostic_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
@@ -17,9 +18,12 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="PulseAI Edge-Cloud Platform", version="2.0.0")
 
+cors_origins = os.getenv("CORS_ALLOW_ORIGINS", "*").strip()
+allow_origins = [o.strip() for o in cors_origins.split(",") if o.strip()] or ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -69,6 +73,16 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections.append(websocket)
         logger.info(f"WebSocket connected. Active: {len(self.active_connections)}")
+
+        # Push latest snapshot immediately to improve first paint UX.
+        initial_state = {
+            "type": "snapshot",
+            "leads_off": leads_off,
+            "ecg_snapshot": ecg_buffer[-100:],
+            "prediction": latest_prediction,
+            "diagnostic": latest_diagnostic,
+        }
+        await websocket.send_text(json.dumps(initial_state))
 
     def disconnect(self, websocket: WebSocket):
         if websocket in self.active_connections:
@@ -127,6 +141,7 @@ def on_mqtt_message(client, userdata, msg):
                 "type": "prediction",
                 "patient_id": pid,
                 **prediction,
+                "timestamp": time.time(),
                 "ecg_snapshot": ecg_buffer[-100:]
             }
 
@@ -187,14 +202,17 @@ async def websocket_endpoint(websocket: WebSocket):
 
 @app.get("/health")
 async def health():
+    model_status = get_model_status()
     return {
         "status": "ok",
         "version": "2.0.0",
         "colab_bridge": COLAB_INFERENCE_URL or "disabled (local model)",
+        "cors_allow_origins": allow_origins,
         "mqtt_connected": mqtt_client.is_connected(),
         "leads_off": leads_off,
         "buffer_samples": len(ecg_buffer),
-        "active_patient": active_patient.patient_id if active_patient else None
+        "active_patient": active_patient.patient_id if active_patient else None,
+        **model_status,
     }
 
 @app.post("/api/patient")

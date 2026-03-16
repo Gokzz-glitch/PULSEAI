@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -18,21 +18,7 @@ interface DiagnosticReport {
   extension?: Array<{ url: string; valueString?: string; valueDecimal?: number }>;
 }
 
-interface PredictionPayload {
-  type: string;
-  classification?: string;
-  confidence?: number;
-  heart_rate_bpm?: number;
-  rr_cv?: number;
-  signal_quality?: string;
-  model_used?: string;
-  explainability_map?: Record<string, unknown> | null;
-  ecg_snapshot?: number[];
-  fhir_report?: DiagnosticReport;
-}
-
 const BACKEND = import.meta.env.VITE_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:8000`;
-const WS_URL = `${BACKEND.replace(/^http/, 'ws')}/ws`;
 
 const ActivitySVG = ({ size = 32, color = 'currentColor' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -71,14 +57,9 @@ function App() {
   const [ecgData, setEcgData] = useState<number[]>([]);
   const [diagnostic, setDiagnostic] = useState<DiagnosticReport>({ status: 'Awaiting edge data...' });
   const [leadsOff, setLeadsOff] = useState(false);
-  const [connectionState, setConnectionState] = useState<'connecting' | 'live' | 'offline'>('connecting');
-  const [lastPrediction, setLastPrediction] = useState<PredictionPayload | null>(null);
   const mockRef = useRef<number | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectRef = useRef<number | null>(null);
-  const pingRef = useRef<number | null>(null);
 
-  // Fallback polling to keep dashboard updated even if WS is unavailable.
+  // Poll backend
   useEffect(() => {
     if (!consentGiven) return;
     const poll = setInterval(async () => {
@@ -92,91 +73,14 @@ function App() {
         if (ecgJson.data?.length) setEcgData(ecgJson.data);
         if (ecgJson.leads_off !== undefined) setLeadsOff(ecgJson.leads_off);
         if (diagJson) setDiagnostic(diagJson);
-        if (connectionState !== 'live') {
-          setConnectionState('connecting');
-        }
       } catch (_) { /* backend offline — mock mode active */ }
-    }, 1800);
+    }, 1000);
     return () => clearInterval(poll);
-  }, [consentGiven, connectionState]);
-
-  useEffect(() => {
-    if (!consentGiven) return;
-    let closedManually = false;
-
-    const connect = () => {
-      setConnectionState('connecting');
-      const ws = new WebSocket(WS_URL);
-      wsRef.current = ws;
-
-      ws.onopen = () => {
-        setConnectionState('live');
-        if (pingRef.current) clearInterval(pingRef.current);
-        pingRef.current = window.setInterval(() => {
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send('ping');
-          }
-        }, 15000);
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const payload = JSON.parse(event.data) as PredictionPayload;
-          if (payload.type === 'leads_off') {
-            setLeadsOff(true);
-            return;
-          }
-          if (payload.type === 'snapshot') {
-            if (Array.isArray(payload.ecg_snapshot) && payload.ecg_snapshot.length) {
-              setEcgData(payload.ecg_snapshot);
-            }
-            return;
-          }
-          if (payload.type === 'prediction') {
-            if (Array.isArray(payload.ecg_snapshot) && payload.ecg_snapshot.length) {
-              setEcgData(payload.ecg_snapshot);
-            }
-            setLeadsOff(false);
-            setLastPrediction(payload);
-            if (payload.fhir_report) {
-              setDiagnostic(payload.fhir_report);
-            } else if (payload.classification) {
-              setDiagnostic({ status: 'monitoring', conclusion: payload.classification });
-            }
-          }
-        } catch (_) {
-          // Ignore malformed websocket message
-        }
-      };
-
-      ws.onerror = () => {
-        setConnectionState('offline');
-      };
-
-      ws.onclose = () => {
-        if (pingRef.current) clearInterval(pingRef.current);
-        if (closedManually) return;
-        setConnectionState('offline');
-        reconnectRef.current = window.setTimeout(connect, 2000);
-      };
-    };
-
-    connect();
-
-    return () => {
-      closedManually = true;
-      if (reconnectRef.current) clearTimeout(reconnectRef.current);
-      if (pingRef.current) clearInterval(pingRef.current);
-      wsRef.current?.close();
-    };
   }, [consentGiven]);
 
-  // Mock ECG animation only when backend is offline.
+  // Mock ECG animation when no hardware attached
   useEffect(() => {
-    if (!consentGiven || connectionState === 'live') {
-      if (mockRef.current) clearInterval(mockRef.current);
-      return;
-    }
+    if (!consentGiven) return;
     mockRef.current = window.setInterval(() => {
       setEcgData(prev => {
         const t = Date.now() / 200;
@@ -187,9 +91,9 @@ function App() {
       });
     }, 80);
     return () => { if (mockRef.current) clearInterval(mockRef.current); };
-  }, [consentGiven, connectionState]);
+  }, [consentGiven]);
 
-  const chartData = useMemo(() => ({
+  const chartData = {
     labels: ecgData.map((_, i) => i.toString()),
     datasets: [{
       data: ecgData,
@@ -200,7 +104,7 @@ function App() {
       pointRadius: 0,
       fill: true,
     }],
-  }), [ecgData]);
+  };
 
   const chartOptions = {
     responsive: true,
@@ -213,11 +117,7 @@ function App() {
     plugins: { legend: { display: false } },
   };
 
-  const modelLabel = lastPrediction?.model_used || 'N/A';
-  const confidence = lastPrediction?.confidence;
-  const heartRate = lastPrediction?.heart_rate_bpm;
-  const signalQuality = lastPrediction?.signal_quality || 'unknown';
-  const isAnomaly = !!(diagnostic?.conclusion && !diagnostic.conclusion.includes('Normal Sinus Rhythm'));
+  const isAnomaly = !!(diagnostic?.conclusion && (diagnostic.conclusion.includes('Fib') || diagnostic.conclusion.includes('Arrhythmia')));
   const gradCamExt = diagnostic?.extension?.find(e => e.url.includes('gradcam'));
   let gradCamMap: Record<string, unknown> | null = null;
   if (gradCamExt?.valueString) {
@@ -261,9 +161,6 @@ function App() {
         </div>
         <div className="header-badges">
           <span className="badge badge-purple"><ShieldSVG />Federated Learning</span>
-          <span className={`badge ${connectionState === 'live' ? 'badge-green' : connectionState === 'connecting' ? 'badge-purple' : 'badge-red'}`}>
-            {connectionState === 'live' ? 'Realtime WebSocket' : connectionState === 'connecting' ? 'Connecting...' : 'Offline / Mock'}
-          </span>
           <span className={`badge ${leadsOff ? 'badge-red' : 'badge-green'}`}>
             <ServerSVG color={leadsOff ? 'var(--color-alert)' : 'var(--color-primary)'} />
             {leadsOff ? 'Leads Off' : 'Edge Active'}
@@ -282,20 +179,6 @@ function App() {
           </div>
           <div className="chart-container">
             <Line data={chartData} options={chartOptions} />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10, marginTop: 14 }}>
-            <div className="gradcam-box">
-              <div className="label">Confidence</div>
-              <div className="value">{typeof confidence === 'number' ? `${(confidence * 100).toFixed(1)}%` : 'N/A'}</div>
-            </div>
-            <div className="gradcam-box">
-              <div className="label">Heart Rate</div>
-              <div className="value">{typeof heartRate === 'number' ? `${heartRate.toFixed(1)} bpm` : 'N/A'}</div>
-            </div>
-            <div className="gradcam-box">
-              <div className="label">Signal Quality</div>
-              <div className="value" style={{ textTransform: 'capitalize' }}>{signalQuality}</div>
-            </div>
           </div>
         </div>
 
@@ -325,7 +208,7 @@ function App() {
               <div className="triage-normal">
                 <div className="status-icon-wrap"><CheckSVG size={30} /></div>
                 <p className="status-label">Normal Sinus Rhythm</p>
-                <p className="status-sub">Continuous 500 Hz scan · {modelLabel}</p>
+                <p className="status-sub">Continuous 500 Hz scan · TransMixer-AF active</p>
               </div>
             )}
           </div>

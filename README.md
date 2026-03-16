@@ -2,11 +2,23 @@
 
 Production-ready Docker deployment for PulseAI backend and frontend, pinned to Python 3.10.11.
 
+## Production Verification Report
+Validated in this workspace:
+- Docker version: 29.2.1
+- Docker Compose version: v5.1.0
+- Backend health: status=ok on http://127.0.0.1:8000/health
+- Frontend health: HTTP 200 on http://127.0.0.1:8080
+
+Verified containers:
+- pulseai-backend: healthy
+- pulseai-frontend: running
+
 ## What Was Added
 - Dockerized backend with Python 3.10.11 base image.
 - Dockerized frontend with Vite build + Nginx runtime.
 - Production Docker Compose file.
 - GitHub Actions workflow for Docker build + smoke test.
+- Windows one-command production startup script.
 - Screenshot placeholders for deployment documentation.
 
 ## Project Structure
@@ -15,6 +27,7 @@ Production-ready Docker deployment for PulseAI backend and frontend, pinned to P
 - frontend/nginx.conf
 - docker-compose.prod.yml
 - .github/workflows/docker-ci.yml
+- scripts/start-prod.ps1
 - .env.example
 - docs/screenshots/backend-health.svg
 - docs/screenshots/docker-containers.svg
@@ -39,6 +52,12 @@ Optional:
 
 ```powershell
 docker compose -f docker-compose.prod.yml up --build -d
+```
+
+Windows one-command option:
+
+```powershell
+./scripts/start-prod.ps1
 ```
 
 Verify:
@@ -90,5 +109,29 @@ git push origin main
 ```
 
 ## Notes
-- Current workspace does not have Docker CLI available yet, so runtime verification must be done after Docker Desktop installation.
 - Backend currently supports local mode and Colab bridge mode via COLAB_INFERENCE_URL.
+
+## Troubleshooting
+
+If Docker works in Docker Desktop but not in terminal:
+
+1. Add this path to your system PATH:
+
+```text
+C:\Program Files\Docker\Docker\resources\bin
+```
+
+2. Restart VS Code and open a fresh terminal.
+
+3. Verify:
+
+```powershell
+docker --version
+docker compose version
+```
+
+If compose says `.env` file is missing:
+
+```powershell
+Copy-Item .env.example .env
+```
