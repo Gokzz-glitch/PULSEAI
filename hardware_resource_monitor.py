@@ -13,7 +13,7 @@ def check_hardware():
     if cpu > 50 or ram > 50:
         warning = f"\n[{datetime.now().isoformat()}] WARNING: CPU/RAM usage exceeded 50% (CPU: {cpu}%, RAM: {ram}%). Please ensure tasks are offloaded to Colab.\n"
         print(warning)
-        with open('hardware_log.txt', 'a') as f:
+        with open('hardware_resource_usage_log.txt', 'a') as f:
             f.write(warning)
         # Beep to alert user
         winsound.Beep(1000, 500)
