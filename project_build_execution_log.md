@@ -15,7 +15,7 @@ I decided to extract the text from the PDFs using `PyMuPDF` (installed via pip).
 - Initialized a `create-vite` application for the frontend.
 - Created the backend API with FastAPI in `backend/main.py`.
 - Created signal processing simulation in `backend/signal_processing.py`.
-- Created ML model simulation in `backend/ml_model.py`.
+- Created ML model simulation in `backend/arrhythmia_classifier.py`.
 - Created FHIR generation scripts in `backend/fhir_generator.py`.
 - Created mock regulatory technical documentation in `docs/cdsco_essential_principles.md`.
 - Executed `npm install chart.js react-chartjs-2` for the React frontend.
@@ -36,7 +36,7 @@ Notebook `PULSEAI_Backend` successfully created at https://colab.research.google
 ### PLAN
 The user strictly requested to not use more than 50% of the laptop's CPU, GPU, or RAM, shifting all heavy lifting to Colab. They also requested regular backups to their GitHub account (`Gokzz-glitch`) with timeline logs.
 ### DECISION
-I wrote and executed `monitor.py` which checks CPU & RAM usage every 2 seconds, printing warnings and beeping if CPU>50%. I also wrote `auto_backup.ps1` to automatically `git commit` any changes every 30 seconds to provide rigorous version history locally, pending a remote connection.
+I wrote and executed `hardware_resource_monitor.py` which checks CPU & RAM usage every 2 seconds, printing warnings and beeping if CPU>50%. I also wrote `auto_git_backup.ps1` to automatically `git commit` any changes every 30 seconds to provide rigorous version history locally, pending a remote connection.
 
 ## [2026-03-14T00:20:30+05:30] Phase 4: Model Optimization & Uniqueness Strategy
 ### PLAN
@@ -48,8 +48,8 @@ This combination (Federated TransMixer-AF with Grad-CAM Explainability) explicit
 2. Bullet-proof data privacy (DPDP Act) by keeping raw data vectors at the edge and only sending model weight gradients to the cloud.
 ### DECISION
 I have completely rewritten the prediction schema:
-1. `ml_model.py`: Redesigned to act as `Federated TransMixer`. Calculates simulated local weight updates `loss_data` rather than centralizing all user data (huge privacy angle). Predicts Arrhythmia while generating a Grad-CAM++ Saliency map highlighting specifically what went wrong computationally (e.g. absent P-wave).
-2. `fhir_generator.py`: Updated the ABDM FHIR R4 JSON standard generator to append an Extension field directly coupling the Grad-CAM saliency details with the clinician's diagnostic report. This solves the "Black-Box" red-flag raised by evaluators in `content.txt`.
+1. `arrhythmia_classifier.py`: Redesigned to act as `Federated TransMixer`. Calculates simulated local weight updates `loss_data` rather than centralizing all user data (huge privacy angle). Predicts Arrhythmia while generating a Grad-CAM++ Saliency map highlighting specifically what went wrong computationally (e.g. absent P-wave).
+2. `fhir_generator.py`: Updated the ABDM FHIR R4 JSON standard generator to append an Extension field directly coupling the Grad-CAM saliency details with the clinician's diagnostic report. This solves the "Black-Box" red-flag raised by evaluators in `strategic_blueprint_content.txt`.
 3. `App.tsx`: Rewrote the frontend interface. It now displays the current model configuration dynamically (`Federated TransMixer-AF`). If an anomaly is hit, the UI extracts the Grad-CAM extension from the FHIR JSON and displays exactly what feature the AI focused on (using glowing hot pink text bounds). Removed `lucide-react` reliance to ensure offline stability, replacing it with vanilla SVGs.
 ### OUTCOME
 The solution is highly optimized for evaluation rubrics, completely bespoke, heavily leans on 2026 edge architectures, and is extremely visually communicative. All executed within hardware constraints.

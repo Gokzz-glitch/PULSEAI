@@ -7,7 +7,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from pydantic import BaseModel
 import paho.mqtt.client as mqtt
 from signal_processing import process_ecg, extract_beat_window, FS, SEGMENT_LEN
-from ml_model import predict_arrhythmia
+from arrhythmia_classifier import predict_arrhythmia
 from fhir_generator import generate_fhir_diagnostic_report
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
