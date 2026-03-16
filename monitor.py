@@ -10,8 +10,8 @@ def check_hardware():
     msg = f"[{datetime.now().isoformat()}] CPU: {cpu}%, RAM: {ram}%"
     print(msg, end='\r')
     
-    if cpu > 50 or ram > 50:
-        warning = f"\n[{datetime.now().isoformat()}] WARNING: CPU/RAM usage exceeded 50% (CPU: {cpu}%, RAM: {ram}%). Please ensure tasks are offloaded to Colab.\n"
+    if cpu > 65 or ram > 65:
+        warning = f"\n[{datetime.now().isoformat()}] WARNING: CPU/RAM usage exceeded 65% (CPU: {cpu}%, RAM: {ram}%). Please ensure tasks are offloaded to Colab.\n"
         print(warning)
         with open('hardware_log.txt', 'a') as f:
             f.write(warning)

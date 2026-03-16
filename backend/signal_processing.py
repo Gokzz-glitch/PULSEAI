@@ -20,7 +20,9 @@ def process_ecg(raw_signal_buffer: list, fs: int = FS) -> list:
       3. Bandpass (0.5–40 Hz) — retains clinically relevant ECG band
     Returns a float list of the same length as input.
     """
-    if len(raw_signal_buffer) < 10:
+    # filtfilt with a 4th-order Butterworth filter requires padlen = 3 * max(len(a), len(b)) - 1
+    # which equals 15 samples for order-4.  Use 16 as the minimum safe guard.
+    if len(raw_signal_buffer) < 16:
         return raw_signal_buffer
 
     data = np.array(raw_signal_buffer, dtype=np.float64)
