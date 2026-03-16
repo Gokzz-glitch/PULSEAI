@@ -18,7 +18,7 @@ interface DiagnosticReport {
   extension?: Array<{ url: string; valueString?: string; valueDecimal?: number }>;
 }
 
-const BACKEND = 'http://localhost:8000';
+const BACKEND = import.meta.env.VITE_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:8000`;
 
 const ActivitySVG = ({ size = 32, color = 'currentColor' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
