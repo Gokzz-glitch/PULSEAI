@@ -53,3 +53,15 @@ I have completely rewritten the prediction schema:
 3. `App.tsx`: Rewrote the frontend interface. It now displays the current model configuration dynamically (`Federated TransMixer-AF`). If an anomaly is hit, the UI extracts the Grad-CAM extension from the FHIR JSON and displays exactly what feature the AI focused on (using glowing hot pink text bounds). Removed `lucide-react` reliance to ensure offline stability, replacing it with vanilla SVGs.
 ### OUTCOME
 The solution is highly optimized for evaluation rubrics, completely bespoke, heavily leans on 2026 edge architectures, and is extremely visually communicative. All executed within hardware constraints.
+
+## [2026-03-17T00:00:00+05:30] Demo 1 Formalization Pack
+### PLAN
+Create a dedicated demo-only path without modifying the original model pipeline, then prepare formal evidence artifacts for a 5-minute 4-case simulation.
+### DECISION
+Use a new notebook `Demo_1_Simulated_4Case_5Min.ipynb` and a dedicated evidence folder `docs/demo1/` to isolate presentation flow from core project code.
+### EXECUTION
+- Created demo notebook for deterministic 4-case simulation with 75 seconds per case and 500 Hz sampling.
+- Added export steps in notebook for `docs/demo1/demo1_summary.csv`, `docs/demo1/demo1_report.json`, and waveform plot.
+- Added formal runbook and evidence checklist files under `docs/demo1/`.
+### OUTCOME
+Demo 1 is now structured as a separate, low-risk path. Original application code remains unchanged while demo artifacts are ready for execution and sign-off.

@@ -188,24 +188,65 @@ async def startup_event():
     asyncio.create_task(simulate_ecg_background())
 
 async def simulate_ecg_background():
-    """Fallback simulator for when hardware is not streaming."""
+    """Rotating multi-case simulator for clinical testing."""
     global ecg_buffer, _eval_counter
     import math, random
     t = 0
     freq = 500
+    
+    # Simulation Phase Timing: 75 seconds per case = 5 minutes total
+    PHASE_DURATION = 75 
+    
     while True:
-        # Only simulate if MQTT hasn't fed the buffer recently
-        if len(ecg_buffer) < 200:
-            hr = 70 + (random.random() * 5)
-            qrs = 1.2 * math.exp(-((t % (freq * 60 / hr) - 100)**2) / 15)
-            val = (qrs + (random.random() * 0.05)) * 100
+        elapsed = (t / freq)
+        phase = int(elapsed / PHASE_DURATION) % 4
+        
+        # Always simulate for presentation mode
+        if True:
+            # Case Logic
+            if phase == 0: # CASE 1: HEAVY WORKOUT
+                hr = 145 + random.uniform(-2, 2)
+                mode = "Workout (Tachycardia)"
+                is_arrhythmia = False
+            elif phase == 1: # CASE 2: SLEEPING POST-GYM
+                hr = 62 + random.uniform(-1, 1)
+                mode = "Deep Sleep"
+                is_arrhythmia = False
+            elif phase == 2: # CASE 3: ELDERLY ATTACK (AFIB)
+                hr = 155 + random.uniform(-20, 20) # High variability for AFib
+                mode = "Critical Event (AFib)"
+                is_arrhythmia = True
+            else: # CASE 4: ELDERLY CLIMBING HILL
+                hr = 115 + random.uniform(-3, 3)
+                mode = "Elderly Activity"
+                is_arrhythmia = False
+
+            # Waveform Generation
+            # QRS complex
+            qrs_pos = (t % (freq * 60 / hr))
+            qrs = 1.3 * math.exp(-((qrs_pos - 100)**2) / 10)
+            
+            # P and T waves
+            p_wave = 0.15 * math.exp(-((qrs_pos - 60)**2) / 50)
+            t_wave = 0.35 * math.exp(-((qrs_pos - 180)**2) / 200)
+            
+            # Add AFib noise/irregularity in Phase 2
+            noise = random.uniform(-0.05, 0.05)
+            if phase == 2:
+                noise += random.uniform(-0.2, 0.2) # Baseline wander/f-waves
+            
+            val = (p_wave + qrs + t_wave + noise) * 100
             ecg_buffer.append(val)
-            if len(ecg_buffer) > BUFFER_SIZE: ecg_buffer.pop(0)
+            
+            if len(ecg_buffer) > BUFFER_SIZE: 
+                ecg_buffer.pop(0)
             
             _eval_counter += 1
             if _eval_counter >= EVAL_EVERY:
                 _eval_counter = 0
+                logger.info(f"🧪 Simulation Phase {phase+1}: {mode} | HR: {int(hr)}")
                 asyncio.create_task(run_inference_cycle())
+            
             t += 1
         await asyncio.sleep(1/freq)
 

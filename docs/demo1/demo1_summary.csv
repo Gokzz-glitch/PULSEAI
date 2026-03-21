@@ -1,0 +1,5 @@
+case_id,case_name,duration_seconds,expected_pattern,simulated_bpm,simulated_rr_cv,model_classification,risk_level,confidence,model_hr_bpm,model_rr_cv,signal_quality,model_used
+1,Heavy Workout,75,Tachycardia Pattern,145.17,0.0117,Atrial Fibrillation (AFib),critical,0.883,,,good,keras:hctg_net_model.h5
+2,Sleeping After Gym,75,Normal Sinus Rhythm,62.05,0.011,Atrial Fibrillation (AFib),critical,1.0,,,good,keras:hctg_net_model.h5
+3,Elderly Attack,75,Atrial Fibrillation (AFib),156.03,0.1299,Atrial Fibrillation (AFib),critical,1.0,,,good,keras:hctg_net_model.h5
+4,Elderly Climbing Hill,75,Normal Sinus Rhythm,114.95,0.012,Atrial Fibrillation (AFib),critical,1.0,,,good,keras:hctg_net_model.h5

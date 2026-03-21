@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Any, cast, List
 
 import numpy as np
 from scipy.signal import find_peaks
@@ -50,12 +50,14 @@ class ArrhythmiaEngine:
         return (window - float(np.mean(window))) / std
 
     def _infer_with_keras(self, signal_window: np.ndarray) -> Optional[Dict]:
-        if self.model is None:
+        model = self.model
+        if model is None:
             return None
 
         x = self._normalize(signal_window).astype(np.float32)[None, :, None]
         try:
-            probs = np.array(self.model.predict(x, verbose=0)).reshape(-1)
+            # Cast to Any to bypass strict type checking on the model object which might be seen as NoneType
+            probs = np.array(cast(Any, model).predict(x, verbose=0)).reshape(-1)
             if probs.size == 1:
                 af_prob = float(np.clip(probs[0], 0.0, 1.0))
                 class_idx = 1 if af_prob >= 0.5 else 0
@@ -73,11 +75,11 @@ class ArrhythmiaEngine:
             return {
                 "is_arrhythmia": class_idx != 0,
                 "classification": classification,
-                "confidence": round(confidence, 3),
+                "confidence": float(np.round(confidence, 3)),
                 "probabilities": {
-                    "normal": round(probs_out[0], 3),
-                    "afib": round(probs_out[1], 3),
-                    "other": round(probs_out[2], 3),
+                    "normal": float(np.round(probs_out[0], 3)),
+                    "afib": float(np.round(probs_out[1], 3)),
+                    "other": float(np.round(probs_out[2], 3)),
                 },
                 "heart_rate_bpm": None,
                 "rr_cv": None,
@@ -157,18 +159,19 @@ class ArrhythmiaEngine:
         other_prob = max(0.0, 1.0 - normal_prob - afib_prob)
         denom = normal_prob + afib_prob + other_prob
         probs = {
-            "normal": round(normal_prob / denom, 3),
-            "afib": round(afib_prob / denom, 3),
-            "other": round(other_prob / denom, 3),
+            "normal": float(np.round(normal_prob / denom, 3)),
+            "afib": float(np.round(afib_prob / denom, 3)),
+            "other": float(np.round(other_prob / denom, 3)),
         }
 
+        peaks_arr = np.asarray(peaks)
         i = int(np.argmax(np.abs(np.diff(rr)))) if len(rr) > 1 else 0
-        start_ms = int(peaks[i] / FS * 1000)
-        end_ms = int(peaks[min(i + 1, len(peaks) - 1)] / FS * 1000)
+        start_ms = int(peaks_arr[i] / FS * 1000)
+        end_ms = int(peaks_arr[min(i + 1, len(peaks_arr) - 1)] / FS * 1000)
         explainability_map = {
             "start_ms": start_ms,
             "end_ms": end_ms,
-            "intensity_score": round(float(min(0.99, 0.55 + anomaly_score * 0.4)), 3),
+            "intensity_score": float(np.round(float(min(0.99, 0.55 + anomaly_score * 0.4)), 3)),
             "feature_focus": feature_focus,
         }
 
@@ -176,10 +179,10 @@ class ArrhythmiaEngine:
         return {
             "is_arrhythmia": classification != "Normal Sinus Rhythm",
             "classification": classification,
-            "confidence": round(confidence, 3),
+            "confidence": float(np.round(confidence, 3)),
             "probabilities": probs,
-            "heart_rate_bpm": round(heart_rate, 1),
-            "rr_cv": round(rr_cv, 3),
+            "heart_rate_bpm": float(np.round(heart_rate, 1)),
+            "rr_cv": float(np.round(rr_cv, 3)),
             "signal_quality": signal_quality,
             "model_used": self.model_version,
             "explainability_map": explainability_map if classification != "Normal Sinus Rhythm" else None,
