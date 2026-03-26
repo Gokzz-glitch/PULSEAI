@@ -3,7 +3,6 @@ __pycache__/
 *.pyc
 .env
 .env.local
-*.h5
 hardware_log.txt
 content.txt
 research_content.txt
