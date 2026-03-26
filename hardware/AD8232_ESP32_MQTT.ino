@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <BluetoothSerial.h>
 
 // WiFi credentials
 const char* ssid = "YOUR_WIFI_SSID";
@@ -17,43 +18,32 @@ const int pinOutput = 32; // OUTPUT
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+BluetoothSerial SerialBT;
 
 unsigned long lastSendTime = 0;
-// Sample at 500 Hz -> 2ms interval
-const int sampleIntervalMs = 2; 
+const int sampleIntervalMs = 2; // 500 Hz
 
 void setup_wifi() {
+  if (WiFi.status() == WL_CONNECTED) return;
   delay(10);
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
+  Serial.println("Connecting WiFi...");
   WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
+  int retry = 0;
+  while (WiFi.status() != WL_CONNECTED && retry < 20) {
     delay(500);
     Serial.print(".");
+    retry++;
   }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
 }
 
-void reconnect() {
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Create a random client ID
-    String clientId = "ESP32Client-PULSEAI-";
-    clientId += String(random(0, 10000));
-    
+void reconnect_mqtt() {
+  while (!client.connected() && WiFi.status() == WL_CONNECTED) {
+    Serial.print("MQTT connecting...");
+    String clientId = "PulseAI-ESP32-";
+    clientId += String(random(0, 1000));
     if (client.connect(clientId.c_str())) {
-      Serial.println("connected");
+      Serial.println("MQTT connected");
     } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
       delay(5000);
     }
   }
@@ -61,6 +51,9 @@ void reconnect() {
 
 void setup() {
   Serial.begin(115200);
+  SerialBT.begin("PulseAI_Device"); 
+  Serial.println("PulseAI: Bluetooth and Serial Ready");
+
   pinMode(pinLOPlus, INPUT);
   pinMode(pinLOMinus, INPUT);
   pinMode(pinOutput, INPUT);
@@ -70,29 +63,35 @@ void setup() {
 }
 
 void loop() {
-  if (!client.connected()) {
-    reconnect();
+  // Handle MQTT connectivity if WiFi is connected
+  if (WiFi.status() == WL_CONNECTED) {
+    if (!client.connected()) reconnect_mqtt();
+    client.loop();
   }
-  client.loop();
 
   unsigned long currentMillis = millis();
   
-  // Sample at 500 Hz
   if (currentMillis - lastSendTime >= sampleIntervalMs) {
     lastSendTime = currentMillis;
 
-    // Check if leads are off
+    String payload;
     if ((digitalRead(pinLOPlus) == 1) || (digitalRead(pinLOMinus) == 1)) {
-      // Leads off anomaly value or 0
-      client.publish(mqtt_topic, "LEADS_OFF");
+      payload = "LEADS_OFF";
     } else {
-      // Read ADC value
-      int ecgValue = analogRead(pinOutput);
-      
-      // Publish Data via MQTT payload
-      char msg[10];
-      snprintf(msg, sizeof(msg), "%d", ecgValue);
-      client.publish(mqtt_topic, msg);
+      payload = String(analogRead(pinOutput));
+    }
+
+    // 1. Send via USB Serial (Direct Connection)
+    Serial.println(payload);
+
+    // 2. Send via Bluetooth Serial
+    if (SerialBT.hasClient()) {
+      SerialBT.println(payload);
+    }
+
+    // 3. Send via MQTT (Wi-Fi)
+    if (client.connected()) {
+      client.publish(mqtt_topic, payload.c_str());
     }
   }
 }

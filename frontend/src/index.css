@@ -186,10 +186,48 @@ body {
 
 .header-right {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+/* ─── Source Selector ────────────────────── */
+.source-selector-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  padding: 4px 8px;
+  border-radius: var(--r-md);
+  margin-right: 4px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.source-selector-wrap:hover {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.source-dropdown {
+  background: transparent;
+  border: none;
+  color: var(--violet);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.source-dropdown option {
+  background: var(--bg-2);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
 }
 
 /* ─── Badges ────────────────────────────── */

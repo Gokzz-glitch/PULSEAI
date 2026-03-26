@@ -9,3 +9,4 @@ content.txt
 research_content.txt
 dist/
 .vite/
+pulseasi-firebase-adminsdk-*.json

@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime
 import json
+from typing import Optional, List
 
-def generate_fhir_diagnostic_report(patient_id: str, classification: str, confidence: float, explainability_map: dict = None) -> dict:
+def generate_fhir_diagnostic_report(patient_id: str, classification: str, confidence: float, explainability_map: Optional[dict] = None) -> dict:
     """
     Creates an HL7 FHIR R4 Compliant DiagnosticReport resource.
     Specifically targeting the ABDM Sandbox requirements, incorporating a

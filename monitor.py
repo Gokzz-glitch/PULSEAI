@@ -15,8 +15,14 @@ def check_hardware():
         print(warning)
         with open('hardware_log.txt', 'a') as f:
             f.write(warning)
-        # Beep to alert user
-        winsound.Beep(1000, 500)
+        # Beep to alert user (only if on Windows and Beep exists)
+        if hasattr(winsound, 'Beep'):
+            try:
+                winsound.Beep(1000, 500)
+            except Exception:
+                pass
+        else:
+            print("\a") # Standard terminal bell fallback
 
 print("Starting hardware monitor (limit 60% CPU)...")
 while True:

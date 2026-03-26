@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULSEAI Live Monitor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #58a6ff;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #8b949e;
+            margin-bottom: 30px;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .card.alert {
+            border-color: #f85149;
+            box-shadow: 0 0 20px rgba(248, 81, 73, 0.4);
+        }
+        .card.normal {
+            border-color: #2ea043;
+            box-shadow: 0 0 20px rgba(46, 160, 67, 0.2);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #30363d;
+            margin-bottom: 15px;
+        }
+        .status-badge.live { background: #2ea043; color: white; }
+        .status-badge.offline { background: #f85149; color: white; }
+        
+        .report-section h3 { margin-top: 0; color: #8b949e; font-size: 14px; text-transform: uppercase;}
+        .report-val { font-size: 24px; font-weight: bold; margin: 10px 0; }
+        .success { color: #3fb950; }
+        .danger { color: #f85149; }
+        
+        canvas {
+            width: 100%;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>PulseAI Edge-Cloud Platform</h1>
+    <div class="subtitle">Live HCTG-Net Deep Learning Inference (No-NPM Fallback UI)</div>
+
+    <div class="dashboard">
+        <div class="card" id="chart-card">
+            <span class="status-badge" id="conn-status">Waiting for Backend...</span>
+            <canvas id="ecgChart"></canvas>
+        </div>
+        
+        <div class="card" id="diagnostic-card">
+            <div class="report-section">
+                <h3>Latest Prediction</h3>
+                <div class="report-val" id="classification">--</div>
+                <div id="confidence" style="color: #8b949e; font-size: 14px;">Confidence: --</div>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid #30363d; margin: 20px 0;">
+            
+            <div class="report-section">
+                <h3>FHIR Diagnostic Report</h3>
+                <div id="fhir-text" style="font-family: monospace; font-size: 12px; color: #a5d6ff; background: #010409; padding: 10px; border-radius: 6px; min-height: 100px;">
+                    Waiting for analysis...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('ecgChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 100}, (_, i) => i),
+                datasets: [{
+                    label: 'Live ECG Signal',
+                    data: Array(100).fill(0),
+                    borderColor: '#3fb950',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.1,
+                    cubicInterpolationMode: 'monotone'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 0 },
+                scales: {
+                    x: { display: false },
+                    y: { 
+                        display: true, 
+                        grid: { color: '#30363d' },
+                        min: -2, 
+                        max: 2 
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        function updateUI(data) {
+            if (data.ecg_snapshot && data.ecg_snapshot.length > 0) {
+                // Determine sensible Y-axis bounds dynamically
+                const min = Math.min(...data.ecg_snapshot) - 0.5;
+                const max = Math.max(...data.ecg_snapshot) + 0.5;
+                chart.options.scales.y.min = min < -2 ? min : -2;
+                chart.options.scales.y.max = max > 2 ? max : 2;
+
+                chart.data.labels = Array.from({length: data.ecg_snapshot.length}, (_, i) => i);
+                chart.data.datasets[0].data = data.ecg_snapshot;
+                chart.update();
+            }
+
+            if (data.prediction) {
+                const isArrhythmia = data.prediction.is_arrhythmia;
+                const classText = data.prediction.classification;
+                const conf = (data.prediction.confidence * 100).toFixed(1) + "%";
+                
+                document.getElementById('classification').innerText = classText || "Normal Sinus";
+                document.getElementById('classification').className = "report-val " + (isArrhythmia ? "danger" : "success");
+                document.getElementById('confidence').innerText = "Confidence: " + conf + " | Model: " + (data.prediction.model_used || "Unknown");
+                
+                chart.data.datasets[0].borderColor = isArrhythmia ? '#f85149' : '#3fb950';
+
+                const cardBox = document.getElementById('chart-card');
+                if (isArrhythmia) {
+                    cardBox.classList.remove('normal');
+                    cardBox.classList.add('alert');
+                } else {
+                    cardBox.classList.remove('alert');
+                    cardBox.classList.add('normal');
+                }
+            }
+
+            if (data.diagnostic) {
+                document.getElementById('fhir-text').innerText = JSON.stringify(data.diagnostic, null, 2);
+            }
+        }
+
+        const connectWebSocket = () => {
+            const statusBadge = document.getElementById('conn-status');
+            statusBadge.innerText = 'Connecting...';
+            statusBadge.className = 'status-badge';
+
+            const ws = new WebSocket('ws://localhost:8000/ws');
+
+            ws.onopen = () => {
+                statusBadge.innerText = 'LIVE \u2022 connected to ArrhythmiaEngine';
+                statusBadge.className = 'status-badge live';
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'snapshot' || data.type === 'prediction') {
+                        updateUI(data);
+                    }
+                } catch (e) {
+                    console.error("Error parsing WebSocket message:", e);
+                }
+            };
+
+            ws.onclose = () => {
+                statusBadge.innerText = 'OFFLINE \u2022 Retrying...';
+                statusBadge.className = 'status-badge offline';
+                setTimeout(connectWebSocket, 2000);
+            };
+        };
+
+        connectWebSocket();
+    </script>
+</body>
+</html>

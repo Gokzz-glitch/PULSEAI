@@ -1,0 +1,66 @@
+import firebase_admin
+from firebase_admin import credentials, db
+import logging
+import os
+from datetime import datetime
+from typing import Optional, Callable
+
+logger = logging.getLogger(__name__)
+
+class FirebaseService:
+    def __init__(self, key_path: str, db_url: str, on_alert: Optional[Callable[[str, int], None]] = None):
+        self.key_path = key_path
+        self.db_url = db_url
+        self.on_alert = on_alert
+        self.app = None
+        self._listener = None
+
+    def start(self):
+        """Initializes and starts the Firebase Realtime Database listener."""
+        if not os.path.exists(self.key_path):
+            logger.error(f"❌ AUTH ERROR: Firebase key not found at {self.key_path}")
+            return
+
+        try:
+            cred = credentials.Certificate(self.key_path)
+            self.app = firebase_admin.initialize_app(cred, {
+                'databaseURL': self.db_url
+            })
+            logger.info("✅ Secure Firebase Cloud Connection Established!")
+            
+            # Start listening
+            ref = db.reference('sensors/esp32/bpm')
+            self._listener = ref.listen(self._bpm_stream_handler)
+            logger.info("📡 Listening for live BPM data stream from Firebase...")
+            
+        except Exception as e:
+            logger.error(f"❌ Firebase Auth/Init Error: {e}")
+
+    def _bpm_stream_handler(self, event):
+        """Triggered automatically when Firebase data updates."""
+        new_bpm = event.data
+        if new_bpm is not None:
+            analysis_report = self.analyze_vitals(new_bpm)
+            logger.info(analysis_report)
+            if self.on_alert:
+                self.on_alert(analysis_report, new_bpm)
+
+    def analyze_vitals(self, bpm: int) -> str:
+        """The core AI logic for analyzing heart rate vitals."""
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        if bpm == 0:
+            return f"[{timestamp}] ⚠️ WARNING: Sensor Error or Finger Removed!"
+        elif bpm < 60:
+            return f"[{timestamp}] 🔵 Heart Rate: {bpm} BPM (Low/Resting). Monitor for Bradycardia."
+        elif 60 <= bpm <= 100:
+            return f"[{timestamp}] 🟢 Heart Rate: {bpm} BPM (Normal). Vitals are stable."
+        else:
+            return f"[{timestamp}] 🔴 Heart Rate: {bpm} BPM (Elevated). Tachycardia/Stress detected! Triggering alert protocol."
+
+    def stop(self):
+        """Releases the listener and closes the Firebase connection."""
+        if self._listener:
+            self._listener.close()
+        if self.app:
+            firebase_admin.delete_app(self.app)
+        logger.info("🛑 Firebase Service offline.")

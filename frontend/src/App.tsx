@@ -1,6 +1,25 @@
-/// <reference types="vite/client" />
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, Suspense } from 'react';
 import { Line } from 'react-chartjs-2';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Float, MeshDistortMaterial, Sphere, PerspectiveCamera, OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
+import { 
+  Activity, 
+  Shield, 
+  Cpu, 
+  AlertTriangle, 
+  CheckCircle2, 
+  User, 
+  Wifi, 
+  Heart, 
+  Zap, 
+  Database, 
+  Layers,
+  Info,
+  ExternalLink,
+  ChevronRight
+} from 'lucide-react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -32,7 +51,7 @@ interface PredictionPayload {
   fhir_report?: DiagnosticReport;
 }
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:8000`;
+const BACKEND = ((import.meta as any).env?.VITE_BACKEND_URL || 'http://localhost:8000') as string;
 const WS_URL = `${BACKEND.replace(/^http/, 'ws')}/ws`;
 
 // ─── Icons ──────────────────────────────────────────────────
@@ -110,7 +129,6 @@ const ParticleBackground = () => {
         ctx.fillStyle = `rgba(${p.color},${p.a * 0.6})`;
         ctx.fill();
       });
-      // Draw connections
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -141,9 +159,96 @@ const ParticleBackground = () => {
   return <canvas ref={canvasRef} id="particle-canvas" />;
 };
 
+// ─── 3D Heart Visualization (R3F) ──────────────────────────
+const Heart3D = ({ bpm, isAnomaly }: { bpm: number; isAnomaly: boolean }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const pulseFactor = useRef(0);
+  
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    const time = state.clock.getElapsedTime();
+    
+    // Explicit BPM Sync with Thump-Thump heartbeat rather than sine wave
+    const beatDuration = 60 / Math.max(bpm, 30);
+    const beatTime = (time % beatDuration) / beatDuration;
+    
+    let targetScale = 1.0;
+    if (beatTime < 0.15) targetScale = 1.0 + Math.sin((beatTime / 0.15) * Math.PI) * 0.25;
+    else if (beatTime > 0.25 && beatTime < 0.4) targetScale = 1.0 + Math.sin(((beatTime - 0.25) / 0.15) * Math.PI) * 0.15;
+    
+    pulseFactor.current = THREE.MathUtils.lerp(pulseFactor.current, targetScale, 0.2);
+    meshRef.current.scale.set(pulseFactor.current, pulseFactor.current, pulseFactor.current);
+    meshRef.current.rotation.y += 0.01;
+    meshRef.current.rotation.z = Math.sin(time * 0.5) * 0.1;
+  });
+
+  const heartShape = useMemo(() => {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.bezierCurveTo(0, -0.75, -0.75, -0.75, -0.75, 0);
+    shape.bezierCurveTo(-0.75, 0.75, 0, 1.1, 0, 1.5);
+    shape.bezierCurveTo(0, 1.1, 0.75, 0.75, 0.75, 0);
+    shape.bezierCurveTo(0.75, -0.75, 0, -0.75, 0, 0);
+    return shape;
+  }, []);
+
+  const extrudeSettings = {
+    depth: 0.4,
+    bevelEnabled: true,
+    bevelSegments: 2,
+    steps: 2,
+    bevelSize: 0.1,
+    bevelThickness: 0.1,
+  };
+
+  return (
+    <group rotation={[Math.PI, 0, 0]} scale={0.8}>
+      <mesh ref={meshRef}>
+        <extrudeGeometry args={[heartShape, extrudeSettings]} />
+        <MeshDistortMaterial
+          color={isAnomaly ? '#f43f5e' : '#00f5d4'}
+          speed={isAnomaly ? 5 : 2}
+          distort={isAnomaly ? 0.4 : 0.2}
+          radius={1}
+          emissive={isAnomaly ? '#f43f5e' : '#00f5d4'}
+          emissiveIntensity={isAnomaly ? 1.5 : 0.6}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </mesh>
+    </group>
+  );
+};
+
+// ─── 3D Background Component ──────────────────────────────
+const Background3D = () => (
+  <div className="bg-canvas-wrap">
+    <Canvas>
+      <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+      <ambientLight intensity={0.4} />
+      <pointLight position={[10, 10, 10]} intensity={1.5} color="#00f5d4" />
+      <pointLight position={[-10, -10, -10]} intensity={1.5} color="#a78bfa" />
+      <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+        <Sphere args={[1.5, 64, 64]} position={[8, 4, -10]}>
+          <MeshDistortMaterial color="#00f5d4" speed={2} distort={0.4} />
+        </Sphere>
+      </Float>
+      <Float speed={3} rotationIntensity={1} floatIntensity={1}>
+        <Sphere args={[1, 64, 64]} position={[-8, -6, -8]}>
+          <MeshDistortMaterial color="#a78bfa" speed={3} distort={0.5} />
+        </Sphere>
+      </Float>
+    </Canvas>
+  </div>
+);
+
 // ─── Robot AI Scanner ────────────────────────────────────────
 const RobotAI = ({ isAnomaly }: { isAnomaly: boolean }) => (
-  <div className={`robot-scanner ${isAnomaly ? 'robot-alert' : 'robot-thinking'}`}>
+  <motion.div 
+    className={`robot-scanner ${isAnomaly ? 'robot-alert' : 'robot-thinking'}`}
+    animate={{ x: isAnomaly ? [0, -2, 2, -2, 0] : 0 }}
+    transition={{ repeat: isAnomaly ? Infinity : 0, duration: 0.2 }}
+  >
     <div className="robot-head">
       <div className="robot-eye left" />
       <div className="robot-eye right" />
@@ -153,22 +258,8 @@ const RobotAI = ({ isAnomaly }: { isAnomaly: boolean }) => (
     <div className="robot-status-text">
       {isAnomaly ? '⚡ ANOMALY DETECTED' : '● ANALYZING SIGNAL'}
     </div>
-  </div>
+  </motion.div>
 );
-
-// ─── Heartbeat ───────────────────────────────────────────────
-const HeartPulse = ({ bpm = 70, status = 'normal' }) => {
-  const duration = 60 / Math.max(bpm, 30);
-  const color = status === 'normal' ? 'var(--cyan)' : 'var(--rose)';
-  return (
-    <div className="heart-dt" style={{ '--heart-speed': `${duration}s` } as React.CSSProperties}>
-      <svg width="36" height="36" viewBox="0 0 24 24" fill={color} className="heart-svg">
-        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-      </svg>
-      <div className="heart-aura" style={{ background: color }} />
-    </div>
-  );
-};
 
 // ─── JSON Syntax Highlighter ─────────────────────────────────
 const syntaxHighlight = (json: string) => {
@@ -195,40 +286,43 @@ function App() {
   const [leadsOff, setLeadsOff] = useState(false);
   const [connectionState, setConnectionState] = useState<'connecting' | 'live' | 'offline'>('connecting');
   const [lastPrediction, setLastPrediction] = useState<PredictionPayload | null>(null);
+  const [dataSource, setDataSource] = useState<string>('SIMULATION');
   const [tick, setTick] = useState(0);
-  const mockRef   = useRef<number | null>(null);
+
   const wsRef     = useRef<WebSocket | null>(null);
   const reconnectRef = useRef<number | null>(null);
   const pingRef   = useRef<number | null>(null);
   const fhirRef   = useRef<HTMLPreElement>(null);
+  const mockRef   = useRef<number | null>(null);
 
-  // ── Clock tick for live timestamp ─────────────────────────
   useEffect(() => {
     const t = setInterval(() => setTick(n => n + 1), 1000);
     return () => clearInterval(t);
   }, []);
 
-  // ── Fallback REST polling ──────────────────────────────────
   useEffect(() => {
     if (!consentGiven) return;
     const poll = setInterval(async () => {
       try {
-        const [ecgRes, diagRes] = await Promise.all([
+        const [ecgRes, diagRes, healthRes] = await Promise.all([
           fetch(`${BACKEND}/api/ecg`),
           fetch(`${BACKEND}/api/diagnostic`),
+          fetch(`${BACKEND}/api/health`),
         ]);
         const ecgJson = await ecgRes.json();
         const diagJson = await diagRes.json();
+        const healthJson = await healthRes.json();
+
         if (ecgJson.data?.length) setEcgData(ecgJson.data);
         if (ecgJson.leads_off !== undefined) setLeadsOff(ecgJson.leads_off);
         if (diagJson) setDiagnostic(diagJson);
+        if (healthJson.active_source) setDataSource(healthJson.active_source);
         if (connectionState !== 'live') setConnectionState('connecting');
       } catch (_) {}
     }, 2000);
     return () => clearInterval(poll);
   }, [consentGiven, connectionState]);
 
-  // ── WebSocket ──────────────────────────────────────────────
   useEffect(() => {
     if (!consentGiven) return;
     let closedManually = false;
@@ -250,6 +344,7 @@ function App() {
         try {
           const payload = JSON.parse(event.data) as PredictionPayload;
           if (payload.type === 'leads_off') { setLeadsOff(true); return; }
+          if (payload.type === 'leads_on') { setLeadsOff(false); return; }
           if (payload.type === 'snapshot') {
             if (Array.isArray(payload.ecg_snapshot) && payload.ecg_snapshot.length)
               setEcgData(payload.ecg_snapshot);
@@ -284,7 +379,6 @@ function App() {
     };
   }, [consentGiven]);
 
-  // ── Mock ECG when offline ──────────────────────────────────
   useEffect(() => {
     if (!consentGiven || connectionState === 'live') {
       if (mockRef.current) clearInterval(mockRef.current);
@@ -301,28 +395,28 @@ function App() {
     return () => { if (mockRef.current) clearInterval(mockRef.current); };
   }, [consentGiven, connectionState]);
 
-  // ── Syntax-highlight FHIR JSON ─────────────────────────────
+  const handleSourceChange = async (source: string) => {
+    setDataSource(source);
+    try {
+      await fetch(`${BACKEND}/api/source?source=${source}`, { method: 'POST' });
+    } catch (e) {
+      console.error('Failed to switch source:', e);
+    }
+  };
+
   useEffect(() => {
     if (fhirRef.current) {
       fhirRef.current.innerHTML = syntaxHighlight(JSON.stringify(diagnostic, null, 2));
     }
   }, [diagnostic]);
 
-  // ── Derived state ──────────────────────────────────────────
-  const modelLabel    = lastPrediction?.model_used || 'HCTG-Net Local';
+  const modelLabel    = lastPrediction?.model_used || 'PulseAI TransMixer-AF';
   const confidence    = lastPrediction?.confidence;
   const heartRate     = lastPrediction?.heart_rate_bpm;
   const rrCV          = lastPrediction?.rr_cv;
   const signalQuality = lastPrediction?.signal_quality || 'good';
   const isAnomaly     = !!(diagnostic?.conclusion && !diagnostic.conclusion.toLowerCase().includes('normal sinus'));
 
-  const gradCamExt = diagnostic?.extension?.find(e => e.url.includes('gradcam'));
-  let gradCamMap: Record<string, unknown> | null = null;
-  if (gradCamExt?.valueString) {
-    try { gradCamMap = JSON.parse(gradCamExt.valueString); } catch (_) {}
-  }
-
-  const signalQualityColor = signalQuality === 'poor' ? 'var(--rose)' : signalQuality === 'fair' ? 'var(--amber)' : 'var(--cyan)';
   const now = new Date();
   const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
@@ -346,7 +440,7 @@ function App() {
     scales: {
       x: { display: false },
       y: {
-        min: -10, max: 120,
+        min: -10, max: 150,
         grid: { color: 'rgba(255,255,255,0.025)' },
         ticks: { color: '#4a5280', font: { size: 9 }, maxTicksLimit: 5 },
         border: { display: false },
@@ -355,26 +449,34 @@ function App() {
     plugins: { legend: { display: false } },
   };
 
-  // ═══════════════════════════════════════════
-  // CONSENT SCREEN
-  // ═══════════════════════════════════════════
   if (!consentGiven) {
     return (
       <div className="app-shell">
+        <Background3D />
         <ParticleBackground />
         <div className="consent-wrap">
-          <div className="consent-card anim">
-            <div className="consent-logo">
-              <div className="consent-logo-bg">
-                <ActivityIcon size={32} color="var(--cyan)" />
+          <motion.div 
+            className="consent-card anim"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="consent-header-glass">
+              <div className="consent-logo">
+                <div className="consent-logo-bg">
+                  <Activity size={32} color="var(--cyan)" />
+                </div>
+                <div className="consent-logo-ring" />
               </div>
-              <div className="consent-logo-ring" />
+              <h1 className="consent-title">PulseAI Nexus</h1>
+              <p className="consent-sub">AI-Driven Cardiac Arrhythmia Triage Platform · Real-Time ECG Analysis</p>
             </div>
-            <h1 className="consent-title">PulseAI Nexus</h1>
-            <p className="consent-sub">AI-Driven Cardiac Arrhythmia Triage Platform · Real-Time ECG Analysis</p>
 
             <div className="consent-notice">
-              <div className="consent-notice-title">🚨 DPDP Act 2023 — Explicit Consent Required</div>
+              <div className="consent-notice-title">
+                <Shield size={18} color="var(--cyan)" />
+                🚨 DPDP Act 2023 — Explicit Consent Required
+              </div>
               <p>
                 By proceeding, you grant explicit consent to collect and process your biometric ECG telemetry in real time.
                 <br /><br />
@@ -384,46 +486,64 @@ function App() {
 
             <div className="consent-features">
               {[
-                { icon: '🔬', title: 'HCTG-Net AI', text: 'Hybrid CNN-Transformer deep learning' },
-                { icon: '⚡', title: '500 Hz Sampling', text: 'AD8232 edge ECG acquisition' },
-                { icon: '🏥', title: 'FHIR R4', text: 'ABDM compatible diagnostic reports' },
-                { icon: '🛡️', title: 'Federated', text: 'On-device privacy-preserving AI' },
-              ].map(f => (
-                <div key={f.title} className="consent-feature">
+                { icon: <Cpu />, title: 'HCTG-Net AI', text: 'Hybrid CNN-Transformer deep learning' },
+                { icon: <Zap />, title: 'Multi-Source', text: 'Bluetooth, Serial, Wi-Fi & Remote' },
+                { icon: <Activity />, title: 'FHIR R4', text: 'ABDM compatible diagnostic reports' },
+                { icon: <Shield />, title: 'Federated', text: 'On-device privacy-preserving AI' },
+              ].map((f, i) => (
+                <motion.div 
+                  key={f.title} 
+                  className="consent-feature"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + (i * 0.1) }}
+                >
                   <span className="consent-feature-icon">{f.icon}</span>
                   <div className="consent-feature-text">
                     <strong>{f.title}</strong>{f.text}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
-            <button className="consent-btn" id="consent-btn" onClick={() => setConsentGiven(true)}>
+            <motion.button 
+              className="consent-btn" 
+              id="consent-btn" 
+              onClick={() => setConsentGiven(true)}
+              whileHover={{ scale: 1.02, backgroundColor: 'rgba(0, 245, 212, 0.2)' }}
+              whileTap={{ scale: 0.98 }}
+            >
               ✓ &nbsp;I Provide Explicit Consent — Start Monitoring
-            </button>
+            </motion.button>
             <p className="consent-disclaimer">
               This platform complies with DPDP Act 2023 · ABDM NDHM Guidelines · ISO 27001
             </p>
-          </div>
+          </motion.div>
         </div>
       </div>
     );
   }
 
-  // ═══════════════════════════════════════════
-  // MAIN DASHBOARD
-  // ═══════════════════════════════════════════
   return (
     <div className="app-shell">
+      <Background3D />
       <ParticleBackground />
       <div className="app-wrapper">
 
-        {/* ── Header ── */}
-        <header className="app-header anim">
+        <motion.header 
+          className="app-header anim"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="header-left">
-            <div className="logo-bg">
-              <ActivityIcon size={22} color="var(--cyan)" />
-            </div>
+            <motion.div 
+              className="logo-bg"
+              whileHover={{ rotate: 180, scale: 1.1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Activity size={22} color="var(--cyan)" />
+            </motion.div>
             <div className="header-title-group">
               <span className="header-title">PulseAI Nexus</span>
               <span className="header-sub">Cardiac Arrhythmia Triage Platform</span>
@@ -431,236 +551,256 @@ function App() {
           </div>
 
           <div className="header-center">
-            {/* Live clock */}
             <span className="badge badge-violet" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
               🕐 {timeStr}
             </span>
           </div>
 
           <div className="header-right">
-            <span className="badge badge-violet">
-              <ShieldIcon /><span>Federated</span>
-            </span>
-            <span className={`badge ${connectionState === 'live' ? 'badge-cyan' : connectionState === 'connecting' ? 'badge-amber' : 'badge-rose'}`}>
-              {connectionState === 'live'
-                ? <><div className="badge-dot badge-dot-cyan" /><WifiIcon size={12} color="var(--cyan)" /> LIVE</>
-                : connectionState === 'connecting'
-                ? <><div className="badge-dot badge-dot-amber" /> Connecting</>
-                : <><div className="badge-dot badge-dot-rose" /> Offline / Mock</>}
-            </span>
+             <div className="source-selector-wrap">
+              <Wifi size={14} color="var(--violet)" />
+              <select 
+                value={dataSource} 
+                onChange={(e) => handleSourceChange(e.target.value)}
+                className="source-dropdown"
+              >
+                <option value="SIMULATION">🧪 Sim</option>
+                <option value="MQTT">📡 MQTT</option>
+                <option value="SERIAL">🔌 Serial</option>
+                <option value="HTTP">💻 Remote</option>
+              </select>
+            </div>
+            
+            <AnimatePresence mode="wait">
+              <motion.span 
+                key={connectionState}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className={`badge ${connectionState === 'live' ? 'badge-cyan' : connectionState === 'connecting' ? 'badge-amber' : 'badge-rose'}`}
+              >
+                {connectionState === 'live' ? 'LIVE' : connectionState === 'connecting' ? 'Connecting' : 'Offline'}
+              </motion.span>
+            </AnimatePresence>
+
             <span className={`badge ${leadsOff ? 'badge-rose' : 'badge-emerald'}`}>
-              <CpuIcon size={12} color={leadsOff ? 'var(--rose)' : 'var(--emerald)'} />
-              {leadsOff ? 'Leads Disconnected' : 'Edge Active'}
+              {leadsOff ? 'Leads Off' : 'Edge Active'}
             </span>
           </div>
-        </header>
+        </motion.header>
 
         <div className="main-grid">
-
-          {/* ═══ LEFT COLUMN ═══ */}
           <div className="left-col">
-
-            {/* ── Patient Identity Card ── */}
-            <div className="glass anim anim-d1" style={{ padding: '16px 22px' }}>
+            <motion.div 
+              className="glass anim anim-d1" 
+              style={{ padding: '16px 22px' }}
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
               <div className="patient-card" style={{ padding: 0, border: 'none', background: 'none', margin: 0 }}>
                 <div className="patient-avatar">RK</div>
                 <div className="patient-info">
                   <div className="patient-name">Rajesh Kumar, 58 yrs</div>
                   <div className="patient-meta">Male · Type 2 Diabetic · Hypertension</div>
-                  <div className="patient-abha">ABHA: 14-4321-7865-1234 · Session ID: PLS-{now.getDate()}{now.getMonth()}-001</div>
+                  <div className="patient-abha">ABHA: 14-4321-7865-1234 · Session: PLS-{now.getDate()}-001</div>
                 </div>
                 <div className="risk-tier">
                   <span className="risk-label">Risk Tier</span>
-                  <span className={`badge ${isAnomaly ? 'badge-rose' : 'badge-amber'}`} style={{fontSize:'0.75rem', padding:'5px 12px'}}>
-                    {isAnomaly ? '🔴 HIGH' : '🟡 MODERATE'}
+                  <span className={`badge ${isAnomaly ? 'badge-rose' : 'badge-amber'}`}>
+                    {isAnomaly ? '🔴 HIGH' : '🟡 MOD'}
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* ── ECG Live Chart ── */}
-            <div className={`glass anim anim-d2 ecg-panel ${isAnomaly ? 'alert-active' : ''}`}>
+            <motion.div 
+              className={`glass anim anim-d2 ecg-panel ${isAnomaly ? 'alert-active' : ''}`}
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               <div className="panel-header">
                 <div className="panel-title-group">
                   <div className="panel-title">Real-Time ECG Telemetry</div>
-                  <div className="panel-title-big">AD8232 · 500 Hz · Lead II</div>
+                  <div className="panel-title-big">Source: {dataSource} · 500 Hz</div>
                 </div>
-                <span className="panel-chip">{isAnomaly ? 'ARRHYTHMIA ALERT' : 'TRANSMIXER-AF'}</span>
+                <span className="panel-chip">{isAnomaly ? 'ARRHYTHMIA ALERT' : 'STABLE'}</span>
               </div>
 
-              <div className="chart-container">
+              <div className="chart-container" style={{ position: 'relative' }}>
                 <div className="chart-grid-overlay" />
                 <div className="scanline" />
-                <div className="chart-corner-label">ECG CH-1 · 25mm/s</div>
-                <div className="chart-speed-label">500 smp/s · {ecgData.length} pts</div>
                 <RobotAI isAnomaly={isAnomaly} />
                 <Line data={chartData} options={chartOptions} />
+                
+                <AnimatePresence>
+                  {isAnomaly && lastPrediction?.explainability_map && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                      style={{
+                        position: 'absolute', top: 20, right: 20, 
+                        background: 'rgba(244,63,94,0.15)', backdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(244,63,94,0.5)', borderRadius: '12px',
+                        padding: '12px 16px', zIndex: 10, color: 'white',
+                        boxShadow: '0 8px 32px rgba(244,63,94,0.2)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                        <Zap size={18} color="var(--rose)" />
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--rose)', letterSpacing: '0.05em' }}>XAI Grad-CAM</span>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#e2e8f0', lineHeight: '1.6' }}>
+                        <strong style={{ color: 'white' }}>Feature Focus:</strong> {(lastPrediction.explainability_map as any).feature_focus} <br/>
+                        <strong style={{ color: 'white' }}>Activation:</strong> {Math.round(((lastPrediction.explainability_map as any).intensity_score || 0) * 100)}%
+                      </div>
+                      <div style={{ marginTop: '8px', width: '100%', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${Math.round(((lastPrediction.explainability_map as any).intensity_score || 0) * 100)}%` }}
+                          transition={{ duration: 1, ease: 'easeOut' }}
+                          style={{ height: '100%', background: 'var(--rose)' }}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {/* Digital twin overlay */}
               <div className="dt-overlay">
-                <HeartPulse bpm={heartRate || 72} status={isAnomaly ? 'alert' : 'normal'} />
+                <div className="heart-3d-wrap" style={{ width: '80px', height: '80px' }}>
+                  <Canvas camera={{ position: [0, 0, 4], fov: 40 }}>
+                    <Suspense fallback={null}>
+                      <ambientLight intensity={0.5} />
+                      <pointLight position={[10, 10, 10]} intensity={1} />
+                      <Heart3D bpm={heartRate || 72} isAnomaly={isAnomaly} />
+                    </Suspense>
+                  </Canvas>
+                </div>
                 <div className="dt-info">
                   <span className="dt-label">Digital Twin Sync</span>
-                  <span className="dt-sub">{isAnomaly ? '⚠️ Irregular Pulse Pattern Detected' : '✓ Sinus Node Coherence — Stable'}</span>
+                  <span className="dt-sub">{isAnomaly ? '⚠️ Irregular Pattern' : '✓ Normal Sinus Rhythm'}</span>
                 </div>
                 <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '1.3rem', fontWeight: 800, color: isAnomaly ? 'var(--rose)' : 'var(--cyan)' }}>
+                  <motion.div 
+                    key={heartRate}
+                    initial={{ scale: 1.2, color: 'var(--rose)' }}
+                    animate={{ scale: 1, color: isAnomaly ? 'var(--rose)' : 'var(--cyan)' }}
+                    style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '1.8rem', fontWeight: 800 }}
+                  >
                     {typeof heartRate === 'number' ? Math.round(heartRate) : '—'}
-                  </div>
-                  <div style={{ fontSize: '0.6rem', color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>BPM</div>
+                  </motion.div>
+                  <div style={{ fontSize: '0.6rem', color: 'var(--text-3)' }}>BPM</div>
                 </div>
               </div>
 
-              {/* Stat cards */}
               <div className="stat-cards">
                 <div className="stat-card cyan">
                   <div className="stat-label">AI Confidence</div>
                   <div className="stat-value cyan">
-                    {typeof confidence === 'number' ? `${(confidence * 100).toFixed(1)}` : '—'}
-                    <span className="stat-unit">%</span>
+                    {typeof confidence === 'number' ? `${(confidence * 100).toFixed(1)}` : '—'}<span className="stat-unit">%</span>
                   </div>
                 </div>
                 <div className="stat-card violet">
-                  <div className="stat-label">Model</div>
-                  <div className="stat-value violet" style={{ fontSize: '0.78rem', fontFamily: "'JetBrains Mono', monospace", marginTop: 4 }}>
-                    {modelLabel}
+                  <div className="stat-label">Health Index</div>
+                  <div className="stat-value violet">
+                    {typeof confidence === 'number' ? `${isAnomaly ? (100 - confidence * 100).toFixed(1) : (confidence * 100).toFixed(1)}` : '—'}<span className="stat-unit">/100</span>
                   </div>
                 </div>
-                <div className={`stat-card ${signalQuality === 'poor' ? 'amber' : 'emerald'}`}>
-                  <div className="stat-label">Signal Quality</div>
-                  <div className="stat-value" style={{ color: signalQualityColor, fontSize: '1rem', textTransform: 'capitalize', marginTop: 4 }}>
-                    {signalQuality}
-                  </div>
+                <div className="stat-card emerald">
+                  <div className="stat-label">Quality</div>
+                  <div className="stat-value emerald" style={{ fontSize: '0.9rem', textTransform: 'uppercase' }}>{signalQuality}</div>
                 </div>
               </div>
-
-              {/* RR-CV variability bar */}
-              {typeof rrCV === 'number' && (
-                <div className="rrcv-row">
-                  <span className="rrcv-label">RR Variability</span>
-                  <div className="rrcv-bar-bg">
-                    <div
-                      className="rrcv-bar-fill"
-                      style={{
-                        width: `${Math.min(rrCV * 200, 100)}%`,
-                        background: rrCV > 0.3 ? 'var(--rose)' : 'var(--cyan)',
-                      }}
-                    />
-                  </div>
-                  <span className="rrcv-val">{rrCV.toFixed(3)}</span>
-                </div>
-              )}
-
-              {/* Health stability meter */}
-              <div className="stability-meter">
-                <div className="stability-header">
-                  <span className="stability-title">Predictive Health Stability Index</span>
-                  <span className={`stability-pct ${isAnomaly ? 'danger' : ''}`}>
-                    {isAnomaly ? '32%' : '98%'}
-                  </span>
-                </div>
-                <div className="meter-track">
-                  <div
-                    className="meter-fill"
-                    style={{
-                      width: isAnomaly ? '32%' : '98%',
-                      background: isAnomaly
-                        ? 'linear-gradient(90deg, var(--rose), #ff6b9d)'
-                        : 'linear-gradient(90deg, var(--cyan), #0ea5e9)',
-                    }}
-                  />
-                </div>
-                <div className="meter-hint">Real-time risk scoring · Cloud-GPU Federated TransMixer-AF model</div>
-              </div>
-            </div>
+            </motion.div>
           </div>
 
-          {/* ═══ RIGHT COLUMN ═══ */}
           <div className="right-col">
-
-            {/* ── Triage Status ── */}
-            <div className={`glass anim anim-d3 ${isAnomaly ? 'alert-active' : ''}`}>
+            <motion.div 
+              className={`glass anim anim-d3 ${isAnomaly ? 'alert-active' : ''}`}
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
               <div className="panel-header">
                 <div className="panel-title-group">
-                  <div className="panel-title">Edge AI Triage</div>
+                  <div className="panel-title">Triage Engine</div>
                   <div className="panel-title-big">Clinical Decision</div>
                 </div>
               </div>
 
-              {isAnomaly ? (
-                <div className="triage-alert">
-                  <div className="status-icon-wrap alert">
-                    <AlertIcon size={30} />
-                  </div>
-                  <p className="status-label-alert">⚠️ Anomaly Detected</p>
-                  <div className="class-name">{diagnostic.conclusion}</div>
-
-                  {gradCamMap && (
-                    <div className="gradcam-box" style={{ width: '100%' }}>
-                      <div className="gradcam-label">Grad-CAM++ Explainability</div>
-                      <div className="gradcam-value">{String(gradCamMap.feature_focus)}</div>
-                      <span className="gradcam-highlight">
-                        {String(gradCamMap.start_ms)}ms – {String(gradCamMap.end_ms)}ms &nbsp;|&nbsp; Score: {String(gradCamMap.intensity_score)}
-                      </span>
+              <AnimatePresence mode="wait">
+                {isAnomaly ? (
+                  <motion.div 
+                    key="alert"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.1 }}
+                    className="triage-alert"
+                  >
+                    <div className="alert-icon-ring">
+                      <AlertTriangle size={40} color="var(--rose)" />
                     </div>
-                  )}
+                    <p className="status-label-alert">⚠️ Anomaly Detected</p>
+                    <div className="class-name">{diagnostic.conclusion}</div>
+                    <motion.button 
+                      className="notify-btn"
+                      whileHover={{ scale: 1.05, backgroundColor: 'var(--rose)' }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      🏥 Push to ABHA
+                    </motion.button>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="normal"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.1 }}
+                    className="triage-normal"
+                  >
+                    <div className="success-icon-ring">
+                      <CheckCircle2 size={40} color="var(--cyan)" />
+                    </div>
+                    <p className="status-label-normal">Normal Rhythm</p>
+                    <p className="status-sub">500 Hz Real-time scan active</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
-                  <button className="notify-btn" id="notify-abha-btn">
-                    <span>🏥</span> Push to Patient's ABHA Account
-                  </button>
-                </div>
-              ) : (
-                <div className="triage-normal">
-                  <div className="status-icon-wrap">
-                    <CheckIcon size={30} />
-                    <div className="icon-ring" />
-                  </div>
-                  <p className="status-label-normal">Normal Sinus Rhythm</p>
-                  <p className="status-sub">Continuous 500 Hz scan · {modelLabel}</p>
-                </div>
-              )}
-            </div>
-
-            {/* ── Model Info ── */}
-            <div className="glass anim anim-d4">
-              <div className="panel-header" style={{ marginBottom: 12 }}>
+            <motion.div 
+              className="glass anim anim-d5 fhir-panel" 
+              style={{ flex: 1 }}
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="panel-header">
                 <div className="panel-title-group">
-                  <div className="panel-title">Model Registry</div>
-                  <div className="panel-title-big">Inference Engine</div>
+                  <div className="panel-title">FHIR DiagnosticReport</div>
+                  <div className="panel-title-big">HL7 R4 Output</div>
                 </div>
-              </div>
-              {[
-                { key: 'Architecture', val: 'HCTG-Net v2' },
-                { key: 'Classes', val: '5 arrhythmia types' },
-                { key: 'Sampling', val: '500 Hz' },
-                { key: 'FHIR Version', val: 'R4' },
-                { key: 'Privacy', val: 'Federated + On-device' },
-              ].map(r => (
-                <div key={r.key} className="model-row">
-                  <span className="model-key">{r.key}</span>
-                  <span className="model-val">{r.val}</span>
+                <div className="live-pill">
+                  <span className="pulse-dot" />
+                  Live
                 </div>
-              ))}
-            </div>
-
-            {/* ── FHIR Diagnostic Report ── */}
-            <div className="glass anim anim-d5 fhir-panel" style={{ flex: 1 }}>
-              <div className="panel-header" style={{ marginBottom: 12 }}>
-                <div className="panel-title-group">
-                  <div className="panel-title">ABDM DiagnosticReport</div>
-                  <div className="panel-title-big">FHIR R4 Live</div>
-                </div>
-                <span className="panel-chip">HL7 FHIR</span>
               </div>
               <pre className="fhir-log" ref={fhirRef} />
-            </div>
+            </motion.div>
           </div>
         </div>
 
-        <footer className="app-footer anim anim-d6">
-          PulseAI Nexus v2.0 · DPDP Act 2023 Compliant · ABDM NDHM · Real-Time Edge AI · {new Date().getFullYear()}
-        </footer>
+        <motion.footer 
+          className="app-footer anim anim-d6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          PulseAI Nexus v3.0 · Butter-Smooth 3D Engine · Framer Powered · {new Date().getFullYear()}
+        </motion.footer>
 
       </div>
     </div>
