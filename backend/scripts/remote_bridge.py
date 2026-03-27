@@ -1,8 +1,8 @@
-import serial
+import serial  # type: ignore
 import socket
 import time
 import sys
-import serial.tools.list_ports
+import serial.tools.list_ports  # type: ignore
 
 # --- CONFIGURATION ---
 PORT = 5555           # The socket port to listen on

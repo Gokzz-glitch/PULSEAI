@@ -4,16 +4,17 @@ import os
 import asyncio
 import time
 from datetime import datetime
-import httpx
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
-from pydantic import BaseModel
-from signal_processing import process_ecg, extract_beat_window, FS, SEGMENT_LEN
-from ml_model import predict_arrhythmia, get_model_status
-from fhir_generator import generate_fhir_diagnostic_report
-from fastapi.middleware.cors import CORSMiddleware
+import collections
+import httpx  # type: ignore
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException  # type: ignore
+from pydantic import BaseModel  # type: ignore
+from signal_processing import process_ecg, extract_beat_window, FS, SEGMENT_LEN  # type: ignore
+from ml_model import predict_arrhythmia, get_model_status  # type: ignore
+from fhir_generator import generate_fhir_diagnostic_report  # type: ignore
+from fastapi.middleware.cors import CORSMiddleware  # type: ignore
 from typing import List, Optional
-from ingestion import DataIngestor
-from firebase_service import FirebaseService
+from ingestion import DataIngestor  # type: ignore
+from firebase_service import FirebaseService  # type: ignore
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,15 +48,19 @@ class WirelessConfig(BaseModel):
     host: str
     port: int
 
+BUFFER_SIZE = FS * 5
+EVAL_EVERY = FS
+
 # Global buffers and state
 class State:
     def __init__(self):
-        self.ecg_buffer: List[float] = []
+        self.ecg_buffer = collections.deque(maxlen=BUFFER_SIZE)
         self._eval_counter = 0
         self.latest_prediction: Optional[dict] = None
         self.latest_diagnostic: Optional[dict] = None
         self.leads_off: bool = False
         self.active_patient: Optional[PatientSession] = None
+        self.transition_until: float = 0.0  # Timestamp after which inference is re-enabled
         
         # Firebase Service Initialization
         self.firebase_service = FirebaseService(
@@ -76,19 +81,18 @@ class State:
         manager.broadcast_from_thread(json.dumps(payload))
 
 state = State()
-BUFFER_SIZE = FS * 5  
-EVAL_EVERY    = FS   
 
 # --- Data Ingestion Engine ---
 def on_raw_sample(val: float):
     """Callback for every raw sample received from ANY source."""
     state.ecg_buffer.append(val)
-    if len(state.ecg_buffer) > BUFFER_SIZE:
-        state.ecg_buffer = state.ecg_buffer[len(state.ecg_buffer)-BUFFER_SIZE:]
     
     state._eval_counter += 1
     if state._eval_counter >= EVAL_EVERY and len(state.ecg_buffer) >= SEGMENT_LEN:
         state._eval_counter = 0
+        # Skip inference during the 2-second transition window after a mode switch
+        if time.time() < state.transition_until:
+            return
         asyncio.create_task(run_inference_cycle())
 
 def on_status_change(is_on: bool):
@@ -118,7 +122,7 @@ class ConnectionManager:
         initial_state = {
             "type": "snapshot",
             "leads_off": state.leads_off,
-            "ecg_snapshot": list(state.ecg_buffer[max(0, len(state.ecg_buffer)-100):]),
+            "ecg_snapshot": [*state.ecg_buffer],
             "prediction": state.latest_prediction,
             "diagnostic": state.latest_diagnostic,
         }
@@ -180,7 +184,7 @@ async def run_inference_cycle():
         "type": "prediction",
         "patient_id": pid,
         **res,
-        "ecg_snapshot": list(state.ecg_buffer[max(0, len(state.ecg_buffer)-100):])
+        "ecg_snapshot": [*state.ecg_buffer]
     }))
 
 async def predict_logic(window: list, pid: str) -> dict:
@@ -203,12 +207,14 @@ async def predict_logic(window: list, pid: str) -> dict:
         result = predict_arrhythmia(window)
 
     if result.get("is_arrhythmia"):
-        result["fhir_report"] = generate_fhir_diagnostic_report(
-            patient_id=pid,
-            classification=str(result.get("classification", "Unknown")),
-            confidence=float(result.get("confidence", 0.90)),
-            explainability_map=result.get("explainability_map")
-        )
+        result.update({
+            "fhir_report": generate_fhir_diagnostic_report(
+                patient_id=pid,
+                classification=str(result.get("classification", "Unknown")),
+                confidence=float(result.get("confidence", 0.90)),
+                explainability_map=result.get("explainability_map")
+            )
+        })
     return result
 
 @app.websocket("/ws")
@@ -249,6 +255,23 @@ async def set_wireless_config(config: WirelessConfig):
     logger.info(f"📶 Wireless config updated: {config.host}:{config.port}")
     return {"status": "success", "config": {"host": config.host, "port": config.port}}
 
+@app.post("/api/simulation/mode")
+async def set_simulation_mode(mode: str):
+    """Set the disease simulation mode (0-7)."""
+    ingestor.simulation_mode = mode
+    # Trigger pristine simulation or live sensor mapping
+    if mode == "7":
+        ingestor.set_source("SERIAL")
+    else:
+        ingestor.set_source("SIMULATION")
+    
+    # Flush buffer + block inference for 2s so stale disease samples don't
+    # produce false positives right after switching to Normal / another mode
+    state.ecg_buffer.clear()
+    state._eval_counter = 0
+    state.transition_until = time.time() + 2.0  # 2 second transition grace period
+    return {"status": "success", "mode": mode}
+
 @app.post("/api/ingest")
 async def ingest_data(value: float):
     """Manual data entry for 'farhter laptop' or direct connection."""
@@ -263,7 +286,7 @@ async def register_patient(patient: PatientSession):
 
 @app.get("/api/ecg")
 async def get_ecg():
-    return {"data": list(state.ecg_buffer[max(0, len(state.ecg_buffer)-100):]), "leads_off": state.leads_off, "buffer_size": len(state.ecg_buffer)}
+    return {"data": [*state.ecg_buffer], "leads_off": state.leads_off, "buffer_size": len(state.ecg_buffer)}
 
 @app.get("/api/diagnostic")
 async def get_latest_diagnostic():
@@ -284,5 +307,5 @@ async def predict_ecg_window(payload: dict):
     window  = extract_beat_window(cleaned)
     return await predict_logic(window, pid)
 if __name__ == "__main__":
-    import uvicorn
+    import uvicorn  # type: ignore
     uvicorn.run(app, host="127.0.0.1", port=8000)

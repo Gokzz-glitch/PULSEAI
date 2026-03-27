@@ -137,8 +137,14 @@
         function updateUI(data) {
             if (data.ecg_snapshot && data.ecg_snapshot.length > 0) {
                 // Determine sensible Y-axis bounds dynamically
-                const min = Math.min(...data.ecg_snapshot) - 0.5;
-                const max = Math.max(...data.ecg_snapshot) + 0.5;
+                let min_val = Infinity;
+                let max_val = -Infinity;
+                for (let i = 0; i < data.ecg_snapshot.length; i++) {
+                    if (data.ecg_snapshot[i] < min_val) min_val = data.ecg_snapshot[i];
+                    if (data.ecg_snapshot[i] > max_val) max_val = data.ecg_snapshot[i];
+                }
+                const min = min_val - 0.5;
+                const max = max_val + 0.5;
                 chart.options.scales.y.min = min < -2 ? min : -2;
                 chart.options.scales.y.max = max > 2 ? max : 2;
 

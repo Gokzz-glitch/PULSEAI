@@ -1,5 +1,5 @@
-import numpy as np
-from scipy import signal as sp_signal
+import numpy as np  # type: ignore
+from scipy import signal as sp_signal  # type: ignore
 
 FS = 500          # AD8232 / ESP32 sample rate (configurable)
 SEGMENT_LEN = 250  # samples per inference window
@@ -14,7 +14,7 @@ def _notch_coeffs(freq=50.0, fs=FS, Q=30):
 
 def process_ecg(raw_signal_buffer: list, fs: int = FS) -> list:
     """
-    Full clinical ECG preprocessing pipeline:
+    Full clinical ECG preprocessing pipeline using sos to prevent NaN/numerical collapse:
       1. High-pass (0.5 Hz) — removes baseline wander / DC drift
       2. Notch (50 Hz)      — removes Indian powerline interference
       3. Bandpass (0.5–40 Hz) — retains clinically relevant ECG band
@@ -26,20 +26,23 @@ def process_ecg(raw_signal_buffer: list, fs: int = FS) -> list:
     data = np.array(raw_signal_buffer, dtype=np.float64)
 
     # 1. High-pass to remove baseline wander
-    b_hp, a_hp = sp_signal.butter(4, 0.5 / (fs / 2.0), btype='high')
-    data = sp_signal.filtfilt(b_hp, a_hp, data)
+    sos_hp = sp_signal.butter(4, 0.5 / (fs / 2.0), btype='high', output='sos')
+    data = sp_signal.sosfiltfilt(sos_hp, data)
 
-    # 2. 50 Hz powerline notch
+    # 2. 50 Hz powerline notch (iirnotch provides b,a which are usually stable for notch, but let's be careful)
     b_n, a_n = _notch_coeffs(50.0, fs)
     data = sp_signal.filtfilt(b_n, a_n, data)
 
     # 3. Bandpass 0.5–40 Hz
-    b_bp, a_bp = _bandpass_coeffs(0.5, 40.0, fs)
-    data = sp_signal.filtfilt(b_bp, a_bp, data)
+    sos_bp = sp_signal.butter(4, [0.5 / (fs / 2.0), 40.0 / (fs / 2.0)], btype='band', output='sos')
+    data = sp_signal.sosfiltfilt(sos_bp, data)
+
+    # Convert NaNs to 0 in case of an issue
+    data = np.nan_to_num(data, nan=0.0)
 
     return data.tolist()
 
-def extract_beat_window(cleaned_signal: list, r_peak_idx: int = None) -> list:
+def extract_beat_window(cleaned_signal: list, r_peak_idx: int | None = None) -> list:
     """
     Extract a SEGMENT_LEN window centered on the strongest peak (R-peak),
     or centered in the signal if no peak given. Used for per-beat inference.
@@ -61,9 +64,5 @@ def extract_beat_window(cleaned_signal: list, r_peak_idx: int = None) -> list:
     if len(window) < SEGMENT_LEN:
         window = np.pad(window, (0, SEGMENT_LEN - len(window)), mode='edge')
 
-    # Z-score per-window normalization
-    std = window.std()
-    if std > 1e-6:
-        window = (window - window.mean()) / std
-
+    # Return the raw window so models can evaluate amplitude severity
     return window.tolist()

@@ -1,0 +1,22 @@
+2026-03-27 01:47:31.677404: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-27 01:47:34.469021: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Failed to load ECG model (Error when deserializing class 'MultiHeadAttention' using config={'name': 'multi_head_attention', 'trainable': True, 'dtype': {'module': 'keras', 'class_name': 'DTypePolicy', 'config': {'name': 'float32'}, 'registered_name': None}, 'num_heads': 4, 'key_dim': 32, 'value_dim': 32, 'dropout': 0.1, 'use_bias': True, 'output_shape': None, 'attention_axes': [1], 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'activity_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None, 'seed': None}.
+
+Exception encountered: Unrecognized keyword arguments passed to MultiHeadAttention: {'seed': None}). Using heuristic fallback.
+INFO:main:\U0001f4bb Local HCTG-Net mode active.
+INFO:     Started server process [2112]
+INFO:     Waiting for application startup.
+INFO:main:\U0001f680 PulseAI Ingestion Engine started (Active Source: SIMULATION)
+WARNING:firebase_service:\u26a0\ufe0f Firebase Admin SDK not installed. Skipping Firebase integration.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:ingestion:\u2705 Ingestor MQTT Connected: pulseai/ecg/data
+INFO:     ('127.0.0.1', 60161) - "WebSocket /ws" [accepted]
+INFO:main:WebSocket connected. Active: 1
+INFO:     connection open
+INFO:     ('127.0.0.1', 62953) - "WebSocket /ws" [accepted]
+INFO:main:WebSocket connected. Active: 2
+INFO:     connection open
+INFO:     ('127.0.0.1', 51852) - "WebSocket /ws" [accepted]
+INFO:main:WebSocket connected. Active: 3
+INFO:     connection open

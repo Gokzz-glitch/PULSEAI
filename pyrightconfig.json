@@ -1,0 +1,14 @@
+{
+  "pythonPath": "C:/Users/gokul/anaconda3/python.exe",
+  "extraPaths": [
+    "./backend"
+  ],
+  "include": [
+    "backend",
+    "*.py"
+  ],
+  "ignore": [
+    "frontend"
+  ],
+  "typeCheckingMode": "basic"
+}

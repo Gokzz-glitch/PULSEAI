@@ -1,4 +1,5 @@
-import psutil
+import psutil # pyre-ignore[21]
+
 import time
 from datetime import datetime
 import winsound
@@ -16,12 +17,11 @@ def check_hardware():
         with open('hardware_log.txt', 'a') as f:
             f.write(warning)
         # Beep to alert user (only if on Windows and Beep exists)
-        if hasattr(winsound, 'Beep'):
-            try:
-                winsound.Beep(1000, 500)
-            except Exception:
-                pass
-        else:
+        # Beep to alert user (only if on Windows)
+        try:
+            if hasattr(winsound, "Beep"):
+                winsound.Beep(1000, 500) # type: ignore
+        except (AttributeError, Exception):
             print("\a") # Standard terminal bell fallback
 
 print("Starting hardware monitor (limit 60% CPU)...")

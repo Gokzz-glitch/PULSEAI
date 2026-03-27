@@ -1,9 +1,14 @@
-import firebase_admin
-from firebase_admin import credentials, db
 import logging
 import os
 from datetime import datetime
 from typing import Optional, Callable
+
+try:
+    import firebase_admin # pyre-ignore[21]
+    from firebase_admin import credentials, db # pyre-ignore[21]
+    FIREBASE_AVAILABLE = True
+except ImportError:
+    FIREBASE_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +22,10 @@ class FirebaseService:
 
     def start(self):
         """Initializes and starts the Firebase Realtime Database listener."""
+        if not FIREBASE_AVAILABLE:
+            logger.warning("⚠️ Firebase Admin SDK not installed. Skipping Firebase integration.")
+            return
+
         if not os.path.exists(self.key_path):
             logger.error(f"❌ AUTH ERROR: Firebase key not found at {self.key_path}")
             return
@@ -42,8 +51,9 @@ class FirebaseService:
         if new_bpm is not None:
             analysis_report = self.analyze_vitals(new_bpm)
             logger.info(analysis_report)
-            if self.on_alert:
-                self.on_alert(analysis_report, new_bpm)
+            alert_cb = self.on_alert
+            if alert_cb is not None:
+                alert_cb(analysis_report, new_bpm)
 
     def analyze_vitals(self, bpm: int) -> str:
         """The core AI logic for analyzing heart rate vitals."""
@@ -59,8 +69,11 @@ class FirebaseService:
 
     def stop(self):
         """Releases the listener and closes the Firebase connection."""
-        if self._listener:
-            self._listener.close()
+        if not FIREBASE_AVAILABLE:
+            return
+        listener = self._listener
+        if listener is not None:
+            listener.close()  # type: ignore
         if self.app:
             firebase_admin.delete_app(self.app)
         logger.info("🛑 Firebase Service offline.")
