@@ -15,6 +15,8 @@ Target Metrics Post-Retraining:
 import os
 import sys
 import json
+import shutil
+from datetime import datetime
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -39,7 +41,9 @@ FS = 360  # MIT-BIH sample rate
 SEGMENT_LEN = 250  # samples per beat window
 HALF_LEN = SEGMENT_LEN // 2
 DATA_DIR = r'g:\My Drive\PULSEAI\mit-bih-arrhythmia-database-1.0.0'
-OUTPUT_MODEL = r'g:\My Drive\PULSEAI\backend\hctg_net_model.h5'
+OUTPUT_MODEL_FINAL = r'g:\My Drive\PULSEAI\backend\hctg_net_model.h5'
+OUTPUT_MODEL_TMP = r'g:\My Drive\PULSEAI\backend\hctg_net_model_retrained.h5'
+MIN_VALID_MODEL_BYTES = 100 * 1024
 
 # AAMI class mapping
 AAMI_MAP = {
@@ -320,7 +324,7 @@ cb_list = [
         min_lr=1e-6, verbose=1
     ),
     callbacks.ModelCheckpoint(
-        OUTPUT_MODEL, save_best_only=True,
+        OUTPUT_MODEL_TMP, save_best_only=True,
         monitor='val_auc', mode='max', verbose=1
     )
 ]
@@ -349,9 +353,25 @@ print(f'Test AUC: {test_auc:.4f}')
 # STEP 8: Save model
 # ============================================================
 print(f"\n[STEP 8] Saving retrained model...")
-model.save(OUTPUT_MODEL)
-print(f'✅ Model saved to: {OUTPUT_MODEL}')
-print(f'   File size: {os.path.getsize(OUTPUT_MODEL) / (1024*1024):.1f} MB')
+model.save(OUTPUT_MODEL_TMP)
+
+tmp_size = os.path.getsize(OUTPUT_MODEL_TMP)
+if tmp_size < MIN_VALID_MODEL_BYTES:
+    raise RuntimeError(
+        f"Temporary model appears invalid ({tmp_size} bytes). "
+        "Aborting deployment to protect backend model."
+    )
+
+if os.path.exists(OUTPUT_MODEL_FINAL) and os.path.getsize(OUTPUT_MODEL_FINAL) > 0:
+    ts = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+    backup_path = f"{OUTPUT_MODEL_FINAL}.bak_{ts}"
+    shutil.copy2(OUTPUT_MODEL_FINAL, backup_path)
+    print(f'📦 Existing backend model backup: {backup_path}')
+
+shutil.copy2(OUTPUT_MODEL_TMP, OUTPUT_MODEL_FINAL)
+print(f'✅ Temp model saved: {OUTPUT_MODEL_TMP}')
+print(f'✅ Backend model updated: {OUTPUT_MODEL_FINAL}')
+print(f'   File size: {os.path.getsize(OUTPUT_MODEL_FINAL) / (1024*1024):.1f} MB')
 
 # ============================================================
 # Summary
@@ -359,7 +379,8 @@ print(f'   File size: {os.path.getsize(OUTPUT_MODEL) / (1024*1024):.1f} MB')
 print("\n" + "="*70)
 print("RETRAINING COMPLETE")
 print("="*70)
-print(f'Model:        {OUTPUT_MODEL}')
+print(f'Model (tmp):  {OUTPUT_MODEL_TMP}')
+print(f'Model (live): {OUTPUT_MODEL_FINAL}')
 print(f'Test Acc:     {test_acc:.4f}')
 print(f'Test AUC:     {test_auc:.4f}')
 print(f'Augmented:    {num_augmented} PVC-like hard negatives')
