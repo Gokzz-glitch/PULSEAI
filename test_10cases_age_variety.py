@@ -40,17 +40,17 @@ backend_path = project_root / 'backend'
 
 if backend_path.exists() and (backend_path / 'ml_model.py').exists():
     sys.path.insert(0, str(backend_path))
-    print(f"✓ Backend found at {backend_path}")
+    print(f"[OK] Backend found at {backend_path}")
 else:
-    print("✗ Backend not found. Make sure you're running from project root.")
+    print("[ERR] Backend not found. Make sure you're running from project root.")
     sys.exit(1)
 
 try:
     from ml_model import ArrhythmiaEngine
     from signal_processing import process_ecg, extract_beat_window, FS, SEGMENT_LEN
-    print("✓ Backend modules imported successfully")
+    print("[OK] Backend modules imported successfully")
 except ImportError as e:
-    print(f"✗ Failed to import backend modules: {e}")
+    print(f"[ERR] Failed to import backend modules: {e}")
     sys.exit(1)
 
 # ============================================================================
@@ -256,7 +256,7 @@ def run_test(test_case: Dict) -> Dict:
     # Determine if prediction matches expectation
     predicted = result.get("classification", "Unknown")
     confidence = result.get("confidence", 0.0)
-    match = "✓" if predicted == test_case["expected_classification"] else "✗"
+    match = "PASS" if predicted == test_case["expected_classification"] else "FAIL"
     
     print(f"  Predicted: {predicted} [{confidence:.2%}] {match}")
     
@@ -275,7 +275,7 @@ def run_test(test_case: Dict) -> Dict:
         "is_arrhythmia": result.get("is_arrhythmia", False),
         "model_used": result.get("model_used", "unknown"),
         "timestamp": datetime.now().isoformat(),
-        "match": match == "✓",
+        "match": match == "PASS",
     }
 
 # ============================================================================
@@ -291,7 +291,7 @@ for test_case in TEST_CASES:
         result = run_test(test_case)
         results.append(result)
     except Exception as e:
-        print(f"  ✗ Error: {e}")
+        print(f"  [ERR] Error: {e}")
         results.append({
             "case_id": test_case["case_id"],
             "age": test_case["age"],
@@ -334,7 +334,7 @@ print("Detailed Results:")
 print("-" * 70)
 
 for idx, row in df.iterrows():
-    match_icon = "✓" if row['match'] else "✗"
+    match_icon = "PASS" if row['match'] else "FAIL"
     print(f"\n[Case {int(row['case_id'])}] {match_icon} {row['age_group']}")
     print(f"  Age: {int(row['age'])} | Scenario: {row['scenario']}")
     print(f"  Condition: {row['condition']}")
@@ -358,7 +358,7 @@ output_dir.mkdir(exist_ok=True)
 # Save CSV
 csv_path = output_dir / f"test_10cases_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
 df.to_csv(csv_path, index=False)
-print(f"\n✓ CSV report saved: {csv_path}")
+print(f"\n[OK] CSV report saved: {csv_path}")
 
 # Save JSON
 json_path = output_dir / f"test_10cases_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
@@ -370,7 +370,7 @@ with open(json_path, 'w') as f:
         "accuracy": float(df['match'].mean()),
         "results": results,
     }, f, indent=2)
-print(f"✓ JSON report saved: {json_path}")
+print(f"[OK] JSON report saved: {json_path}")
 
 # ============================================================================
 # PART 8: Visualization
@@ -422,7 +422,7 @@ ax.grid(alpha=0.3)
 plt.tight_layout()
 plot_path = output_dir / f"test_10cases_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
 plt.savefig(plot_path, dpi=150, bbox_inches='tight', facecolor='#0f1419')
-print(f"✓ Visualization saved: {plot_path}")
+print(f"[OK] Visualization saved: {plot_path}")
 
 print("\n" + "=" * 70)
 print("TEST SUITE COMPLETE")

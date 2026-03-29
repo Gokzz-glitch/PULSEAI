@@ -1,0 +1,11 @@
+case_id,age,age_group,scenario,condition,expected,predicted,confidence,heart_rate_bpm,rr_cv,signal_quality,is_arrhythmia,model_used,timestamp,match
+1,22,Young Adult (18-25),Light activity - resting,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.754,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:42:23.721849,True
+2,20,Young Adult (18-25),Post-exercise recovery,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.608,95.8,0.038,good,False,keras:hctg_net_model.h5,2026-03-29T16:42:23.998671,True
+3,40,Middle Age (35-45),Moderate exercise - gym session,Normal Sinus Rhythm (elevated HR),Normal Sinus Rhythm,Normal Sinus Rhythm,0.518,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:42:24.268709,True
+4,42,Middle Age (35-45),At rest - stress test result,Atrial Fibrillation Risk,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.943,91.2,0.218,good,True,keras:hctg_net_model.h5,2026-03-29T16:42:24.536552,True
+5,55,Adult (50-60),Baseline - morning checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.758,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:42:24.795141,True
+6,58,Adult (50-60),Symptomatic - palpitations,Possible AFib,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.748,104.2,0.07,good,True,keras:hctg_net_model.h5,2026-03-29T16:42:25.173865,True
+7,68,Elderly (65-75),Healthy - routine checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.775,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:42:25.684884,True
+8,72,Elderly (65-75),Symptomatic - irregular heartbeats,Premature Ventricular Contractions,Other Arrhythmia,Normal Sinus Rhythm,0.59,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:42:25.958918,False
+9,82,Very Elderly (80+),Baseline - bradycardia normal,Normal Sinus Rhythm (slow),Normal Sinus Rhythm,Normal Sinus Rhythm,0.735,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:42:26.251403,True
+10,85,Very Elderly (80+),Symptomatic - rapid irregular,AFib with Rapid Ventricular Response,Atrial Fibrillation (AFib),Subtle Rhythm Irregularity (Review),0.58,88.0,0.147,good,False,keras:hctg_net_model.h5,2026-03-29T16:42:26.572501,False

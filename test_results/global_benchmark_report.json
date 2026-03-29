@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-29T10:29:20.380134+00:00",
+  "generated_at_utc": "2026-03-29T11:28:00.796101+00:00",
   "model_status": {
     "model_loaded": true,
     "model_used": "keras:hctg_net_model.h5",

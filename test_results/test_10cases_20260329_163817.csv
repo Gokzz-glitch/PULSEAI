@@ -1,0 +1,11 @@
+case_id,age,age_group,scenario,condition,expected,predicted,confidence,heart_rate_bpm,rr_cv,signal_quality,is_arrhythmia,model_used,timestamp,match
+1,22,Young Adult (18-25),Light activity - resting,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.734,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:38:14.265061,True
+2,20,Young Adult (18-25),Post-exercise recovery,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.665,93.5,0.006,good,False,keras:hctg_net_model.h5,2026-03-29T16:38:14.950350,True
+3,40,Middle Age (35-45),Moderate exercise - gym session,Normal Sinus Rhythm (elevated HR),Normal Sinus Rhythm,Normal Sinus Rhythm,0.528,108.1,0.009,good,False,keras:hctg_net_model.h5,2026-03-29T16:38:15.273452,True
+4,42,Middle Age (35-45),At rest - stress test result,Atrial Fibrillation Risk,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.746,102.7,0.097,good,True,keras:hctg_net_model.h5,2026-03-29T16:38:15.649453,True
+5,55,Adult (50-60),Baseline - morning checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.766,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:38:16.044516,True
+6,58,Adult (50-60),Symptomatic - palpitations,Possible AFib,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.897,94.0,0.076,good,True,keras:hctg_net_model.h5,2026-03-29T16:38:16.413733,True
+7,68,Elderly (65-75),Healthy - routine checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.743,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:38:16.724229,True
+8,72,Elderly (65-75),Symptomatic - irregular heartbeats,Premature Ventricular Contractions,Other Arrhythmia,Normal Sinus Rhythm,0.668,70.0,0.111,good,False,keras:hctg_net_model.h5,2026-03-29T16:38:17.053826,False
+9,82,Very Elderly (80+),Baseline - bradycardia normal,Normal Sinus Rhythm (slow),Normal Sinus Rhythm,Normal Sinus Rhythm,0.745,,,fair,False,keras:hctg_net_model.h5,2026-03-29T16:38:17.335306,True
+10,85,Very Elderly (80+),Symptomatic - rapid irregular,AFib with Rapid Ventricular Response,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.828,90.6,0.1,good,True,keras:hctg_net_model.h5,2026-03-29T16:38:17.708214,True
