@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-03-28T17:51:08.160393+00:00",
+  "config": {
+    "max_records": 24,
+    "windows_per_record": 20,
+    "segment_len": 1000,
+    "fs": 500
+  },
+  "samples_tested": 480,
+  "latency_ms": {
+    "mean": 67.918,
+    "p50": 64.387,
+    "p95": 81.156,
+    "p99": 108.274,
+    "max": 344.817
+  },
+  "criterion": {
+    "target": "p95 < 100 ms",
+    "status": "PASS"
+  }
+}

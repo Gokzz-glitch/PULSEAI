@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PulseAI Working 1.0 - End-to-End Signal Walkthrough</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#07121f;
+  --panel:#0e1d31;
+  --panel2:#132640;
+  --line:#2dd4bf;
+  --line2:#60a5fa;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --danger:#ef4444;
+  --text:#e5eefc;
+  --muted:#8ea3c0;
+  --border:rgba(96,165,250,.22);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(45,212,191,.12), transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(96,165,250,.12), transparent 45%),
+    var(--bg);
+  color:var(--text);
+}
+header{
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+  background:rgba(7,18,31,.85);
+  position:sticky;
+  top:0;
+  z-index:5;
+  backdrop-filter: blur(8px);
+}
+h1{margin:0;font-size:1.35rem;letter-spacing:.2px}
+.sub{margin-top:4px;color:var(--muted);font-size:.88rem}
+.shell{
+  padding:18px;
+  display:grid;
+  grid-template-columns: 360px 1fr;
+  gap:16px;
+}
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+}
+.ctrl-grid{display:grid;gap:10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+label{font-size:.8rem;color:var(--muted)}
+input,select,button,textarea{
+  border:1px solid var(--border);
+  background:#0a1728;
+  color:var(--text);
+  border-radius:8px;
+  font:inherit;
+}
+input,select{padding:8px 10px}
+button{padding:9px 12px;cursor:pointer;font-weight:700}
+button.primary{background:#0ea5e9;color:#03111d;border-color:#38bdf8}
+button.good{background:#16a34a;color:#02170a;border-color:#4ade80}
+button.warn{background:#d97706;color:#1d1200;border-color:#fbbf24}
+button.ghost{background:transparent;color:var(--text)}
+.grid-main{display:grid;gap:12px}
+.stages{
+  display:grid;
+  grid-template-columns: repeat(2,minmax(240px,1fr));
+  gap:12px;
+}
+.stage h3{margin:0 0 8px 0;font-size:.92rem}
+.badge{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;
+  padding:3px 7px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  color:var(--muted);
+}
+.metrics{
+  margin-top:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  color:#b8c9e8;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px 10px;
+}
+canvas{width:100% !important;height:150px !important}
+.pipeline{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.74rem;
+  line-height:1.65;
+  color:#b8c9e8;
+  background:#071321;
+  border:1px dashed var(--border);
+  border-radius:8px;
+  padding:10px;
+  max-height:200px;
+  overflow:auto;
+}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:#c6d5ed;line-height:1.6}
+.ok{color:var(--ok)}
+.warn-t{color:var(--warn)}
+.danger{color:var(--danger)}
+#backend-json{height:180px;width:100%;padding:10px;font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.footer-note{margin-top:6px;color:var(--muted);font-size:.75rem}
+@media (max-width: 980px){
+  .shell{grid-template-columns:1fr}
+  .stages{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>PulseAI WORKING 1.0 - Faculty Technical Walkthrough</h1>
+  <div class="sub">Raw patient data -> Sensor cleanup -> 50/60Hz notch -> 0.5Hz high-pass -> 40Hz low-pass -> Backend feature extraction -> AI result</div>
+</header>
+
+<div class="shell">
+  <section class="card ctrl-grid">
+    <div class="row">
+      <label>Data Source</label>
+      <select id="source-mode">
+        <option value="sim">Simulated patient stream</option>
+        <option value="esp3">Simulated ESP32 + AD8232 (3 leads)</option>
+        <option value="live">Live backend websocket stream</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label>Mains Region</label>
+      <button id="mains50" class="good" onclick="setMains(50)">50Hz</button>
+      <button id="mains60" class="ghost" onclick="setMains(60)">60Hz</button>
+    </div>
+
+    <div class="row">
+      <label>Patient BPM (simulation)</label>
+      <input id="sim-bpm" type="number" value="76" min="35" max="190" />
+    </div>
+
+    <div class="row">
+      <label>Rhythm Type</label>
+      <select id="sim-rhythm">
+        <option value="normal">Normal</option>
+        <option value="brady">Bradycardia</option>
+        <option value="tachy">Tachycardia</option>
+        <option value="afib">AFib-like</option>
+        <option value="flutter">Atrial Flutter-like</option>
+        <option value="pvc">PVC-like</option>
+        <option value="vfib">Ventricular Fibrillation-like</option>
+        <option value="leads_off">Leads Off / No Signal</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <button class="primary" onclick="runWalkthrough()">Run Step-by-Step</button>
+      <button class="primary" onclick="startContinuousSimulation()">Start Continuous</button>
+      <button class="ghost" onclick="stopContinuousSimulation()">Stop</button>
+      <button class="warn" onclick="sendToBackend()">Send Final Signal to Backend</button>
+      <button class="ghost" onclick="connectWsLive()">Connect Live WS</button>
+      <button class="good" onclick="exportFacultyReport()">Export Faculty Report (PDF)</button>
+    </div>
+
+    <div class="pipeline" id="timeline"></div>
+    <div class="footer-note">This page is intended for demo explanation with faculty. Every stage shows waveform + numeric transformation metrics.</div>
+  </section>
+
+  <section class="grid-main">
+    <div class="stages">
+      <article class="card stage">
+        <h3>Stage 0: Raw ECG from patient</h3>
+        <span class="badge">Input (raw / noisy)</span>
+        <canvas id="c0"></canvas>
+        <div class="metrics" id="m0"></div>
+      </article>
+      <article class="card stage">
+        <h3>Stage 1: Sensor Artifact Filter</h3>
+        <span class="badge">Median + Hampel</span>
+        <canvas id="c1"></canvas>
+        <div class="metrics" id="m1"></div>
+      </article>
+      <article class="card stage">
+        <h3>Stage 2: AC Mains Rejection</h3>
+        <span class="badge">Notch <span id="mains-lbl">50</span>Hz</span>
+        <canvas id="c2"></canvas>
+        <div class="metrics" id="m2"></div>
+      </article>
+      <article class="card stage">
+        <h3>Stage 3: Baseline Wander Removal</h3>
+        <span class="badge">High-pass 0.5Hz</span>
+        <canvas id="c3"></canvas>
+        <div class="metrics" id="m3"></div>
+      </article>
+      <article class="card stage">
+        <h3>Stage 4: Clinical Band Limiting</h3>
+        <span class="badge">Low-pass 40Hz</span>
+        <canvas id="c4"></canvas>
+        <div class="metrics" id="m4"></div>
+      </article>
+      <article class="card stage">
+        <h3>Stage 5: Final Signal for AI</h3>
+        <span class="badge">Smoothed + backend-ready</span>
+        <canvas id="c5"></canvas>
+        <div class="metrics" id="m5"></div>
+      </article>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 8px 0">Backend Calculations and AI Output</h3>
+      <div class="result-grid">
+        <div class="kv" id="backend-kv"></div>
+        <div>
+          <textarea id="backend-json" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const FS = 500;
+const N = 300;
+let mainsHz = 50;
+let ws = null;
+let liveBuf = new Float32Array(N);
+const charts = {};
+let streamTimer = null;
+let simPhase = 0;
+let rawBuf = new Float32Array(N);
+
+function logLine(t){
+  const el = document.getElementById('timeline');
+  const now = new Date().toLocaleTimeString();
+  el.innerHTML += `[${now}] ${t}<br/>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function initCharts(){
+  const ids = ['c0','c1','c2','c3','c4','c5'];
+  ids.forEach((id,idx)=>{
+    const ctx = document.getElementById(id).getContext('2d');
+    charts[id] = new Chart(ctx,{type:'line',data:{labels:Array.from({length:N},(_,i)=>i),datasets:[{data:Array(N).fill(0),borderColor:idx%2?'#60a5fa':'#2dd4bf',borderWidth:2,pointRadius:0,tension:.22}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:true,ticks:{color:'#7f95b6',font:{size:9}},grid:{color:'rgba(148,163,184,.16)'}}}}});
+  });
+}
+
+function setMains(hz){
+  mainsHz = hz===60?60:50;
+  document.getElementById('mains50').className = mainsHz===50?'good':'ghost';
+  document.getElementById('mains60').className = mainsHz===60?'good':'ghost';
+  document.getElementById('mains-lbl').textContent = String(mainsHz);
+  logLine(`Mains notch set to ${mainsHz}Hz`);
+}
+
+function appendSample(buf, sample){
+  for(let i=1;i<buf.length;i++) buf[i-1] = buf[i];
+  buf[buf.length-1] = sample;
+}
+
+function shiftPush(arr,val){
+  const out = new Float32Array(arr.length);
+  for(let i=1;i<arr.length;i++) out[i-1]=arr[i];
+  out[arr.length-1]=val;
+  return out;
+}
+
+function genSim(){
+  const rhythm = document.getElementById('sim-rhythm').value;
+  let bpm = parseFloat(document.getElementById('sim-bpm').value||'76');
+  if(rhythm==='brady') bpm = Math.min(bpm, 48);
+  if(rhythm==='tachy') bpm = Math.max(bpm, 125);
+  if(rhythm==='flutter') bpm = Math.max(bpm, 145);
+  const rr = Math.max(160,Math.round(FS*60/Math.max(35,bpm)));
+  let arr = new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const c=i%rr;
+    const p=Math.exp(-0.5*Math.pow((c-0.18*rr)/(0.04*rr),2))*0.10;
+    const q=Math.exp(-0.5*Math.pow((c-0.40*rr)/(0.015*rr),2))*(-0.16);
+    const r=Math.exp(-0.5*Math.pow((c-0.43*rr)/(0.012*rr),2))*1.45;
+    const s=Math.exp(-0.5*Math.pow((c-0.46*rr)/(0.016*rr),2))*(-0.28);
+    const t=Math.exp(-0.5*Math.pow((c-0.68*rr)/(0.08*rr),2))*0.22;
+    let v=p+q+r+s+t;
+    if(rhythm==='afib'){
+      v += 0.07*Math.sin(i*0.9+Math.random()) + 0.03*(Math.random()-0.5);
+      if(Math.random()<0.018) v += 0.5 + 0.5*Math.random();
+    }
+    if(rhythm==='flutter'){
+      v += 0.18*Math.sin(2*Math.PI*6.0*i/FS); // sawtooth-like atrial activity proxy
+    }
+    if(rhythm==='pvc' && ((Math.floor(i/rr))%7===0)) v += Math.exp(-0.5*Math.pow((c-0.36*rr)/(0.03*rr),2))*1.6;
+    if(rhythm==='vfib'){
+      v = 0.5*Math.sin(i*0.35+Math.random()) + (Math.random()-0.5)*1.25;
+    }
+    if(rhythm==='leads_off'){
+      v = 0.002*(Math.random()-0.5);
+    }
+
+    const baseline=0.09*Math.sin(2*Math.PI*0.33*i/FS);
+    const mains=0.07*Math.sin(2*Math.PI*mainsHz*i/FS);
+    const emg=0.04*Math.sin(2*Math.PI*27*i/FS);
+    const jitter=0.016*(Math.random()-0.5);
+    arr[i]=(rhythm==='leads_off') ? v : (v+baseline+mains+emg+jitter);
+  }
+  return arr;
+}
+
+function genSimSample(i, bpm, rhythm){
+  if(rhythm==='brady') bpm = Math.min(bpm, 48);
+  if(rhythm==='tachy') bpm = Math.max(bpm, 125);
+  if(rhythm==='flutter') bpm = Math.max(bpm, 145);
+  const rr = Math.max(160,Math.round(FS*60/Math.max(35,bpm)));
+  const c=i%rr;
+  const p=Math.exp(-0.5*Math.pow((c-0.18*rr)/(0.04*rr),2))*0.10;
+  const q=Math.exp(-0.5*Math.pow((c-0.40*rr)/(0.015*rr),2))*(-0.16);
+  const r=Math.exp(-0.5*Math.pow((c-0.43*rr)/(0.012*rr),2))*1.45;
+  const s=Math.exp(-0.5*Math.pow((c-0.46*rr)/(0.016*rr),2))*(-0.28);
+  const t=Math.exp(-0.5*Math.pow((c-0.68*rr)/(0.08*rr),2))*0.22;
+  let v=p+q+r+s+t;
+  if(rhythm==='afib'){
+    v += 0.07*Math.sin(i*0.9+Math.random()) + 0.03*(Math.random()-0.5);
+    if(Math.random()<0.018) v += 0.5 + 0.5*Math.random();
+  }
+  if(rhythm==='flutter') v += 0.18*Math.sin(2*Math.PI*6.0*i/FS);
+  if(rhythm==='pvc' && ((Math.floor(i/rr))%7===0)) v += Math.exp(-0.5*Math.pow((c-0.36*rr)/(0.03*rr),2))*1.6;
+  if(rhythm==='vfib') v = 0.5*Math.sin(i*0.35+Math.random()) + (Math.random()-0.5)*1.25;
+  if(rhythm==='leads_off') return 0.002*(Math.random()-0.5);
+
+  const baseline=0.09*Math.sin(2*Math.PI*0.33*i/FS);
+  const mains=0.07*Math.sin(2*Math.PI*mainsHz*i/FS);
+  const emg=0.04*Math.sin(2*Math.PI*27*i/FS);
+  const jitter=0.016*(Math.random()-0.5);
+  return v+baseline+mains+emg+jitter;
+}
+
+function genEspAd8232ThreeLead(){
+  const rhythm = document.getElementById('sim-rhythm').value;
+  const bpm = parseFloat(document.getElementById('sim-bpm').value||'76');
+  const rr = Math.max(160,Math.round(FS*60/Math.max(35,bpm)));
+  const leadI = new Float32Array(N);
+  const leadII = new Float32Array(N);
+  const leadIII = new Float32Array(N);
+
+  for(let i=0;i<N;i++){
+    const c=i%rr;
+    const p=Math.exp(-0.5*Math.pow((c-0.18*rr)/(0.04*rr),2))*0.10;
+    const q=Math.exp(-0.5*Math.pow((c-0.40*rr)/(0.015*rr),2))*(-0.16);
+    const r=Math.exp(-0.5*Math.pow((c-0.43*rr)/(0.012*rr),2))*1.45;
+    const s=Math.exp(-0.5*Math.pow((c-0.46*rr)/(0.016*rr),2))*(-0.28);
+    const t=Math.exp(-0.5*Math.pow((c-0.68*rr)/(0.08*rr),2))*0.22;
+    let base=p+q+r+s+t;
+
+    if(rhythm==='afib'){
+      base += 0.07*Math.sin(i*0.9+Math.random()) + 0.03*(Math.random()-0.5);
+      if(Math.random()<0.018) base += 0.5 + 0.5*Math.random();
+    }
+    if(rhythm==='pvc' && ((Math.floor(i/rr))%7===0)){
+      base = Math.exp(-0.5*Math.pow((c-0.36*rr)/(0.03*rr),2))*2.0 + Math.exp(-0.5*Math.pow((c-0.44*rr)/(0.03*rr),2))*(-0.7);
+    }
+
+    const baseline=0.08*Math.sin(2*Math.PI*0.33*i/FS);
+    const mains=0.06*Math.sin(2*Math.PI*mainsHz*i/FS);
+    const emg=0.03*Math.sin(2*Math.PI*27*i/FS);
+    const motion=0.06*(Math.random()-0.5);
+
+    leadI[i] = 0.92*base + 0.020*Math.sin(2*Math.PI*i/180) + baseline + mains + emg + motion;
+    leadIII[i] = 0.88*base + 0.018*Math.sin(2*Math.PI*i/205 + 0.2) + baseline + mains + emg + motion;
+    leadII[i] = leadI[i] + leadIII[i] + 0.01*(Math.random()-0.5); // approximate Einthoven relation
+
+    if(Math.random()<0.008){
+      leadI[i] += (Math.random()-0.5)*0.9;
+      leadII[i] += (Math.random()-0.5)*1.0;
+      leadIII[i] += (Math.random()-0.5)*0.8;
+    }
+  }
+
+  // Fused lead prioritizing lead II while preserving lead I/III context.
+  const fused = new Float32Array(N);
+  for(let i=0;i<N;i++) fused[i] = 0.2*leadI[i] + 0.6*leadII[i] + 0.2*leadIII[i];
+  return {fused, leadI, leadII, leadIII};
+}
+
+function genEspAd8232Sample(i, bpm, rhythm){
+  if(rhythm==='brady') bpm = Math.min(bpm, 48);
+  if(rhythm==='tachy') bpm = Math.max(bpm, 125);
+  if(rhythm==='flutter') bpm = Math.max(bpm, 145);
+  const rr = Math.max(160,Math.round(FS*60/Math.max(35,bpm)));
+  const c=i%rr;
+  const p=Math.exp(-0.5*Math.pow((c-0.18*rr)/(0.04*rr),2))*0.10;
+  const q=Math.exp(-0.5*Math.pow((c-0.40*rr)/(0.015*rr),2))*(-0.16);
+  const r=Math.exp(-0.5*Math.pow((c-0.43*rr)/(0.012*rr),2))*1.45;
+  const s=Math.exp(-0.5*Math.pow((c-0.46*rr)/(0.016*rr),2))*(-0.28);
+  const t=Math.exp(-0.5*Math.pow((c-0.68*rr)/(0.08*rr),2))*0.22;
+  let base=p+q+r+s+t;
+  if(rhythm==='afib'){
+    base += 0.07*Math.sin(i*0.9+Math.random()) + 0.03*(Math.random()-0.5);
+    if(Math.random()<0.018) base += 0.5 + 0.5*Math.random();
+  }
+  if(rhythm==='flutter') base += 0.18*Math.sin(2*Math.PI*6.0*i/FS);
+  if(rhythm==='pvc' && ((Math.floor(i/rr))%7===0)){
+    base = Math.exp(-0.5*Math.pow((c-0.36*rr)/(0.03*rr),2))*2.0 + Math.exp(-0.5*Math.pow((c-0.44*rr)/(0.03*rr),2))*(-0.7);
+  }
+  if(rhythm==='vfib') base = 0.5*Math.sin(i*0.35+Math.random()) + (Math.random()-0.5)*1.25;
+  if(rhythm==='leads_off'){
+    return 0.002*(Math.random()-0.5);
+  }
+
+  const baseline=0.08*Math.sin(2*Math.PI*0.33*i/FS);
+  const mains=0.06*Math.sin(2*Math.PI*mainsHz*i/FS);
+  const emg=0.03*Math.sin(2*Math.PI*27*i/FS);
+  const motion=0.06*(Math.random()-0.5);
+  let leadI = 0.92*base + 0.020*Math.sin(2*Math.PI*i/180) + baseline + mains + emg + motion;
+  let leadIII = 0.88*base + 0.018*Math.sin(2*Math.PI*i/205 + 0.2) + baseline + mains + emg + motion;
+  let leadII = leadI + leadIII + 0.01*(Math.random()-0.5);
+  if(Math.random()<0.008){
+    leadI += (Math.random()-0.5)*0.9;
+    leadII += (Math.random()-0.5)*1.0;
+    leadIII += (Math.random()-0.5)*0.8;
+  }
+  return 0.2*leadI + 0.6*leadII + 0.2*leadIII;
+}
+
+function applyBiquad(data,c){
+  const out=new Float32Array(data.length);
+  let x1=0,x2=0,y1=0,y2=0;
+  for(let i=0;i<data.length;i++){
+    const x0=data[i];
+    const y0=c.b0*x0+c.b1*x1+c.b2*x2-c.a1*y1-c.a2*y2;
+    out[i]=y0; x2=x1;x1=x0;y2=y1;y1=y0;
+  }
+  return out;
+}
+function rev(a){const o=new Float32Array(a.length);for(let i=0,j=a.length-1;i<a.length;i++,j--)o[i]=a[j];return o;}
+function zpf(data,c,sections=1){let y=Float32Array.from(data);for(let k=0;k<sections;k++)y=applyBiquad(y,c);y=rev(y);for(let k=0;k<sections;k++)y=applyBiquad(y,c);return rev(y);}
+
+function notchDesign(freq=50,fs=FS,q=30){
+  const w0=2*Math.PI*freq/fs, alpha=Math.sin(w0)/(2*q), cosw0=Math.cos(w0);
+  let b0=1,b1=-2*cosw0,b2=1,a0=1+alpha,a1=-2*cosw0,a2=1-alpha;
+  return {b0:b0/a0,b1:b1/a0,b2:b2/a0,a1:a1/a0,a2:a2/a0};
+}
+function hpDesign(fc=0.5,fs=FS,q=0.7071){
+  const w0=2*Math.PI*fc/fs, alpha=Math.sin(w0)/(2*q), cosw0=Math.cos(w0);
+  let b0=(1+cosw0)/2,b1=-(1+cosw0),b2=(1+cosw0)/2,a0=1+alpha,a1=-2*cosw0,a2=1-alpha;
+  return {b0:b0/a0,b1:b1/a0,b2:b2/a0,a1:a1/a0,a2:a2/a0};
+}
+function lpDesign(fc=40,fs=FS,q=0.7071){
+  const w0=2*Math.PI*fc/fs, alpha=Math.sin(w0)/(2*q), cosw0=Math.cos(w0);
+  let b0=(1-cosw0)/2,b1=1-cosw0,b2=(1-cosw0)/2,a0=1+alpha,a1=-2*cosw0,a2=1-alpha;
+  return {b0:b0/a0,b1:b1/a0,b2:b2/a0,a1:a1/a0,a2:a2/a0};
+}
+
+function movingAvg(data,w=7){
+  const out=new Float32Array(data.length);
+  for(let i=0;i<data.length;i++){
+    const s=Math.max(0,i-w+1);let sum=0;
+    for(let j=s;j<=i;j++) sum+=data[j];
+    out[i]=sum/(i-s+1);
+  }
+  return out;
+}
+function medianFilter(data,w=5){
+  const out=new Float32Array(data.length); const h=Math.floor(w/2);
+  for(let i=0;i<data.length;i++){
+    const s=Math.max(0,i-h), e=Math.min(data.length-1,i+h), b=[];
+    for(let j=s;j<=e;j++) b.push(data[j]); b.sort((a,b)=>a-b);
+    out[i]=b[Math.floor(b.length/2)];
+  }
+  return out;
+}
+function hampel(data,w=9,nSigma=3){
+  const out=Float32Array.from(data), h=Math.floor(w/2), k=1.4826;
+  for(let i=0;i<data.length;i++){
+    const s=Math.max(0,i-h), e=Math.min(data.length-1,i+h), seg=[];
+    for(let j=s;j<=e;j++) seg.push(data[j]);
+    seg.sort((a,b)=>a-b);
+    const med=seg[Math.floor(seg.length/2)];
+    const dev=seg.map(v=>Math.abs(v-med)).sort((a,b)=>a-b);
+    const mad=dev[Math.floor(dev.length/2)]||1e-6;
+    const thr=nSigma*k*mad;
+    if(Math.abs(data[i]-med)>thr) out[i]=med;
+  }
+  return out;
+}
+
+function metrics(arr){
+  let min=Infinity,max=-Infinity,sum=0;
+  for(let i=0;i<arr.length;i++){const v=arr[i]; if(v<min)min=v; if(v>max)max=v; sum+=v;}
+  const mean=sum/arr.length;
+  let varSum=0; for(let i=0;i<arr.length;i++) varSum+=(arr[i]-mean)*(arr[i]-mean);
+  const std=Math.sqrt(varSum/arr.length);
+  const rms=Math.sqrt(arr.reduce((a,v)=>a+v*v,0)/arr.length);
+  const d=[]; for(let i=1;i<arr.length;i++) d.push(Math.abs(arr[i]-arr[i-1]));
+  const slope=d.reduce((a,v)=>a+v,0)/Math.max(1,d.length);
+  return {mean,std,rms,p2p:max-min,slope};
+}
+function setMetrics(id,m){
+  document.getElementById(id).innerHTML =
+    `<div>Mean: ${m.mean.toFixed(4)}</div><div>Std: ${m.std.toFixed(4)}</div>`+
+    `<div>RMS: ${m.rms.toFixed(4)}</div><div>P2P: ${m.p2p.toFixed(4)}</div>`+
+    `<div>SlopeE: ${m.slope.toFixed(4)}</div><div>Samples: ${N}</div>`;
+}
+function draw(id,data){ charts[id].data.datasets[0].data=Array.from(data); charts[id].update('none'); }
+
+function connectWsLive(){
+  if(ws) ws.close();
+  ws = new WebSocket('ws://127.0.0.1:8000/ws');
+  ws.onopen = ()=>logLine('Connected to backend websocket for live signal snapshot');
+  ws.onmessage = e=>{
+    try{
+      const d=JSON.parse(e.data);
+      const snap=d.ecg_snapshot||[];
+      if(snap.length){
+        const use=snap.slice(-N).map(v=>parseFloat(v)||0);
+        while(use.length<N) use.unshift(0);
+        liveBuf = Float32Array.from(use);
+      }
+    }catch{}
+  };
+  ws.onerror = ()=>logLine('WebSocket error while reading live ECG');
+}
+
+function runWalkthrough(){
+  const sourceMode = document.getElementById('source-mode').value;
+  let raw;
+  if(sourceMode==='live'){
+    raw = liveBuf.some(v=>Math.abs(v)>1e-6) ? Float32Array.from(liveBuf) : genSim();
+    logLine('Source selected: Live backend stream');
+  }else if(sourceMode==='esp3'){
+    const hw = genEspAd8232ThreeLead();
+    raw = hw.fused;
+    window.__leadBundle = hw;
+    logLine('Source selected: Simulated ESP32 + AD8232 (3 leads), fused waveform generated');
+  }else{
+    raw = genSim();
+    logLine('Source selected: Simulated patient data');
+  }
+
+  renderPipeline(raw);
+  logLine('Stage 0 complete: Raw patient signal captured');
+  logLine('Stage 1 complete: Sensor artifact filtering (median + Hampel)');
+  logLine(`Stage 2 complete: ${mainsHz}Hz powerline noise suppressed`);
+  logLine('Stage 3 complete: 0.5Hz high-pass removed baseline wander');
+  logLine('Stage 4 complete: 40Hz low-pass removed high-frequency noise');
+  logLine('Stage 5 complete: Final cleaned ECG is ready for backend AI');
+}
+
+function renderPipeline(raw){
+  const s1 = hampel(medianFilter(raw,5),9,3);
+  const s2 = zpf(s1, notchDesign(mainsHz), 1);
+  const s3 = zpf(s2, hpDesign(0.5), 2);
+  const s4 = zpf(s3, lpDesign(40), 2);
+  const s5 = movingAvg(s4, 7);
+
+  draw('c0', raw); setMetrics('m0', metrics(raw));
+  draw('c1', s1); setMetrics('m1', metrics(s1));
+  draw('c2', s2); setMetrics('m2', metrics(s2));
+  draw('c3', s3); setMetrics('m3', metrics(s3));
+  draw('c4', s4); setMetrics('m4', metrics(s4));
+  draw('c5', s5); setMetrics('m5', metrics(s5));
+  window.__finalSignal = s5;
+}
+
+function startContinuousSimulation(){
+  stopContinuousSimulation();
+  rawBuf = genSim();
+  simPhase = 0;
+  const sourceMode = document.getElementById('source-mode').value;
+  const bpm = parseFloat(document.getElementById('sim-bpm').value||'76');
+  const rhythm = document.getElementById('sim-rhythm').value;
+  logLine(`Continuous stream started (${sourceMode})`);
+
+  streamTimer = setInterval(()=>{
+    if(sourceMode==='live'){
+      if(liveBuf.some(v=>Math.abs(v)>1e-6)) rawBuf = Float32Array.from(liveBuf);
+      else appendSample(rawBuf, genSimSample(simPhase, bpm, rhythm));
+    } else if(sourceMode==='esp3'){
+      appendSample(rawBuf, genEspAd8232Sample(simPhase, bpm, rhythm));
+    } else {
+      appendSample(rawBuf, genSimSample(simPhase, bpm, rhythm));
+    }
+    simPhase += 1;
+    renderPipeline(rawBuf);
+  }, 30);
+}
+
+function stopContinuousSimulation(){
+  if(streamTimer){
+    clearInterval(streamTimer);
+    streamTimer = null;
+    logLine('Continuous stream stopped');
+  }
+}
+
+function estimateSimpleHr(arr){
+  const mean = arr.reduce((a,v)=>a+v,0)/arr.length;
+  const std = Math.sqrt(arr.reduce((a,v)=>a+(v-mean)*(v-mean),0)/arr.length);
+  const thr = mean + 1.0*std;
+  const peaks=[];
+  for(let i=1;i<arr.length-1;i++){
+    if(arr[i]>thr && arr[i]>arr[i-1] && arr[i]>=arr[i+1]){
+      if(!peaks.length || (i-peaks[peaks.length-1])>Math.floor(0.22*FS)) peaks.push(i);
+    }
+  }
+  if(peaks.length<2) return {hr:null, rrCv:null, peaks:peaks.length};
+  const rr=[];
+  for(let i=1;i<peaks.length;i++) rr.push((peaks[i]-peaks[i-1])/FS);
+  const rrMean=rr.reduce((a,v)=>a+v,0)/rr.length;
+  const rrStd=Math.sqrt(rr.reduce((a,v)=>a+(v-rrMean)*(v-rrMean),0)/rr.length);
+  return {hr:60/rrMean, rrCv:rrStd/Math.max(rrMean,1e-6), peaks:peaks.length};
+}
+
+async function sendToBackend(){
+  const finalSig = window.__finalSignal || genSim();
+  const calc = estimateSimpleHr(finalSig);
+  const sourceMode = document.getElementById('source-mode').value;
+  const leadInfo = sourceMode==='esp3' ? '<div>Lead Mode: ESP32+AD8232 3-lead fused (I/II/III)</div>' : '';
+  document.getElementById('backend-kv').innerHTML =
+    `<div>Local Pre-check HR: <span class="ok">${calc.hr?calc.hr.toFixed(1)+' bpm':'N/A'}</span></div>`+
+    `<div>Local RR-CV: <span class="warn-t">${calc.rrCv!=null?calc.rrCv.toFixed(4):'N/A'}</span></div>`+
+    `<div>Detected Peaks: ${calc.peaks}</div>`+
+    `<div>Mains Config: ${mainsHz}Hz</div>`+
+    leadInfo+
+    `<div>Backend URL: http://127.0.0.1:8000/api/predict</div>`;
+
+  try{
+    const resp = await fetch('http://127.0.0.1:8000/api/predict',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        patient_id:'faculty-demo-working1.0',
+        ecg_window:Array.from(finalSig),
+        filter_config:{
+          mains_hz:mainsHz,
+          notch_enabled:true,
+          hp_enabled:true,
+          lp_enabled:true,
+          median_enabled:true,
+          hampel_enabled:true,
+          ma_enabled:true,
+          clip_enabled:false
+        }
+      })
+    });
+    const json = await resp.json();
+    document.getElementById('backend-json').value = JSON.stringify(json,null,2);
+    logLine(`Backend inference complete: ${json.classification||'Unknown'} @ ${(100*(json.confidence||0)).toFixed(1)}%`);
+  }catch(e){
+    document.getElementById('backend-json').value = 'Backend request failed. Start backend/main.py';
+    logLine('Backend request failed. Ensure backend server is running on 127.0.0.1:8000');
+  }
+}
+
+function escHtml(s){
+  return String(s)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#39;');
+}
+
+function exportFacultyReport(){
+  const dt = new Date();
+  const ts = dt.toLocaleString();
+  const src = document.getElementById('source-mode').value;
+  const bpm = document.getElementById('sim-bpm').value;
+  const rhythm = document.getElementById('sim-rhythm').value;
+  const timeline = (document.getElementById('timeline').innerText || '').trim();
+  const backendKv = (document.getElementById('backend-kv').innerText || '').trim();
+  const backendJson = (document.getElementById('backend-json').value || 'No backend response captured yet.').trim();
+
+  const metrics = ['m0','m1','m2','m3','m4','m5'].map((id, idx)=>{
+    const txt = (document.getElementById(id).innerText || '').trim().replace(/\n/g,' | ');
+    return `<tr><td>Stage ${idx}</td><td>${escHtml(txt || 'N/A')}</td></tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>PulseAI Faculty Report</title>
+<style>
+body{font-family:Inter,Arial,sans-serif;padding:24px;color:#0f172a}
+h1{margin:0 0 8px 0} .muted{color:#475569;font-size:13px}
+.box{border:1px solid #cbd5e1;border-radius:8px;padding:12px;margin-top:12px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{border:1px solid #cbd5e1;padding:8px;font-size:12px;text-align:left;vertical-align:top}
+pre{white-space:pre-wrap;word-break:break-word;background:#f8fafc;border:1px solid #e2e8f0;padding:10px;border-radius:6px;font-size:11px}
+</style></head><body>
+<h1>PulseAI Working 1.0 - Faculty Report</h1>
+<div class="muted">Generated: ${escHtml(ts)}</div>
+<div class="box">
+<b>Session Inputs</b><br>
+Source: ${escHtml(src)}<br>
+Mains: ${escHtml(String(mainsHz))}Hz<br>
+Sim BPM: ${escHtml(String(bpm))}<br>
+Sim Rhythm: ${escHtml(String(rhythm))}
+</div>
+<div class="box"><b>Pipeline Stages and Signal Metrics</b>
+<table><thead><tr><th>Stage</th><th>Metrics</th></tr></thead><tbody>${metrics}</tbody></table>
+</div>
+<div class="box"><b>Step-by-Step Execution Timeline</b><pre>${escHtml(timeline || 'No timeline captured')}</pre></div>
+<div class="box"><b>Backend Summary</b><pre>${escHtml(backendKv || 'No backend summary captured')}</pre></div>
+<div class="box"><b>Backend JSON Output</b><pre>${escHtml(backendJson)}</pre></div>
+<script>window.onload=function(){ setTimeout(()=>window.print(), 200); }<\/script>
+</body></html>`;
+
+  const win = window.open('', '_blank');
+  if(!win){
+    alert('Popup blocked. Please allow popups for export.');
+    return;
+  }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+}
+
+window.onload = ()=>{
+  initCharts();
+  runWalkthrough();
+  logLine('WORKING 1.0 initialized. Use Run Step-by-Step to explain each stage to faculty.');
+};
+</script>
+</body>
+</html>

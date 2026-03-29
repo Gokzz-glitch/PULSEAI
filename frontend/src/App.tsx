@@ -52,7 +52,16 @@ interface PredictionPayload {
 }
 
 const BACKEND = ((import.meta as any).env?.VITE_BACKEND_URL || 'http://localhost:8000') as string;
-const WS_URL = `${BACKEND.replace(/^http/, 'ws')}/ws`;
+const API_KEY = ((import.meta as any).env?.VITE_PULSEAI_API_KEY || '') as string;
+const WS_BASE_URL = `${BACKEND.replace(/^http/, 'ws')}/ws`;
+const WS_URL = API_KEY ? `${WS_BASE_URL}?api_key=${encodeURIComponent(API_KEY)}` : WS_BASE_URL;
+const ECG_JITTER_DELAY_MS = 200;
+const ECG_RENDER_INTERVAL_MS = 40;
+
+const apiHeaders = (): HeadersInit => {
+  if (!API_KEY) return {};
+  return { 'X-API-Key': API_KEY };
+};
 
 // ─── Icons ──────────────────────────────────────────────────
 const ActivityIcon = ({ size = 28, color = 'currentColor' }) => (
@@ -286,7 +295,7 @@ function App() {
   const [leadsOff, setLeadsOff] = useState(false);
   const [connectionState, setConnectionState] = useState<'connecting' | 'live' | 'offline'>('connecting');
   const [lastPrediction, setLastPrediction] = useState<PredictionPayload | null>(null);
-  const [dataSource, setDataSource] = useState<string>('SIMULATION');
+  const [dataSource, setDataSource] = useState<string>('SERIAL');
   const [tick, setTick] = useState(0);
 
   const wsRef     = useRef<WebSocket | null>(null);
@@ -294,6 +303,15 @@ function App() {
   const pingRef   = useRef<number | null>(null);
   const fhirRef   = useRef<HTMLPreElement>(null);
   const mockRef   = useRef<number | null>(null);
+  const ecgJitterQueueRef = useRef<Array<{ at: number; data: number[] }>>([]);
+
+  const enqueueEcgSnapshot = (snapshot?: number[]) => {
+    if (!Array.isArray(snapshot) || snapshot.length === 0) return;
+    ecgJitterQueueRef.current.push({ at: Date.now(), data: snapshot });
+    if (ecgJitterQueueRef.current.length > 24) {
+      ecgJitterQueueRef.current = ecgJitterQueueRef.current.slice(-24);
+    }
+  };
 
   useEffect(() => {
     const t = setInterval(() => setTick(n => n + 1), 1000);
@@ -302,18 +320,33 @@ function App() {
 
   useEffect(() => {
     if (!consentGiven) return;
+    const jitterTimer = window.setInterval(() => {
+      const queue = ecgJitterQueueRef.current;
+      const now = Date.now();
+      let picked: number[] | null = null;
+      while (queue.length > 0 && now - queue[0].at >= ECG_JITTER_DELAY_MS) {
+        const next = queue.shift();
+        if (next?.data?.length) picked = next.data;
+      }
+      if (picked) setEcgData(picked);
+    }, ECG_RENDER_INTERVAL_MS);
+    return () => clearInterval(jitterTimer);
+  }, [consentGiven]);
+
+  useEffect(() => {
+    if (!consentGiven) return;
     const poll = setInterval(async () => {
       try {
         const [ecgRes, diagRes, healthRes] = await Promise.all([
-          fetch(`${BACKEND}/api/ecg`),
-          fetch(`${BACKEND}/api/diagnostic`),
+          fetch(`${BACKEND}/api/ecg`, { headers: apiHeaders() }),
+          fetch(`${BACKEND}/api/diagnostic`, { headers: apiHeaders() }),
           fetch(`${BACKEND}/api/health`),
         ]);
         const ecgJson = await ecgRes.json();
         const diagJson = await diagRes.json();
         const healthJson = await healthRes.json();
 
-        if (ecgJson.data?.length) setEcgData(ecgJson.data);
+        enqueueEcgSnapshot(ecgJson.data);
         if (ecgJson.leads_off !== undefined) setLeadsOff(ecgJson.leads_off);
         if (diagJson) setDiagnostic(diagJson);
         if (healthJson.active_source) setDataSource(healthJson.active_source);
@@ -346,13 +379,11 @@ function App() {
           if (payload.type === 'leads_off') { setLeadsOff(true); return; }
           if (payload.type === 'leads_on') { setLeadsOff(false); return; }
           if (payload.type === 'snapshot') {
-            if (Array.isArray(payload.ecg_snapshot) && payload.ecg_snapshot.length)
-              setEcgData(payload.ecg_snapshot);
+            enqueueEcgSnapshot(payload.ecg_snapshot);
             return;
           }
           if (payload.type === 'prediction') {
-            if (Array.isArray(payload.ecg_snapshot) && payload.ecg_snapshot.length)
-              setEcgData(payload.ecg_snapshot);
+            enqueueEcgSnapshot(payload.ecg_snapshot);
             setLeadsOff(false);
             setLastPrediction(payload);
             if (payload.fhir_report) setDiagnostic(payload.fhir_report);
@@ -398,7 +429,7 @@ function App() {
   const handleSourceChange = async (source: string) => {
     setDataSource(source);
     try {
-      await fetch(`${BACKEND}/api/source?source=${source}`, { method: 'POST' });
+      await fetch(`${BACKEND}/api/source?source=${source}`, { method: 'POST', headers: apiHeaders() });
     } catch (e) {
       console.error('Failed to switch source:', e);
     }
@@ -564,9 +595,9 @@ function App() {
                 onChange={(e) => handleSourceChange(e.target.value)}
                 className="source-dropdown"
               >
-                <option value="SIMULATION">🧪 Sim</option>
                 <option value="MQTT">📡 MQTT</option>
                 <option value="SERIAL">🔌 Serial</option>
+                <option value="RECORDED_REAL">📚 Real Dataset</option>
                 <option value="HTTP">💻 Remote</option>
               </select>
             </div>

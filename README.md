@@ -111,6 +111,29 @@ git push origin main
 ## Notes
 - Backend currently supports local mode and Colab bridge mode via COLAB_INFERENCE_URL.
 
+## SDG Impact Coverage
+
+PulseAI now includes an SDG alignment workflow to track impact claims with evidence artifacts.
+
+Primary mapped goals:
+- SDG-3 (Good Health and Well-Being)
+- SDG-9 (Industry, Innovation and Infrastructure)
+- SDG-10 (Reduced Inequalities)
+- SDG-12 (Responsible Consumption and Production)
+- SDG-16 (Peace, Justice and Strong Institutions)
+- SDG-17 (Partnerships for the Goals)
+
+Generate SDG impact reports:
+
+```powershell
+python scripts/sdg_impact_report.py
+```
+
+Generated outputs:
+- test_results/sdg_impact_report.json
+- docs/sdg_impact_report.md
+- docs/sdg_coverage_framework.md
+
 ## Troubleshooting
 
 If Docker works in Docker Desktop but not in terminal:

@@ -77,3 +77,26 @@ class FirebaseService:
         if self.app:
             firebase_admin.delete_app(self.app)
         logger.info("🛑 Firebase Service offline.")
+
+    def push_prediction_event(self, payload: dict):
+        """Push latest backend prediction summary to Firebase for dashboarding."""
+        if not FIREBASE_AVAILABLE or not self.app:
+            return
+        try:
+            ref = db.reference("pulseai/backend/latest_prediction")
+            ref.set(payload)
+
+            hist_ref = db.reference("pulseai/backend/prediction_history")
+            hist_ref.push(payload)
+        except Exception as exc:
+            logger.warning(f"Firebase prediction publish failed: {exc}")
+
+    def push_benchmark_report(self, report: dict):
+        """Publish benchmark report snapshot to Firebase."""
+        if not FIREBASE_AVAILABLE or not self.app:
+            return
+        try:
+            ref = db.reference("pulseai/backend/latest_benchmark")
+            ref.set(report)
+        except Exception as exc:
+            logger.warning(f"Firebase benchmark publish failed: {exc}")

@@ -3,977 +3,1287 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PulseAI — Clinical Faculty Demo</title>
+<title>PulseAI — Demo 2 | Clinical SPA</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    --bg: #060a12;
-    --surface: #0d1526;
-    --surface2: #111d35;
-    --border: rgba(99,179,237,0.12);
-    --accent: #00e5ff;
-    --accent2: #7c3aed;
-    --green: #10b981;
-    --red: #ef4444;
-    --amber: #f59e0b;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --glow: rgba(0,229,255,0.18);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+:root {
+  --bg: #03070c;
+  --surface: rgba(13, 21, 38, 0.7);
+  --surface2: rgba(17, 29, 53, 0.85);
+  --border: rgba(0, 229, 255, 0.15);
+  --accent: #00ffa3; /* Neon Medical Green */
+  --accent2: #00d4ff; /* Cyber Blue */
+  --green: #00ffa3;
+  --red: #ff3e3e;
+  --amber: #ffcc00;
+  --text: #f0f7ff;
+  --muted: #8499b1;
+  --glow: rgba(0, 255, 163, 0.25);
+  --glass: blur(12px);
+}
 
-  /* ── Background grid ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
-  /* ── Header ── */
-  header {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 40px 24px 28px;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, rgba(0,229,255,0.05) 0%, transparent 100%);
-  }
-  .logo-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin-bottom: 10px;
-  }
-  .pulse-icon {
-    width: 48px; height: 48px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 0 20px var(--glow);
-  }
-  header h1 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    background: linear-gradient(90deg, var(--accent) 0%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.5px;
-  }
-  header .tagline {
-    font-size: 0.95rem;
-    color: var(--muted);
-    margin-top: 6px;
-  }
-  .badge-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-  }
-  .badge {
-    padding: 5px 14px;
-    border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .badge-blue  { background: rgba(0,229,255,0.12); color: var(--accent); border: 1px solid rgba(0,229,255,0.25); }
-  .badge-purple { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
-  .badge-green  { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: 'Inter', sans-serif; 
+  min-height: 100vh; 
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 50% -20%, rgba(0, 212, 255, 0.15), transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(0, 255, 163, 0.05), transparent 40%);
+}
 
-  /* ── Backend status ── */
-  #backend-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 14px 0 0;
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-    animation: pulse-dot 2s infinite;
-  }
-  .dot.live  { background: var(--green); }
-  .dot.offline { background: var(--red); animation: none; }
-  @keyframes pulse-dot {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
+/* Holographic Grid */
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: 
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none; z-index: 0; opacity: 0.2;
+}
 
-  /* ── Layout ── */
-  .layout {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 0;
-    min-height: calc(100vh - 180px);
-  }
+/* Scanline Effect */
+.scanline {
+  position: fixed; top: 0; left: 0; width: 100%; height: 2px;
+  background: rgba(0, 229, 255, 0.06);
+  z-index: 9999; pointer-events: none;
+  animation: scan 6s linear infinite;
+}
+@keyframes scan { from { top: -2%; } to { top: 102%; } }
 
-  /* ── Sidebar ── */
-  .sidebar {
-    border-right: 1px solid var(--border);
-    padding: 24px 16px;
-    overflow-y: auto;
-    max-height: calc(100vh - 180px);
-    position: sticky; top: 0;
-  }
-  .sidebar h2 {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    padding: 0 8px;
-  }
-  .case-card {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: var(--surface);
-  }
-  .case-card:hover {
-    border-color: rgba(0,229,255,0.3);
-    background: var(--surface2);
-    transform: translateX(3px);
-  }
-  .case-card.active {
-    border-color: var(--accent);
-    background: rgba(0,229,255,0.07);
-    box-shadow: 0 0 16px rgba(0,229,255,0.1);
-  }
-  .case-card.done-pass { border-color: rgba(16,185,129,0.4); }
-  .case-card.done-fail { border-color: rgba(239,68,68,0.4); }
-  .case-num {
-    font-size: 0.65rem;
-    color: var(--muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .case-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 3px; }
-  .case-sub  { font-size: 0.75rem; color: var(--muted); }
-  .case-tag  {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 2px 8px;
-    border-radius: 100px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .tag-normal  { background: rgba(16,185,129,0.15); color: #34d399; }
-  .tag-afib    { background: rgba(239,68,68,0.15); color: #f87171; }
-  .tag-pvc     { background: rgba(245,158,11,0.15); color: #fbbf24; }
-  .verdict-icon { font-size: 14px; }
+.view { display: none; position: relative; z-index: 1; opacity:0; transform: scale(0.98); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.view.active { display: block; opacity: 1; transform: scale(1); }
 
-  /* ── Main Panel ── */
-  .main-panel {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    overflow: hidden;
-  }
+/* ─── HOME ─── */
+.home-header{text-align:center;padding:48px 24px 32px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,229,255,0.06) 0%,transparent 100%)}
+.pulse-badge{display:inline-flex;align-items:center;gap:12px;margin-bottom:14px}
+.pulse-badge .icon{width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 24px var(--glow)}
+.home-header h1{font-size:2.4rem;font-weight:800;background:linear-gradient(90deg,var(--accent),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.5px}
+.home-header p{color:var(--muted);font-size:.95rem;margin-top:6px}
+.badge-row{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.badge{padding:4px 14px;border-radius:100px;font-size:.72rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.b-blue{background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.25)}
+.b-purple{background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)}
+.b-green{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.be-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:.78rem;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);animation:pdot 2s infinite}
+.dot.live{background:var(--green)}.dot.off{background:var(--red);animation:none}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:.3}}
+.mode-section{padding:40px clamp(16px,5vw,80px)}
+.mode-section h2{text-align:center;font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:28px}
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:1100px;margin:0 auto}
+.mode-card{border:1px solid var(--border);border-radius:16px;padding:28px 22px;cursor:pointer;background:var(--surface);transition:all .22s ease;position:relative;overflow:hidden}
+.mode-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(255,255,255,.03));pointer-events:none}
+.mode-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.mode-card.testing{border-color:rgba(124,58,237,.5);background:linear-gradient(135deg,#0d1526,#140a2a);box-shadow:0 0 30px rgba(124,58,237,.15)}
+.mode-card.testing:hover{box-shadow:0 0 50px rgba(124,58,237,.3)}
+.mc-num{font-size:.65rem;color:var(--muted);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.mc-icon{font-size:2rem;margin-bottom:12px;display:block}
+.mc-title{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.mc-desc{font-size:.78rem;color:var(--muted);line-height:1.5}
+.mc-arrow{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--muted);transition:all .2s}
+.mode-card:hover .mc-arrow{right:12px;color:var(--accent)}
+.mc-tag{display:inline-block;margin-top:12px;padding:3px 10px;border-radius:100px;font-size:.63rem;font-weight:700;text-transform:uppercase}
 
-  /* Patient header */
-  .patient-bar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 28px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  .patient-avatar {
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent2), var(--accent));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .patient-info h2 { font-size: 1.2rem; font-weight: 700; }
-  .patient-info p  { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
-  .patient-stats {
-    margin-left: auto;
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .stat { text-align: center; }
-  .stat-val  { font-size: 1.4rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-  .stat-lbl  { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .run-btn {
-    padding: 12px 28px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), #0ea5e9);
-    color: #000;
-    font-weight: 700;
-    font-size: 0.85rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    letter-spacing: 0.5px;
-    box-shadow: 0 0 20px rgba(0,229,255,0.3);
-    white-space: nowrap;
-  }
-  .run-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,229,255,0.5); }
-  .run-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+/* ─── DASHBOARD ─── */
+.dash-topbar {
+  background: var(--surface); backdrop-filter: var(--glass);
+  border-bottom: 1px solid var(--border); padding: 18px 32px;
+  display: flex; align-items: center; gap: 20px;
+}
+.back-btn {
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 20px; color: var(--text);
+  font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;
+}
+.run-btn {
+  padding: 12px 30px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #03070c; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 1px; box-shadow: 0 0 25px rgba(0, 255, 163, 0.4);
+}
+.run-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 40px rgba(0, 255, 163, 0.6);
+}
 
-  /* Content area */
-  .content-area {
-    padding: 24px 28px;
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 20px;
-    overflow-y: auto;
-  }
+/* Source toggle */
+.src-toggle{display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:10px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25)}
+.src-toggle span{font-size:.78rem;font-weight:600}
+.toggle-wrap{display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.toggle-opt{padding:6px 14px;font-size:.73rem;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted);border:none}
+.toggle-opt.active{background:var(--accent2);color:#fff}
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    transition: border-color 0.4s;
-  }
-  .card.alarming { border-color: rgba(239,68,68,0.5); box-shadow: 0 0 24px rgba(239,68,68,0.1); }
-  .card.safe     { border-color: rgba(16,185,129,0.4); box-shadow: 0 0 20px rgba(16,185,129,0.08); }
+/* Dashboard body */
+.dash-body{display:grid;grid-template-columns:1fr 340px;gap:0;flex:1;overflow:hidden}
+.dash-body.filter-open{grid-template-columns:1fr 400px}
+.dash-left{padding:20px 20px 12px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.dash-right{border-left:1px solid var(--border);padding:18px;overflow-y:auto;background:var(--surface)}
 
-  .card-title {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    margin-bottom: 14px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .card-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;transition:border-color .4s}
+.card.safe{border-color:rgba(16,185,129,.4);box-shadow:0 0 18px rgba(16,185,129,.06)}
+.card.alarm{border-color:rgba(239,68,68,.5);box-shadow:0 0 22px rgba(239,68,68,.1)}
+.card-lbl{font-size:.64rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
 
-  /* ECG Chart */
-  #ecgChart { width: 100% !important; }
-  .ecg-container { height: 220px; position: relative; }
-  .ecg-scanning-line {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 2px;
-    background: rgba(0,229,255,0.6);
-    box-shadow: 0 0 8px var(--accent);
-    animation: scan 2s linear infinite;
-    pointer-events: none;
-  }
-  @keyframes scan {
-    from { left: 0; }
-    to   { left: 100%; }
-  }
+/* ECG */
+.ecg-wrap{position:relative}
+.ecg-h{height:180px}
+.ecg-h2{height:130px}
+.chart-label{font-size:.63rem;color:var(--muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.chart-sep{border:0;border-top:1px dashed rgba(255,255,255,.06);margin:8px 0}
 
-  /* Results */
-  .result-block {
-    margin-bottom: 20px;
-  }
-  .classification-display {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--text);
-    margin: 8px 0 4px;
-    min-height: 2rem;
-    transition: color 0.3s;
-  }
-  .classification-display.danger { color: var(--red); }
-  .classification-display.safe   { color: var(--green); }
+/* Metrics grid */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mbox{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px}
+.mbox .v{font-size:1.1rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.mbox .l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 
-  .conf-bar-track {
-    height: 6px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 100px;
-    overflow: hidden;
-    margin: 8px 0 4px;
-  }
-  .conf-bar-fill {
-    height: 100%;
-    border-radius: 100px;
-    background: linear-gradient(90deg, var(--accent), #7c3aed);
-    transition: width 0.6s cubic-bezier(.4,0,.2,1);
-  }
-  .conf-pct { font-size: 0.78rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+/* Classification */
+.class-val{font-size:1.45rem;font-weight:800;margin:8px 0 4px;min-height:1.8rem;transition:color .3s}
+.class-val.safe{color:var(--green)}.class-val.danger{color:var(--red)}
+.conf-track{height:5px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;margin:6px 0 3px}
+.conf-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),#7c3aed);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.conf-pct{font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
 
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 16px;
-  }
-  .metric-box {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
-  }
-  .metric-box .val { font-size: 1.1rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-  .metric-box .lbl { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+/* Verdict */
+.verdict{display:none;border-radius:9px;padding:12px 16px;margin-top:12px;font-weight:700;font-size:.85rem;align-items:center;gap:10px}
+.verdict.show{display:flex}
+.verdict.pass{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#34d399}
+.verdict.fail{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171}
 
-  /* FHIR */
-  .fhir-pre {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    line-height: 1.7;
-    color: #7dd3fc;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-    overflow-y: auto;
-    max-height: 280px;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
-  .fhir-placeholder {
-    color: var(--muted);
-    font-style: italic;
-    font-size: 0.8rem;
-    text-align: center;
-    padding: 30px;
-  }
+/* FHIR */
+.fhir-pre{font-family:'JetBrains Mono',monospace;font-size:.66rem;line-height:1.7;color:#7dd3fc;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:12px;overflow-y:auto;max-height:240px;white-space:pre-wrap;word-break:break-all}
+.fhir-ph{color:var(--muted);font-style:italic;font-size:.78rem;text-align:center;padding:28px}
 
-  /* Verdict banner */
-  .verdict-banner {
-    display: none;
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin-top: 16px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    align-items: center;
-    gap: 10px;
-  }
-  .verdict-banner.show { display: flex; }
-  .verdict-banner.pass { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
-  .verdict-banner.fail { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+/* ─── FILTER PANEL ─── */
+.filter-panel{display:none}
+.filter-panel.visible{display:block}
+.filter-panel h3{font-size:.68rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px}
+.f-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);margin-bottom:9px;transition:border-color .2s}
+.f-row.active-f{border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.04)}
+.f-info .f-name{font-size:.83rem;font-weight:600}
+.f-info .f-sub{font-size:.68rem;color:var(--muted);margin-top:2px}
+.f-delta{font-size:.68rem;font-family:'JetBrains Mono',monospace;color:var(--green);margin-top:3px;display:none}
+.f-row.active-f .f-delta{display:block}
+.sw{position:relative;width:42px;height:22px;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw-track{position:absolute;inset:0;border-radius:100px;background:#1e293b;border:1px solid var(--border);cursor:pointer;transition:.2s}
+.sw-track::before{content:'';position:absolute;left:3px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:var(--muted);transition:.2s}
+.sw input:checked+.sw-track{background:rgba(0,229,255,.15);border-color:var(--accent)}
+.sw input:checked+.sw-track::before{left:21px;background:var(--accent)}
 
-  /* Progress footer */
-  .progress-footer {
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    padding: 14px 28px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  .progress-label { font-size: 0.75rem; color: var(--muted); }
-  .progress-track {
-    flex: 1;
-    height: 4px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 100px;
-    overflow: hidden;
-    min-width: 200px;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 100px;
-    background: linear-gradient(90deg, var(--accent), #7c3aed);
-    transition: width 0.4s ease;
-  }
-  .score-display {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--accent);
-    white-space: nowrap;
-  }
+/* Noise stats */
+.noise-stats{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:14px}
+.noise-stats h4{font-size:.64rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px}
+.ns-row{display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.ns-row span:first-child{color:var(--muted)}
+.nbar-track{height:6px;background:rgba(255,255,255,.06);border-radius:100px;margin:6px 0 12px;overflow:hidden}
+.nbar-fill{height:100%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:100px;transition:width .6s ease}
 
-  /* Loader animation */
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spinner {
-    display: inline-block;
-    width: 14px; height: 14px;
-    border: 2px solid rgba(0,229,255,0.2);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-  }
+/* ─── TERMINAL ─── */
+.terminal-box{background:#010914;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.term-header{padding:8px 14px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.term-dot{width:8px;height:8px;border-radius:50%;animation:pdot 1.5s infinite}
+.td-g{background:#22c55e}.td-y{background:#f59e0b}.td-r{background:#ef4444}
+.term-body{height:130px;overflow-y:auto;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.8;scroll-behavior:smooth}
+.term-line{border-bottom:1px solid rgba(255,255,255,.03);padding:1px 0}
+.t-ts{color:#475569}.t-adc{color:#94a3b8}.t-mv{color:#00e5ff}.t-hex{color:#a78bfa}
 
-  /* ECG wave colours */
-  .wave-normal  { --wave: #10b981; }
-  .wave-afib    { --wave: #ef4444; }
-  .wave-pvc     { --wave: #f59e0b; }
+/* Progress footer */
+.foot{border-top:1px solid var(--border);background:var(--surface);padding:12px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.prog-track{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;min-width:160px}
+.prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),#7c3aed);transition:width .4s ease}
+.score{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;color:var(--accent);white-space:nowrap}
 
-  /* Responsive */
-  @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; }
-    .sidebar { max-height: 280px; position: relative; border-right: none; border-bottom: 1px solid var(--border); }
-    .content-area { grid-template-columns: 1fr; }
-  }
+@media(max-width:900px){
+  .dash-body,.dash-body.filter-open{grid-template-columns:1fr}
+  .dash-right{border-left:none;border-top:1px solid var(--border)}
+  .mode-grid{grid-template-columns:1fr 1fr}
+}
+/* Scanning Laser Animation */
+.scanning::after {
+  content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 50%;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+  opacity: 0.15; animation: laser-scan 1.5s linear infinite; pointer-events: none;
+}
+@keyframes laser-scan {
+  0% { top: -100%; }
+  100% { top: 100%; }
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(0, 255, 163, 0.4), 0 0 40px rgba(0, 255, 163, 0.2);
+}
+.mc-num { font-family: 'JetBrains Mono'; font-weight: 800; color: var(--accent); opacity: 0.6; }
+.hologram-grid {
+  position: fixed; inset: 0;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none; opacity: 0.1; z-index: 0;
+}
 </style>
 </head>
 <body>
+<div class="scanline"></div>
+<div class="hologram-grid"></div>
 
-<!-- ── HEADER ── -->
-<header>
-  <div class="logo-row">
-    <div class="pulse-icon">🫀</div>
-    <h1>PulseAI Clinical Demo</h1>
-  </div>
-  <p class="tagline">HCTG-Net · Deep Learning Arrhythmia Detection · Real-Time ECG Analysis</p>
-  <div class="badge-row">
-    <span class="badge badge-blue">HCTG-Net DL Model</span>
-    <span class="badge badge-purple">MIT-BIH Dataset</span>
-    <span class="badge badge-green">&gt;85% Accuracy</span>
-    <span class="badge badge-blue">FHIR R4 Reports</span>
-  </div>
-  <div id="backend-indicator">
-    <span class="dot" id="be-dot"></span>
-    <span id="be-label">Checking backend…</span>
-  </div>
-</header>
-
-<!-- ── LAYOUT ── -->
-<div class="layout">
-
-  <!-- SIDEBAR: Case List -->
-  <aside class="sidebar">
-    <h2>Cases 0 – 6</h2>
-    <div id="case-list"></div>
-  </aside>
-
-  <!-- MAIN PANEL -->
-  <div class="main-panel">
-
-    <!-- Patient bar -->
-    <div class="patient-bar">
-      <div class="patient-avatar" id="pt-avatar">?</div>
-      <div class="patient-info">
-        <h2 id="pt-name">Select a case</h2>
-        <p id="pt-meta">Click any case on the left to begin</p>
-      </div>
-      <div class="patient-stats">
-        <div class="stat">
-          <div class="stat-val" id="pt-age">—</div>
-          <div class="stat-lbl">Age (yrs)</div>
-        </div>
-        <div class="stat">
-          <div class="stat-val" id="pt-hr">—</div>
-          <div class="stat-lbl">Target HR</div>
-        </div>
-        <div class="stat">
-          <div class="stat-val" id="pt-expected">—</div>
-          <div class="stat-lbl">Expected</div>
-        </div>
-      </div>
-      <button class="run-btn" id="run-btn" onclick="runCase()" disabled>▶ Run Analysis</button>
+<!-- ════════════════════════════════════════════
+     VIEW 1 · HOME — Mode Selector
+════════════════════════════════════════════ -->
+<div id="view-home" class="view active">
+  <div class="home-header">
+    <div class="pulse-badge">
+      <div class="icon">🫀</div>
+      <h1 class="glow-text">PulseAI Clinical Platform</h1>
     </div>
-
-    <!-- Content -->
-    <div class="content-area">
-
-      <!-- ECG + Verdict col -->
-      <div>
-        <div class="card" id="ecg-card">
-          <div class="card-title">Live ECG Waveform</div>
-          <div class="ecg-container">
-            <canvas id="ecgChart"></canvas>
-          </div>
-        </div>
-
-        <div class="verdict-banner" id="verdict-banner">
-          <span id="verdict-icon" style="font-size:1.4rem"></span>
-          <div>
-            <div id="verdict-title"></div>
-            <div id="verdict-sub" style="font-weight:400;font-size:0.8rem;opacity:0.8;margin-top:2px"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Results + FHIR col -->
-      <div>
-        <div class="card" id="result-card">
-          <div class="card-title">AI Classification</div>
-
-          <div class="result-block">
-            <div style="font-size:0.72rem;color:var(--muted)">CLASSIFICATION</div>
-            <div class="classification-display" id="class-display">Awaiting analysis…</div>
-            <div class="conf-bar-track"><div class="conf-bar-fill" id="conf-bar" style="width:0%"></div></div>
-            <div class="conf-pct" id="conf-pct">Confidence: —</div>
-          </div>
-
-          <div class="metrics-grid">
-            <div class="metric-box">
-              <div class="val" id="m-hr">—</div>
-              <div class="lbl">Heart Rate (BPM)</div>
-            </div>
-            <div class="metric-box">
-              <div class="val" id="m-rrcv">—</div>
-              <div class="lbl">RR-CV (Variability)</div>
-            </div>
-            <div class="metric-box">
-              <div class="val" id="m-qual">—</div>
-              <div class="lbl">Signal Quality</div>
-            </div>
-            <div class="metric-box">
-              <div class="val" id="m-model">—</div>
-              <div class="lbl">Model Used</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:16px">
-          <div class="card-title">FHIR Diagnostic Report</div>
-          <div id="fhir-content">
-            <div class="fhir-placeholder">Run analysis to generate a FHIR R4 DiagnosticReport</div>
-          </div>
-        </div>
-      </div>
-
+    <p style="font-size: 1.1rem; color: #fff; font-weight: 300; letter-spacing: 0.5px;">Advanced Neural Arrhythmia Diagnostics • MIT-BIH HCTG-Net v2.1</p>
+    <p style="opacity: 0.6; margin-top: 8px;">Synchronous Real-Time ECG Inference & HL7 FHIR Interoperability</p>
+    <div class="badge-row">
+      <span class="badge b-blue">HCTG-Net DL Model</span>
+      <span class="badge b-purple">MIT-BIH Dataset</span>
+      <span class="badge b-green">&gt;85% Accuracy</span>
+      <span class="badge b-blue">FHIR R4 Reports</span>
     </div>
-
-    <!-- Progress footer -->
-    <div class="progress-footer">
-      <span class="progress-label">Overall Progress</span>
-      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-      <span class="score-display" id="prog-score">0 / 7 cases</span>
-      <span class="score-display" id="prog-acc" style="color:var(--green)">Accuracy: —</span>
+    <div class="be-bar">
+      <span class="dot" id="be-dot2"></span>
+      <span id="be-label2">Checking backend…</span>
     </div>
-
+  </div>
+  <div class="mode-section">
+    <h2>Select Clinical Mode — Cases 0 through 6</h2>
+    <div class="mode-grid" id="mode-grid"></div>
   </div>
 </div>
 
+<!-- ════════════════════════════════════════════
+     VIEW 2 · DASHBOARD — Active View
+════════════════════════════════════════════ -->
+<div id="view-dashboard" class="view">
+<div class="dash-wrap">
+
+  <!-- Top bar -->
+  <div class="dash-topbar">
+    <button class="back-btn" onclick="showHome()">← Back to Menu</button>
+    <div class="mode-title-bar">
+      <h2 id="dash-title">—</h2>
+      <p id="dash-sub">—</p>
+    </div>
+    <!-- Testing mode source toggle (hidden by default) -->
+    <div class="src-toggle" id="src-toggle" style="display:none">
+      <span>Data Source:</span>
+      <div class="toggle-wrap">
+        <button class="toggle-opt active" id="btn-sim" onclick="setSource('sim')">Simulated</button>
+        <button class="toggle-opt" id="btn-real" onclick="setSource('real')">Real Data</button>
+      </div>
+    </div>
+    <div class="be-bar" style="margin:0">
+      <span class="dot" id="be-dot3"></span>
+      <span id="be-label3" style="font-size:.75rem;color:var(--muted)">—</span>
+    </div>
+    <button class="run-btn" id="run-btn2" onclick="runAnalysis()" disabled>▶ Run Analysis</button>
+  </div>
+
+  <!-- Body: left charts + right panel -->
+  <div class="dash-body" id="dash-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="dash-left">
+
+      <!-- Dual chart section (Real Data mode) or single chart (other modes) -->
+      <div class="card" id="ecg-card2">
+        <div class="card-lbl">Live ECG Waveform</div>
+        <!-- Real Data: raw chart -->
+        <div id="raw-chart-section" style="display:none">
+          <div class="chart-label">▲ RAW SENSOR SIGNAL (unfiltered — binary ADC values)</div>
+          <div class="ecg-wrap ecg-h2"><canvas id="rawChart"></canvas></div>
+          <hr class="chart-sep">
+          <div class="chart-label">▼ FILTERED OUTPUT (after applied filters)</div>
+        </div>
+        <!-- Main ECG chart (always shown) -->
+        <div class="ecg-wrap ecg-h"><canvas id="ecgChart2"></canvas></div>
+      </div>
+
+      <!-- Raw sensor terminal -->
+      <div class="terminal-box" id="terminal-box">
+        <div class="term-header">
+          <span class="term-dot td-g"></span>
+          <span>SENSOR TERMINAL — Raw Binary Output</span>
+          <span style="margin-left:auto" id="term-baud">500 Hz • 12-bit ADC</span>
+        </div>
+        <div class="term-body" id="term-body"></div>
+      </div>
+
+      <!-- Verdict -->
+      <div class="verdict" id="verdict2">
+        <span id="v-icon" style="font-size:1.3rem"></span>
+        <div><div id="v-title"></div><div id="v-sub" style="font-weight:400;font-size:.75rem;opacity:.75;margin-top:2px"></div></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="dash-right">
+
+      <!-- ── Standard AI Results panel (modes 0,2,3,4,5,6) ── -->
+      <div id="ai-panel">
+        <div style="font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">AI Classification</div>
+        <div class="class-val" id="class-val2">Awaiting analysis…</div>
+        <div class="conf-track"><div class="conf-fill" id="conf-fill2" style="width:0%"></div></div>
+        <div class="conf-pct" id="conf-pct2">Confidence: —</div>
+        <div class="metrics" style="margin-top:16px">
+          <div class="mbox"><div class="v" id="m-hr2">—</div><div class="l">Heart Rate (BPM)</div></div>
+          <div class="mbox"><div class="v" id="m-rv2">—</div><div class="l">RR-CV Variability</div></div>
+          <div class="mbox"><div class="v" id="m-sq2">—</div><div class="l">Signal Quality</div></div>
+          <div class="mbox"><div class="v" id="m-mo2">—</div><div class="l">Model Used</div></div>
+        </div>
+        <div style="margin-top:18px">
+          <div style="font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">FHIR Diagnostic Report</div>
+          <div id="fhir2"><div class="fhir-ph">Run analysis to generate FHIR R4 DiagnosticReport</div></div>
+        </div>
+      </div>
+
+      <!-- ── Testing Mode: Filter Panel (Real Data only) ── -->
+      <div class="filter-panel" id="filter-panel">
+        <h3>Signal Processing Filters</h3>
+
+        <div class="f-row" id="fr-mains" style="align-items:flex-start;flex-direction:column;gap:8px">
+          <div class="f-info" style="width:100%">
+            <div class="f-name">Powerline Region</div>
+            <div class="f-sub">Select local mains frequency for notch filter tuning</div>
+          </div>
+          <div class="toggle-wrap">
+            <button class="toggle-opt active" id="btn-mains-50" onclick="setMainsHz(50)">50 Hz</button>
+            <button class="toggle-opt" id="btn-mains-60" onclick="setMainsHz(60)">60 Hz</button>
+          </div>
+        </div>
+
+        <div class="f-row" id="fr-notch">
+          <div class="f-info">
+            <div class="f-name">AC Mains Notch</div>
+            <div class="f-sub">50 Hz powerline interference</div>
+            <div class="f-delta" id="fd-notch">↓ noise —</div>
+          </div>
+          <label class="sw"><input type="checkbox" id="sw-notch" onchange="onFilterChange()"><span class="sw-track"></span></label>
+        </div>
+
+        <div class="f-row" id="fr-hp">
+          <div class="f-info">
+            <div class="f-name">Baseline Wander Removal</div>
+            <div class="f-sub">High-pass filter ~0.5 Hz</div>
+            <div class="f-delta" id="fd-hp">↓ noise —</div>
+          </div>
+          <label class="sw"><input type="checkbox" id="sw-hp" onchange="onFilterChange()"><span class="sw-track"></span></label>
+        </div>
+
+        <div class="f-row" id="fr-lp">
+          <div class="f-info">
+            <div class="f-name">High-Freq Noise Reduction</div>
+            <div class="f-sub">Low-pass filter ~40 Hz</div>
+            <div class="f-delta" id="fd-lp">↓ noise —</div>
+          </div>
+          <label class="sw"><input type="checkbox" id="sw-lp" onchange="onFilterChange()"><span class="sw-track"></span></label>
+        </div>
+
+        <div class="f-row" id="fr-ma">
+          <div class="f-info">
+            <div class="f-name">Moving Average Smoothing</div>
+            <div class="f-sub">Window = 7 samples</div>
+            <div class="f-delta" id="fd-ma">↓ noise —</div>
+          </div>
+          <label class="sw"><input type="checkbox" id="sw-ma" onchange="onFilterChange()"><span class="sw-track"></span></label>
+        </div>
+
+        <div class="f-row" id="fr-med">
+          <div class="f-info">
+            <div class="f-name">Motion Artifact Suppressor</div>
+            <div class="f-sub">Median filter (window = 5) for cable/body movement noise</div>
+            <div class="f-delta" id="fd-med">↓ noise —</div>
+          </div>
+          <label class="sw"><input type="checkbox" id="sw-med" onchange="onFilterChange()"><span class="sw-track"></span></label>
+        </div>
+
+        <div class="f-row" id="fr-hamp">
+          <div class="f-info">
+            <div class="f-name">Impulse Spike Remover</div>
+            <div class="f-sub">Hampel outlier filter for ADC spikes / contact transients</div>
+            <div class="f-delta" id="fd-hamp">↓ noise —</div>
+          </div>
+          <label class="sw"><input type="checkbox" id="sw-hamp" onchange="onFilterChange()"><span class="sw-track"></span></label>
+        </div>
+
+        <div class="f-row" id="fr-clip">
+          <div class="f-info">
+            <div class="f-name">Saturation Guard</div>
+            <div class="f-sub">Soft clipping to suppress electrode-pop saturation bursts</div>
+            <div class="f-delta" id="fd-clip">↓ noise —</div>
+          </div>
+          <label class="sw"><input type="checkbox" id="sw-clip" onchange="onFilterChange()"><span class="sw-track"></span></label>
+        </div>
+
+        <!-- Noise stats block -->
+        <div class="noise-stats">
+          <h4>Noise Reduction Analysis</h4>
+          <div class="ns-row"><span>Raw RMS Noise</span><span id="ns-raw">—</span></div>
+          <div class="ns-row"><span>Filtered RMS</span><span id="ns-filt">—</span></div>
+          <div class="ns-row"><span>SNR Improvement</span><span id="ns-snr" style="color:var(--green)">—</span></div>
+          <div class="nbar-track"><div class="nbar-fill" id="ns-bar" style="width:0%"></div></div>
+          <div class="ns-row"><span>Noise Reduction</span><span id="ns-pct" style="color:var(--green);font-weight:700">0%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- dash-body -->
+
+  <!-- Footer progress -->
+  <div class="foot">
+    <span style="font-size:.73rem;color:var(--muted)">Overall Progress</span>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill2" style="width:0%"></div></div>
+    <span class="score" id="prog-score2">0 / 7 cases</span>
+    <span class="score" id="prog-acc2" style="color:var(--green)">Accuracy: —</span>
+  </div>
+
+</div><!-- dash-wrap -->
+</div><!-- view-dashboard -->
+
+<!-- ════════════════════════════════════════════ JAVASCRIPT ════════════════════════════════════════════ -->
 <script>
-// ── CASE DEFINITIONS ──────────────────────────────────────────────────────────
-const CASES = [
-  {
-    id: 0, name: "Raj Kumar",        age: 22,  ageGroup: "Young Adult (18-25)",
-    scenario: "Light activity — resting",
-    condition: "Normal Sinus Rhythm",
-    expected: "Normal Sinus Rhythm",
-    hr: 72,  type: "normal",   avatar: "R",
-    ecgType: "normal",
-  },
-  {
-    id: 1, name: "Priya Singh",      age: 20,  ageGroup: "Young Adult (18-25)",
-    scenario: "Post-exercise recovery",
-    condition: "Normal Sinus Rhythm",
-    expected: "Normal Sinus Rhythm",
-    hr: 95,  type: "normal",   avatar: "P",
-    ecgType: "normal",
-  },
-  {
-    id: 2, name: "Arjun Mehta",      age: 40,  ageGroup: "Middle Age (35-45)",
-    scenario: "Moderate exercise — gym session",
-    condition: "Normal Sinus Rhythm (elevated HR)",
-    expected: "Normal Sinus Rhythm",
-    hr: 110, type: "normal",   avatar: "A",
-    ecgType: "normal",
-  },
-  {
-    id: 3, name: "Deepa Nair",       age: 42,  ageGroup: "Middle Age (35-45)",
-    scenario: "At rest — stress test result",
-    condition: "Atrial Fibrillation Risk",
-    expected: "Atrial Fibrillation (AFib)",
-    hr: null, type: "afib",   avatar: "D",
-    ecgType: "afib",
-  },
-  {
-    id: 4, name: "Suresh Pillai",    age: 55,  ageGroup: "Adult (50-60)",
-    scenario: "Baseline — morning checkup",
-    condition: "Normal Sinus Rhythm",
-    expected: "Normal Sinus Rhythm",
-    hr: 68,  type: "normal",  avatar: "S",
-    ecgType: "normal",
-  },
-  {
-    id: 5, name: "Lakshmi Rao",      age: 58,  ageGroup: "Adult (50-60)",
-    scenario: "Symptomatic — palpitations",
-    condition: "Possible AFib",
-    expected: "Atrial Fibrillation (AFib)",
-    hr: null, type: "afib",  avatar: "L",
-    ecgType: "afib",
-  },
-  {
-    id: 6, name: "Harsha Reddy",     age: 68,  ageGroup: "Elderly (65-75)",
-    scenario: "Healthy — routine checkup",
-    condition: "Normal Sinus Rhythm",
-    expected: "Normal Sinus Rhythm",
-    hr: 62,  type: "normal",  avatar: "H",
-    ecgType: "normal",
-  },
+// ── MODES ─────────────────────────────────────────────────
+const MODES = [
+  {id:0,icon:'💚',title:'Normal Sinus Rhythm',    desc:'Regular rhythm, 60–100 BPM, healthy cardiac cycle',       color:'#10b981',accentCls:'b-green', ecgType:'normal',   hr:72,  expected:'Healthy Individual (Normal)',   testing:false},
+  {id:1,icon:'🔬',title:'Testing Phase Mode',      desc:'Debug & validation — toggle between Real / Simulated data',color:'#7c3aed',accentCls:'b-purple',ecgType:'normal',   hr:70,  expected:'Healthy Individual (Normal)',   testing:true},
+  {id:2,icon:'⚡',title:'Tachycardia (Fast)',        desc:'Heart rate >100 BPM, rapid ventricular response',         color:'#f59e0b',accentCls:'',        ecgType:'tachy',    hr:135, expected:'Tachycardia',                    testing:false},
+  {id:3,icon:'🔵',title:'Bradycardia (Slow)',        desc:'Heart rate <60 BPM, slow sinus node discharge',           color:'#38bdf8',accentCls:'',        ecgType:'brady',    hr:42,  expected:'Heart Block (Bradycardia)',      testing:false},
+  {id:4,icon:'⚠️', title:'Premature Contractions',  desc:'PVCs — ectopic beats disrupting normal rhythm',           color:'#eab308',accentCls:'',        ecgType:'pvc',      hr:65,  expected:'Other Arrhythmia',               testing:false},
+  {id:5,icon:'🔴',title:'AFib / Flutter (Irregular)', desc:'Irregular RR intervals, absent P-waves, rapid flutter', color:'#ef4444',accentCls:'',        ecgType:'afib',     hr:null,expected:'Atrial Fibrillation (AFib)',      testing:false},
+  {id:6,icon:'💀',title:'Ventricular Arrhythmias',  desc:'Wide bizarre QRS, dangerous ventricular origin',          color:'#dc2626',accentCls:'',        ecgType:'vfib',     hr:null,expected:'Ventricular Fibrillation (VF)',  testing:false},
 ];
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let currentCase   = null;
-let backendLive   = false;
-let results       = {};   // caseId -> { pass, predicted }
-let animFrameId   = null;
-let ecgPhase      = 0;
-let chart         = null;
-let ecgBuffer     = new Array(250).fill(0);
-let wsConn        = null;
-let feedInterval  = null;
+// ── STATE ──────────────────────────────────────────────────
+let activeMode = null, backendLive = false, results = {};
+let rawChart = null, mainChart = null;
+let rawBuffer = new Float32Array(300), filtBuffer = new Float32Array(300);
+let adcBuffer = new Float32Array(300).fill(2850);
+let animId = null, phase = 0, source = 'sim', wsConn = null;
+let isStreaming = false, streamTimeout = null;
+const FS = 500;
+let mainsHz = 50;
+let filterSyncTimer = null;
 
-// ── CHART INIT ────────────────────────────────────────────────────────────────
-function initChart() {
-  const ctx = document.getElementById('ecgChart').getContext('2d');
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: Array.from({length: 250}, (_, i) => i),
-      datasets: [{
-        data: ecgBuffer.slice(),
-        borderColor: '#10b981',
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.3,
-        fill: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 0 },
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      scales: {
-        x: { display: false },
-        y: { display: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#475569', font: { size: 9 } }, min: -2, max: 3 }
-      }
-    }
-  });
+function setMainsHz(hz){
+  mainsHz = hz===60 ? 60 : 50;
+  document.getElementById('btn-mains-50')?.classList.toggle('active', mainsHz===50);
+  document.getElementById('btn-mains-60')?.classList.toggle('active', mainsHz===60);
+  onFilterChange();
 }
 
-// ── ECG SIGNAL GENERATION ─────────────────────────────────────────────────────
-function generateEcgSample(type, phase, hr) {
-  const heartRate = hr || (type === 'afib' ? null : 70);
-  const cycle     = phase % 100;
-
-  if (type === 'normal') {
-    // Realistic QRS morphology
-    if      (cycle === 10) return 0.1;   // P wave
-    else if (cycle === 12) return 0.12;
-    else if (cycle === 28) return -0.2;  // Q dip
-    else if (cycle === 30) return 2.0;   // R peak
-    else if (cycle === 32) return -0.35; // S wave
-    else if (cycle >= 45 && cycle <= 52) return 0.15 * Math.sin(Math.PI * (cycle-45)/7); // T wave
-    else return 0.01 * (Math.random() - 0.5);
-  } else if (type === 'afib') {
-    // Irregular intervals, fibrillatory baseline
-    const irregular = Math.random() < 0.015;  // random QRS
-    const fibrillation = 0.08 * Math.sin(phase * 0.8 + Math.random());
-    if (irregular) return 1.4 + Math.random() * 0.4;
-    return fibrillation + 0.03 * (Math.random() - 0.5);
-  } else if (type === 'pvc') {
-    if (cycle === 30) return 2.0;
-    if (cycle === 32) return -0.35;
-    const pvcInject = (phase % 300 > 280) && (cycle === 5);
-    if (pvcInject) return -0.5 + Math.random() * 2.5;
-    return 0.02 * (Math.random() - 0.5);
-  }
-  return 0;
+function getFilterConfigPayload(){
+  return {
+    mains_hz: mainsHz,
+    notch_enabled: !!document.getElementById('sw-notch')?.checked,
+    hp_enabled: !!document.getElementById('sw-hp')?.checked,
+    lp_enabled: !!document.getElementById('sw-lp')?.checked,
+    ma_enabled: !!document.getElementById('sw-ma')?.checked,
+    median_enabled: !!document.getElementById('sw-med')?.checked,
+    hampel_enabled: !!document.getElementById('sw-hamp')?.checked,
+    clip_enabled: !!document.getElementById('sw-clip')?.checked,
+  };
 }
 
-function startEcgAnimation() {
-  if (animFrameId) cancelAnimationFrame(animFrameId);
-  ecgPhase = 0;
-
-  const cc  = currentCase;
-  const col = cc.type === 'afib' ? '#ef4444' : cc.type === 'pvc' ? '#f59e0b' : '#10b981';
-  chart.data.datasets[0].borderColor = col;
-
-  let lastTime = 0;
-  function step(ts) {
-    if (ts - lastTime > 16) {  // ~60fps
-      lastTime = ts;
-      const s = generateEcgSample(cc.ecgType, ecgPhase, cc.hr);
-      ecgBuffer.push(s);
-      ecgBuffer.shift();
-      chart.data.datasets[0].data = ecgBuffer.slice();
-      chart.update('none');
-      ecgPhase++;
-    }
-    animFrameId = requestAnimationFrame(step);
-  }
-  animFrameId = requestAnimationFrame(step);
+async function syncFilterConfigToBackend(){
+  try{
+    await fetch('http://127.0.0.1:8000/api/config/filters',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(getFilterConfigPayload())
+    });
+  }catch{}
 }
 
-// ── BACKEND CHECK ─────────────────────────────────────────────────────────────
-async function checkBackend() {
-  try {
-    const r = await fetch('http://127.0.0.1:8000/health', { signal: AbortSignal.timeout(2000) });
-    if (r.ok) {
-      backendLive = true;
-      document.getElementById('be-dot').className   = 'dot live';
-      document.getElementById('be-label').textContent = 'Backend LIVE — HCTG-Net loaded';
-      return true;
-    }
-  } catch {}
-  backendLive = false;
-  document.getElementById('be-dot').className   = 'dot offline';
-  document.getElementById('be-label').textContent = 'Backend offline — running demo simulation';
-  return false;
+function scheduleFilterSync(){
+  if(filterSyncTimer) clearTimeout(filterSyncTimer);
+  filterSyncTimer = setTimeout(()=>{ syncFilterConfigToBackend(); },120);
 }
 
-// ── CASE SELECTION ────────────────────────────────────────────────────────────
-function selectCase(id) {
-  currentCase = CASES[id];
-
-  // Update sidebar active state
-  document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active'));
-  document.getElementById(`cc-${id}`).classList.add('active');
-
-  // Update patient bar
-  const cc = currentCase;
-  document.getElementById('pt-avatar').textContent   = cc.avatar;
-  document.getElementById('pt-name').textContent      = `${cc.name}`;
-  document.getElementById('pt-meta').textContent      = `${cc.ageGroup}  ·  ${cc.scenario}`;
-  document.getElementById('pt-age').textContent       = cc.age;
-  document.getElementById('pt-hr').textContent        = cc.hr ? cc.hr : 'IRR';
-  document.getElementById('pt-expected').textContent  = cc.type === 'normal' ? 'NSR' : cc.type === 'afib' ? 'AFib' : 'PVC';
-
-  // Reset results panel
-  document.getElementById('class-display').textContent = 'Awaiting analysis…';
-  document.getElementById('class-display').className   = 'classification-display';
-  document.getElementById('conf-bar').style.width      = '0%';
-  document.getElementById('conf-pct').textContent      = 'Confidence: —';
-  document.getElementById('m-hr').textContent          = '—';
-  document.getElementById('m-rrcv').textContent        = '—';
-  document.getElementById('m-qual').textContent        = '—';
-  document.getElementById('m-model').textContent       = '—';
-  document.getElementById('fhir-content').innerHTML    = '<div class="fhir-placeholder">Run analysis to generate a FHIR R4 DiagnosticReport</div>';
-  document.getElementById('verdict-banner').className  = 'verdict-banner';
-  document.getElementById('ecg-card').className        = 'card';
-  document.getElementById('result-card').className     = 'card';
-
-  // Start ECG animation
-  startEcgAnimation();
-  document.getElementById('run-btn').disabled = false;
-}
-
-// ── RUN ANALYSIS ──────────────────────────────────────────────────────────────
-async function runCase() {
-  if (!currentCase) return;
-  const cc = currentCase;
-  const btn = document.getElementById('run-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Analyzing…';
-
-  // Always use local high-fidelity simulation for deterministic correct results
-  // (Backend heuristic gives unstable output for synthetic windows; simulation is ground-truth for demo)
-  let result = simulateResult(cc);
-
-  // Wait a moment for drama :)
-  await sleep(800);
-  displayResult(cc, result);
-
-  btn.disabled = false;
-  btn.innerHTML = '▶ Run Analysis';
-}
-
-function buildEcgWindow(cc) {
-  // Build a 1000-sample window matching the backend's SEGMENT_LEN
-  const out = [];
-  for (let i = 0; i < 1000; i++) {
-    out.push(generateEcgSample(cc.ecgType, i, cc.hr) * 50 + 50);
+// ── DSP FILTERS ────────────────────────────────────────────
+function applyBiquad(data, coeffs) {
+  const { b0, b1, b2, a1, a2 } = coeffs;
+  const out = new Float32Array(data.length);
+  let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  for (let i = 0; i < data.length; i++) {
+    const x0 = data[i];
+    const y0 = b0 * x0 + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+    out[i] = y0;
+    x2 = x1; x1 = x0;
+    y2 = y1; y1 = y0;
   }
   return out;
 }
 
-function simulateResult(cc) {
-  // Deterministic-ish local simulation that matches the expected classification
-  const isAfib   = cc.type === 'afib';
-  const isPvc    = cc.type === 'pvc';
-  const isArrhythmia = isAfib || isPvc;
+function reverseArrayFloat32(arr) {
+  const out = new Float32Array(arr.length);
+  for (let i = 0, j = arr.length - 1; i < arr.length; i++, j--) out[i] = arr[j];
+  return out;
+}
 
-  const classification = isAfib ? 'Atrial Fibrillation (AFib)'
-                       : isPvc  ? 'Other Arrhythmia'
-                       :          'Normal Sinus Rhythm';
-
-  const confidence = isArrhythmia
-    ? 0.82 + Math.random() * 0.14
-    : 0.87 + Math.random() * 0.11;
-
-  const hr = cc.hr || Math.floor(Math.random() * 40 + 80);
-  const rr_cv = isAfib ? (0.2 + Math.random() * 0.2).toFixed(3)
-                       : (0.04 + Math.random() * 0.06).toFixed(3);
-
-  let fhir = null;
-  if (isArrhythmia) {
-    fhir = generateLocalFhir(cc, classification, confidence);
+function zeroPhaseBiquad(data, coeffs, sections = 1) {
+  let y = Float32Array.from(data);
+  for (let s = 0; s < sections; s++) {
+    y = applyBiquad(y, coeffs);
   }
-
-  return {
-    classification,
-    confidence,
-    is_arrhythmia: isArrhythmia,
-    heart_rate_bpm: hr,
-    rr_cv: parseFloat(rr_cv),
-    signal_quality: confidence > 0.88 ? 'excellent' : 'good',
-    model_used: 'HCTG-Net (simulated)',
-    fhir_report: fhir,
-  };
+  y = reverseArrayFloat32(y);
+  for (let s = 0; s < sections; s++) {
+    y = applyBiquad(y, coeffs);
+  }
+  return reverseArrayFloat32(y);
 }
 
-function generateLocalFhir(cc, classification, confidence) {
-  const ts = new Date().toISOString();
-  return {
-    resourceType: "DiagnosticReport",
-    id: `pulseai-${cc.id}-${Date.now()}`,
-    status: "final",
-    code: { coding: [{ system: "http://loinc.org", code: "11524-6", display: "ECG study" }] },
-    subject: { reference: `Patient/case-${cc.id}`, display: cc.name },
-    effectiveDateTime: ts,
-    conclusion: `${classification} detected with ${(confidence*100).toFixed(1)}% confidence.`,
-    result: [{
-      code: { text: "Arrhythmia Classification" },
-      valueString: classification,
-      interpretation: [{
-        coding: [{ code: "A", display: "Abnormal" }],
-        text: "Clinical review recommended"
-      }]
-    }],
-    presentedForm: [{
-      contentType: "text/plain",
-      title: "PulseAI HCTG-Net Report",
-      data: btoa(`Patient: ${cc.name}, Age: ${cc.age}\nCondition: ${classification}\nConfidence: ${(confidence*100).toFixed(1)}%\nGenerated: ${ts}`)
-    }]
-  };
+function designNotch(freq = 50, fs = FS, q = 30) {
+  const w0 = 2 * Math.PI * freq / fs;
+  const alpha = Math.sin(w0) / (2 * q);
+  const cosw0 = Math.cos(w0);
+  let b0 = 1;
+  let b1 = -2 * cosw0;
+  let b2 = 1;
+  const a0 = 1 + alpha;
+  let a1 = -2 * cosw0;
+  let a2 = 1 - alpha;
+  b0 /= a0; b1 /= a0; b2 /= a0;
+  a1 /= a0; a2 /= a0;
+  return { b0, b1, b2, a1, a2 };
 }
 
-function displayResult(cc, result) {
-  const isArrhythmia = result.is_arrhythmia;
-  const classification = result.classification || 'Unknown';
-  const confidence = result.confidence || 0;
-  const pass = classification === cc.expected;
+function designLowPass(cutoff = 40, fs = FS, q = 0.7071) {
+  const w0 = 2 * Math.PI * cutoff / fs;
+  const alpha = Math.sin(w0) / (2 * q);
+  const cosw0 = Math.cos(w0);
+  let b0 = (1 - cosw0) / 2;
+  let b1 = 1 - cosw0;
+  let b2 = (1 - cosw0) / 2;
+  const a0 = 1 + alpha;
+  let a1 = -2 * cosw0;
+  let a2 = 1 - alpha;
+  b0 /= a0; b1 /= a0; b2 /= a0;
+  a1 /= a0; a2 /= a0;
+  return { b0, b1, b2, a1, a2 };
+}
 
-  // Store result
-  results[cc.id] = { pass, predicted: classification };
-  updateProgress();
-  updateSidebarResult(cc.id, pass);
+function designHighPass(cutoff = 0.5, fs = FS, q = 0.7071) {
+  const w0 = 2 * Math.PI * cutoff / fs;
+  const alpha = Math.sin(w0) / (2 * q);
+  const cosw0 = Math.cos(w0);
+  let b0 = (1 + cosw0) / 2;
+  let b1 = -(1 + cosw0);
+  let b2 = (1 + cosw0) / 2;
+  const a0 = 1 + alpha;
+  let a1 = -2 * cosw0;
+  let a2 = 1 - alpha;
+  b0 /= a0; b1 /= a0; b2 /= a0;
+  a1 /= a0; a2 /= a0;
+  return { b0, b1, b2, a1, a2 };
+}
 
-  // Classification display
-  const classEl = document.getElementById('class-display');
-  classEl.textContent  = classification;
-  classEl.className    = 'classification-display ' + (isArrhythmia ? 'danger' : 'safe');
+function notchFilter(data,freq=50,fs=FS){
+  const coeffs = designNotch(freq, fs, 30);
+  // Single biquad, zero-phase (forward+reverse) to avoid phase distortion.
+  return zeroPhaseBiquad(data, coeffs, 1);
+}
 
-  // Confidence bar
-  const pct = Math.round(confidence * 100);
-  document.getElementById('conf-bar').style.width = pct + '%';
-  document.getElementById('conf-pct').textContent = `Confidence: ${pct}%`;
+function highPassFilter(data,cutoff=0.5,fs=FS){
+  const coeffs = designHighPass(cutoff, fs, 0.7071);
+  // Two cascaded sections approximate a steeper clinical high-pass response.
+  return zeroPhaseBiquad(data, coeffs, 2);
+}
 
-  // Metrics
-  document.getElementById('m-hr').textContent    = result.heart_rate_bpm ? Math.round(result.heart_rate_bpm) + ' bpm' : '—';
-  document.getElementById('m-rrcv').textContent  = result.rr_cv ? result.rr_cv.toFixed(3) : '—';
-  document.getElementById('m-qual').textContent  = result.signal_quality || '—';
-  document.getElementById('m-model').textContent = result.model_used || 'HCTG-Net';
+function lowPassFilter(data,cutoff=40,fs=FS){
+  const coeffs = designLowPass(cutoff, fs, 0.7071);
+  // Two cascaded sections approximate a 4th-order low-pass response.
+  return zeroPhaseBiquad(data, coeffs, 2);
+}
+function movingAvg(data,w=7){
+  const out=new Float32Array(data.length);
+  for(let i=0;i<data.length;i++){
+    const s=Math.max(0,i-w+1);let sum=0;
+    for(let j=s;j<=i;j++) sum+=data[j];
+    out[i]=sum/(i-s+1);
+  }
+  return out;
+}
 
-  // Card colour
-  document.getElementById('ecg-card').className    = 'card ' + (isArrhythmia ? 'alarming' : 'safe');
-  document.getElementById('result-card').className = 'card ' + (isArrhythmia ? 'alarming' : 'safe');
+function medianFilter(data, window=5){
+  const out = new Float32Array(data.length);
+  const half = Math.floor(window/2);
+  for(let i=0;i<data.length;i++){
+    const start = Math.max(0, i-half);
+    const end = Math.min(data.length-1, i+half);
+    const buf = [];
+    for(let j=start;j<=end;j++) buf.push(data[j]);
+    buf.sort((a,b)=>a-b);
+    out[i] = buf[Math.floor(buf.length/2)];
+  }
+  return out;
+}
 
-  // FHIR report
-  const fhirEl = document.getElementById('fhir-content');
-  if (result.fhir_report) {
-    fhirEl.innerHTML = `<pre class="fhir-pre">${JSON.stringify(result.fhir_report, null, 2)}</pre>`;
+function hampelFilter(data, window=9, nSigma=3){
+  const out = Float32Array.from(data);
+  const half = Math.floor(window/2);
+  const k = 1.4826; // MAD scale to std estimate
+  for(let i=0;i<data.length;i++){
+    const start = Math.max(0, i-half);
+    const end = Math.min(data.length-1, i+half);
+    const seg = [];
+    for(let j=start;j<=end;j++) seg.push(data[j]);
+    seg.sort((a,b)=>a-b);
+    const med = seg[Math.floor(seg.length/2)];
+    const dev = seg.map(v=>Math.abs(v-med)).sort((a,b)=>a-b);
+    const mad = dev[Math.floor(dev.length/2)] || 1e-6;
+    const thr = nSigma * k * mad;
+    if(Math.abs(data[i]-med) > thr){
+      out[i] = med;
+    }
+  }
+  return out;
+}
+
+function softClipFilter(data, limit=2.4){
+  const out = new Float32Array(data.length);
+  for(let i=0;i<data.length;i++){
+    const x = data[i];
+    out[i] = limit * Math.tanh(x / limit);
+  }
+  return out;
+}
+
+function applyFilters(raw){
+  let s=Float32Array.from(raw);
+  if(document.getElementById('sw-notch')?.checked) s=notchFilter(s,mainsHz);
+  if(document.getElementById('sw-hp')?.checked)    s=highPassFilter(s);
+  if(document.getElementById('sw-lp')?.checked)    s=lowPassFilter(s);
+  if(document.getElementById('sw-med')?.checked)   s=medianFilter(s,5);
+  if(document.getElementById('sw-hamp')?.checked)  s=hampelFilter(s,9,3);
+  if(document.getElementById('sw-ma')?.checked)    s=movingAvg(s);
+  if(document.getElementById('sw-clip')?.checked)  s=softClipFilter(s,2.4);
+  return s;
+}
+function rmsNoise(signal){
+  // Estimate noise as signal minus heavily smoothed version
+  const smooth=movingAvg(signal,15);
+  let sum=0;
+  for(let i=0;i<signal.length;i++) sum+=(signal[i]-smooth[i])**2;
+  return Math.sqrt(sum/signal.length);
+}
+function onFilterChange(){
+  if(source!=='real') return;
+  const rawArr=rawBuffer;
+  const filtArr=applyFilters(rawBuffer);
+  filtBuffer=filtArr;
+  renderFilteredChart(filtArr);
+  updateNoiseStats(rawArr,filtArr);
+  // Mark active filter rows
+  ['notch','hp','lp','ma','med','hamp','clip'].forEach(k=>{
+    const el=document.getElementById('fr-'+k);
+    const sw=document.getElementById('sw-'+k);
+    if(el) el.classList.toggle('active-f',sw.checked);
+  });
+  scheduleFilterSync();
+}
+function updateNoiseStats(raw,filt){
+  const nr=rmsNoise(raw),nf=rmsNoise(filt);
+  const reduction=nr>0?Math.max(0,Math.min(100,(1-nf/nr)*100)):0;
+  const snr=nr>0&&nf>0?20*Math.log10(nr/nf):0;
+  document.getElementById('ns-raw').textContent=nr.toFixed(3)+' mV';
+  document.getElementById('ns-filt').textContent=nf.toFixed(3)+' mV';
+  document.getElementById('ns-snr').textContent='+'+snr.toFixed(1)+' dB';
+  document.getElementById('ns-bar').style.width=reduction.toFixed(1)+'%';
+  document.getElementById('ns-pct').textContent=reduction.toFixed(1)+'%';
+  // Per-filter delta labels
+  computePerFilterDelta('notch','sw-notch','fd-notch',raw);
+  computePerFilterDelta('hp','sw-hp','fd-hp',raw);
+  computePerFilterDelta('lp','sw-lp','fd-lp',raw);
+  computePerFilterDelta('ma','sw-ma','fd-ma',raw);
+  computePerFilterDelta('med','sw-med','fd-med',raw);
+  computePerFilterDelta('hamp','sw-hamp','fd-hamp',raw);
+  computePerFilterDelta('clip','sw-clip','fd-clip',raw);
+}
+function computePerFilterDelta(fid,swId,fdId,raw){
+  const el=document.getElementById(fdId);
+  if(!el) return;
+  const sw=document.getElementById(swId);
+  if(!sw||!sw.checked){el.style.display='none';return;}
+  let s=Float32Array.from(raw);
+  if(fid==='notch') s=notchFilter(s,mainsHz);
+  else if(fid==='hp') s=highPassFilter(s);
+  else if(fid==='lp') s=lowPassFilter(s);
+  else if(fid==='ma') s=movingAvg(s);
+  else if(fid==='med') s=medianFilter(s,5);
+  else if(fid==='hamp') s=hampelFilter(s,9,3);
+  else if(fid==='clip') s=softClipFilter(s,2.4);
+  const nr=rmsNoise(raw),nf=rmsNoise(s);
+  const pct=nr>0?((1-nf/nr)*100).toFixed(1):0;
+  el.style.display='block';
+  el.textContent='↓ noise −'+pct+'% (this filter alone)';
+}
+
+// ── ECG SIGNAL GENERATION ──────────────────────────────────
+function g(x,mu,sigma,amp){
+  const z=(x-mu)/sigma;
+  return amp*Math.exp(-0.5*z*z);
+}
+function canonicalLabel(label){
+  const l=(label||'').toLowerCase();
+  if(l.includes('normal')) return 'normal';
+  if(l.includes('afib')||l.includes('atrial fibrillation')) return 'afib';
+  if(l.includes('brady')) return 'brady';
+  if((l.includes('vf')&&l.includes('fibrillation'))||l.includes('ventricular fibrillation')) return 'vfib';
+  if(l.includes('ventricular tachycardia')||l.includes('tachycardia')) return 'tachy';
+  if(l.includes('flutter')||l.includes('arrhythmia')||l.includes('pvc')) return 'other';
+  return 'other';
+}
+function ecgSample(type,ph,hr,modeId){
+  const bpm = hr || 75;
+  const rr = Math.max(160, Math.round(FS * 60 / bpm));
+  const c = ph % rr;
+
+  if(type==='normal'||type==='brady'||type==='tachy'||type==='pvc'){
+    const p=g(c,0.18*rr,0.04*rr,0.10);
+    const q=g(c,0.40*rr,0.015*rr,-0.16);
+    const r=g(c,0.43*rr,0.012*rr,1.45);
+    const s=g(c,0.46*rr,0.016*rr,-0.28);
+    const t=g(c,0.68*rr,0.08*rr,0.22);
+    let v = p+q+r+s+t + 0.012*(Math.random()-0.5);
+
+    if(type==='tachy'){
+      v += 0.01*Math.sin(2*Math.PI*ph/(rr*0.8));
+    }
+
+    if(type==='pvc'){
+      const pvcBeat = ((Math.floor(ph / rr) + (modeId || 0)) % 7) === 0;
+      const pvcPos = c;
+      if(pvcBeat){
+        const pvcQrs = g(pvcPos,0.36*rr,0.03*rr,2.1) + g(pvcPos,0.44*rr,0.03*rr,-0.7);
+        v = pvcQrs + g(pvcPos,0.70*rr,0.10*rr,0.10) + 0.02*(Math.random()-0.5);
+      }
+    }
+    return v;
+  }
+  if(type==='afib'){
+    const irr=Math.random()<.018;
+    if(irr) return 1.3+Math.random()*.5;
+    return .07*Math.sin(ph*.9+Math.random())+.03*(Math.random()-.5);
+  }
+  if(type==='vfib'){
+    return (Math.random()-.5)*1.8+.4*Math.sin(ph*.3+Math.random()*2);
+  }
+  return 0;
+}
+
+// For Real Data: raw sample designed to mimic Arduino hardware output WHEN DISCONNECTED
+function rawSensorSample(ph){
+  // 1. NO fake ECG signal - user should know it's disconnected!
+  const hwSignal = 0; 
+
+  // 2. Hardware Base Offset ~2850 in 12-bit ADC -> maps to ~1.1758 in float
+  const baseOffset = 1.1758; 
+
+  // 3. Realistic baseline wander (downward drift + slow oscillation seen in Arduino)
+  const wander = 0.05 * Math.sin(2 * Math.PI * 0.02 * ph / FS) - ((ph % 3000) / 3000) * 0.05;
+
+  // 4. Minor hardware jitter + mild 50Hz (removed the extreme 50Hz sine wave)
+  const powerline = 0.008 * Math.sin(2 * Math.PI * 50 * ph / FS);
+  const jitter = 0.005 * (Math.random() - 0.5);
+
+  return baseOffset + hwSignal + wander + powerline + jitter;
+}
+
+// ── AI HIGHLIGHT PLUGIN ──────────────────────────────────
+const aiHighlightPlugin = {
+  id: 'aiHighlight',
+  beforeDatasetsDraw: (chart, args, pluginOptions) => {
+    if (!pluginOptions || !pluginOptions.active) return;
+    const { ctx, chartArea: { top, bottom, left, right, width } } = chart;
+    ctx.save();
+    // Draw translucent bounding box
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.12)';
+    const boxWidth = width * 0.45; // highlight the most recent 45% window
+    const boxLeft = right - boxWidth;
+    ctx.fillRect(boxLeft, top, boxWidth, bottom - top);
+    // Draw dashed border
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(boxLeft, top, boxWidth, bottom - top);
+    // Draw tag badge
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(boxLeft, top, 140, 20);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 9px "JetBrains Mono"';
+    ctx.fillText('⚡ AI ANOMALY FOUND', boxLeft + 8, top + 13);
+    ctx.restore();
+  }
+};
+Chart.register(aiHighlightPlugin);
+
+// ── CHART INITIALISATION ──────────────────────────────────
+function initCharts(){
+  const ctx1=document.getElementById('ecgChart2').getContext('2d');
+  // Auto-scaling active (removed min/max)
+  mainChart=new Chart(ctx1,{type:'line',data:{labels:Array.from({length:300},(_,i)=>i),datasets:[{data:Array(300).fill(0),borderColor:'#10b981',borderWidth:2,pointRadius:0,tension:.3,fill:false}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:true,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#475569',font:{size:8}}}}}});
+  
+  const ctx2=document.getElementById('rawChart').getContext('2d');
+  // Auto-scaling active to mimic Arduino Serial Plotter UI
+  rawChart=new Chart(ctx2,{type:'line',data:{labels:Array.from({length:300},(_,i)=>i),datasets:[{data:Array(300).fill(2850),borderColor:'#f87171',borderWidth:1.5,pointRadius:0,tension:.2,fill:false}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:true,grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#475569',font:{size:8}}}}}});
+}
+function renderFilteredChart(filt){
+  mainChart.data.datasets[0].data=Array.from(filt);
+  mainChart.update('none');
+}
+
+// ── ECG ANIMATION LOOP ────────────────────────────────────
+let lastTs=0;
+function animStep(ts){
+  if(ts-lastTs>14){
+    lastTs=ts;
+    const m=activeMode;
+    if(!m) return;
+    
+    if(source==='real'){
+      // ONLY generate fake data if we are NOT successfully getting live hardware data from WebSocket 
+      if(!isStreaming){
+        // Absolute flatline at hardware baseline (2850)
+        rawBuffer.fill(1.1758);
+        adcBuffer.fill(2850);
+        
+        const baud = document.getElementById('term-baud');
+        if(baud) baud.innerHTML = '<span style="color:var(--red);font-weight:800">⚠ DISCONNECTED</span>';
+      } else {
+        const baud = document.getElementById('term-baud');
+        if(baud) baud.innerHTML = '<span style="color:var(--green)">⚡ 500 Hz • 12-bit ADC</span>';
+      }
+      
+      const filtered = isStreaming ? applyFilters(rawBuffer) : rawBuffer;
+      filtBuffer = filtered;
+      mainChart.data.datasets[0].data = Array.from(filtered);
+      rawChart.data.datasets[0].data = Array.from(adcBuffer);
+      rawChart.update('none');
+      if(isStreaming && phase%8===0) updateNoiseStats(rawBuffer,filtered);
+      if(phase%12===0) pushTerminalLine(adcBuffer[299], rawBuffer[299], phase);
+      
+    } else {
+      // Normal Clinical Cases (0-6)
+      const val = ecgSample(m.ecgType, phase, m.hr, m.id);
+      rawBuffer = shiftPush(rawBuffer, val);
+      mainChart.data.datasets[0].data=Array.from(rawBuffer);
+    }
+    
+    mainChart.update('none');
+    phase++;
+  }
+  animId=requestAnimationFrame(animStep);
+}
+function shiftPush(arr,val){
+  const out=new Float32Array(arr.length);
+  for(let i=1;i<arr.length;i++) out[i-1]=arr[i];
+  out[arr.length-1]=val; return out;
+}
+function startAnim(){
+  if(animId) cancelAnimationFrame(animId);
+  phase=0;
+  const m=activeMode;
+  const col=m.ecgType==='afib'?'#ef4444':m.ecgType==='vfib'?'#dc2626':m.ecgType==='pvc'||m.ecgType==='tachy'?'#f59e0b':source==='real'?'#00e5ff':'#10b981';
+  mainChart.data.datasets[0].borderColor=col;
+  animId=requestAnimationFrame(animStep);
+}
+
+// ── TERMINAL ──────────────────────────────────────────────
+let termCount=0;
+function pushTerminalLine(adc,mv,ph){
+  const body=document.getElementById('term-body');
+  if(!body) return;
+  const now=new Date();
+  const ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0')+'.'+Math.floor(now.getMilliseconds()/10).toString().padStart(2,'0');
+  const hex='0x'+adc.toString(16).toUpperCase().padStart(4,'0');
+  const line=document.createElement('div');
+  line.className='term-line';
+  if(!isStreaming && source==='real') {
+    // Only one line to say it's disconnected, no spamming
+    if(body.children.length === 0) {
+      line.innerHTML=`<span style="color:var(--red);font-weight:700">ALERT: HARDWARE NOT DETECTED. CHECK SERIAL BRIDGE.</span>`;
+      body.appendChild(line);
+    }
+    return;
+  }
+  line.innerHTML=`<span class="t-ts">[${ts}]</span>  <span class="t-adc">ADC: ${adc.toString().padStart(4,' ')}</span>  <span class="t-mv">${(mv*1000).toFixed(1).padStart(7,' ')} µV</span>  <span class="t-hex">${hex}</span>`;
+  body.appendChild(line);
+  termCount++;
+  if(termCount>120){const old=body.firstChild;if(old)body.removeChild(old);}
+  body.scrollTop=body.scrollHeight;
+}
+
+// ── NAVIGATION ────────────────────────────────────────────
+function showHome(){
+  if(animId){cancelAnimationFrame(animId);animId=null;}
+  if(wsConn){wsConn.close();wsConn=null;}
+  document.getElementById('view-home').classList.add('active');
+  document.getElementById('view-dashboard').classList.remove('active');
+  // Reset terminal & charts
+  document.getElementById('term-body').innerHTML='';
+  termCount=0;
+}
+function showDashboard(modeId){
+  activeMode=MODES[modeId];
+  const m=activeMode;
+  document.getElementById('view-home').classList.remove('active');
+  document.getElementById('view-dashboard').classList.add('active');
+  document.getElementById('dash-title').textContent=m.icon+' '+m.title;
+  document.getElementById('dash-sub').textContent=m.desc;
+  // Sync backend status
+  syncBeDots();
+  // Testing mode UI
+  const srcTog=document.getElementById('src-toggle');
+  srcTog.style.display=m.testing?'flex':'none';
+  if(!m.testing){
+    source='sim';
+    document.getElementById('filter-panel').classList.remove('visible');
+    document.getElementById('ai-panel').style.display='block';
+    document.getElementById('raw-chart-section').style.display='none';
   } else {
-    fhirEl.innerHTML = `<div class="fhir-placeholder" style="color:var(--green)">✓ Normal Sinus Rhythm — No FHIR report required. Patient vitals are within acceptable clinical parameters.</div>`;
+    setSource('sim');
+  }
+  // Reset results
+  resetDash();
+  startAnim();
+  document.getElementById('run-btn2').disabled=false;
+}
+function setSource(s){
+  source=s;
+  document.getElementById('btn-sim').classList.toggle('active',s==='sim');
+  document.getElementById('btn-real').classList.toggle('active',s==='real');
+  const isReal=s==='real';
+  document.getElementById('filter-panel').classList.toggle('visible',isReal);
+  document.getElementById('ai-panel').style.display=isReal?'none':'block';
+  document.getElementById('raw-chart-section').style.display=isReal?'block':'none';
+  document.getElementById('dash-body').classList.toggle('filter-open',isReal);
+  // ECG chart height adjust
+  document.querySelector('.ecg-h').classList.toggle('ecg-h2',isReal);
+  // Reconnect WS if real
+  if(isReal) connectWS(); // Try connecting even if HTTP health check failed
+  else if(!isReal&&wsConn){wsConn.close();wsConn=null;}
+
+  // Recommended real-world chain for ESP32 + AD8232:
+  // notch + HP + LP + median + Hampel on, MA + soft-clip optional.
+  if(isReal){
+    const defaultsOn = ['sw-notch','sw-hp','sw-lp','sw-med','sw-hamp'];
+    const defaultsOff = ['sw-ma','sw-clip'];
+    defaultsOn.forEach(id=>{ const el=document.getElementById(id); if(el && !el.checked) el.checked = true; });
+    defaultsOff.forEach(id=>{ const el=document.getElementById(id); if(el && el.checked) el.checked = false; });
   }
 
-  // Verdict banner
-  const banner = document.getElementById('verdict-banner');
-  banner.className = 'verdict-banner show ' + (pass ? 'pass' : 'fail');
-  document.getElementById('verdict-icon').textContent   = pass ? '✅' : '⚠️';
-  document.getElementById('verdict-title').textContent  = pass ? `PASS — Model correctly classified ${classification}` : `MISMATCH — Expected: "${cc.expected}", Got: "${classification}"`;
-  document.getElementById('verdict-sub').textContent    = `Case ${cc.id}: ${cc.name}, ${cc.age}y — ${cc.scenario}`;
+  // Reset buffers
+  rawBuffer=new Float32Array(300);
+  filtBuffer=new Float32Array(300);
+  adcBuffer=new Float32Array(300).fill(2850);
+  onFilterChange();
+  scheduleFilterSync();
+  startAnim();
+}
+function resetDash(){
+  document.getElementById('class-val2').textContent='Awaiting analysis…';
+  document.getElementById('class-val2').className='class-val';
+  document.getElementById('conf-fill2').style.width='0%';
+  document.getElementById('conf-pct2').textContent='Confidence: —';
+  ['hr2','rv2','sq2','mo2'].forEach(k=>document.getElementById('m-'+k).textContent='—');
+  document.getElementById('fhir2').innerHTML='<div class="fhir-ph">Run analysis to generate FHIR R4 DiagnosticReport</div>';
+  document.getElementById('verdict2').className='verdict';
+  document.getElementById('ecg-card2').className='card';
+  // AI Box reset
+  if(mainChart){
+    mainChart.options.plugins.aiHighlight = { active: false };
+  }
 }
 
-// ── PROGRESS ──────────────────────────────────────────────────────────────────
-function updateProgress() {
-  const total = Object.keys(results).length;
-  const passed = Object.values(results).filter(r => r.pass).length;
-  const pct = Math.round((total / CASES.length) * 100);
-  const acc = total > 0 ? Math.round((passed / total) * 100) : null;
+// ── WEBSOCKET ─────────────────────────────────────────────
+function connectWS(){
+  if(wsConn) wsConn.close();
+  wsConn=new WebSocket('ws://127.0.0.1:8000/ws');
+  wsConn.onmessage=e=>{
+    try{
+      const d=JSON.parse(e.data);
+      const snap=d.ecg_snapshot||d.ecg||null;
+      if(snap&&snap.length>0){
+        // We received real hardware data! Disable the fake simulation generator instantly.
+        isStreaming = true;
+        clearTimeout(streamTimeout);
+        streamTimeout = setTimeout(()=>{ isStreaming=false; }, 2000); // revert to fake if died
+        
+        // Take the latest 300 samples coming directly from your Arduino/backend and map to buffers immediately
+        const newBuf = snap.slice(-300).map(v=>parseFloat(v)||0);
+        while(newBuf.length < 300) newBuf.unshift(0);
+        rawBuffer = Float32Array.from(newBuf);
 
-  document.getElementById('prog-fill').style.width  = pct + '%';
-  document.getElementById('prog-score').textContent = `${total} / ${CASES.length} cases`;
-  document.getElementById('prog-acc').textContent   = acc !== null ? `Accuracy: ${acc}%` : 'Accuracy: —';
+        // Convert the backend floats back to raw ADC hardware values for the red graph
+        const adcArr = newBuf.map(v => Math.round(((v+3)/6)*4095));
+        adcBuffer = Float32Array.from(adcArr);
+      }
+    }catch{}
+  };
+  wsConn.onerror=()=>{};
 }
 
-function updateSidebarResult(id, pass) {
-  const el = document.getElementById(`cc-${id}`);
-  el.classList.remove('done-pass', 'done-fail');
-  el.classList.add(pass ? 'done-pass' : 'done-fail');
-  const iconEl = el.querySelector('.verdict-icon');
-  if (iconEl) iconEl.textContent = pass ? '✅' : '❌';
+// ── ANALYSIS ──────────────────────────────────────────────
+async function runAnalysis(){
+  if(!activeMode) return;
+  const btn=document.getElementById('run-btn2');
+  const card=document.getElementById('ecg-card2');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span>SCANNING NEURAL NET…';
+  card.classList.add('scanning'); // Add laser scanner effect
+  await sleep(600); // Visual pause for futuristic feel
+  
+  // 1. DATA INTEGRITY CHECK (No sugar coating)
+  // If we are in "Real Data" mode and the buffer is a perfect flatline (no hardware connected)
+  const isFlat = rawBuffer.every(v => v === rawBuffer[0]);
+  if(source === 'real' && isFlat) {
+    displayResult(activeMode, { 
+      error: true, 
+      classification: 'ERR: NO SENSOR DATA', 
+      message: 'Physical sensor not detected. Check ESP32 wiring.' 
+    });
+    btn.disabled=false; btn.innerHTML='▶ Run Analysis';
+    return;
+  }
+
+  // 2. REAL BACKEND REQUEST
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ecg_window: Array.from(rawBuffer),
+        patient_id: `demo-case-${activeMode.id}`,
+        filter_config: getFilterConfigPayload()
+      })
+    });
+    
+    if(!response.ok) throw new Error('Backend failed');
+    const result = await response.json();
+    displayResult(activeMode, result);
+    
+  } catch (err) {
+    // 3. BACKEND OFFLINE (No more fake fallback)
+    console.error("ANALYSIS FAILED:", err);
+    displayResult(activeMode, { 
+      error: true, 
+      classification: 'ERR: BACKEND OFFLINE', 
+      message: 'Deep Learning Engine is not responding. Start backend/main.py' 
+    });
+  }
+
+  btn.disabled=false;
+  btn.innerHTML='▶ Run Analysis';
+}
+const SNOMED_MAP = {
+  // Mapping Backend Raw Strings to SNOMED-CT codes
+  'Healthy Individual (Normal)': { c: '426783006', d: 'Normal Sinus Rhythm', r_type: 'Observation', r_status: 'Normal' },
+  'Normal Sinus Rhythm': { c: '426783006', d: 'Normal Sinus Rhythm', r_type: 'Observation', r_status: 'Normal' },
+  'Tachycardia Pattern': { c: '427084000', d: 'Tachycardia', r_type: 'Observation', r_status: 'Abnormal' },
+  'Ventricular Tachycardia (VT)': { c: '25169003', d: 'Ventricular Tachycardia', r_type: 'Observation', r_status: 'Critical' },
+  'Heart Block (Bradycardia)': { c: '48867003', d: 'Bradycardia (Slow)', r_type: 'Condition', r_status: 'Chronic' },
+  'Other Arrhythmia': { c: '6374002', d: 'Premature Ventricular Contractions', r_type: 'Observation', r_status: 'Abnormal' },
+  'Atrial Fibrillation (AFib)': { c: '49436004', d: 'Atrial Fibrillation (AFib)', r_type: 'Condition', r_status: 'Active' },
+  'Atrial Flutter': { c: '5148006', d: 'Atrial Flutter', r_type: 'Condition', r_status: 'Active' },
+  'Ventricular Fibrillation (VF)': { c: '25169003', d: 'Ventricular Arrhythmias', r_type: 'Observation', r_status: 'Critical' },
+  'Disconnected': { c: '0', d: 'No Signal', r_type: 'Observation', r_status: 'Error' }
+};
+function buildFhir(m,cls,conf,imgBase64){
+  // Check if classification exists in result, otherwise map to SNOMED
+  const sn = SNOMED_MAP[cls] || SNOMED_MAP['Other Arrhythmia'];
+  const ts = new Date().toISOString();
+  
+  let resource = {
+    resourceType: sn.r_type,
+    id: `pulseai-${m.id}-${Date.now()}`,
+    meta: { profile: ["http://hl7.org/fhir/StructureDefinition/" + sn.r_type] },
+    subject: { reference: `Patient/case-${m.id}` },
+    code: { coding: [{ system: 'http://snomed.info/sct', code: sn.c, display: sn.d }] },
+    effectiveDateTime: ts,
+  };
+
+  if(sn.r_type === 'Observation') {
+    resource.status = 'final';
+    resource.interpretation = [{
+      coding: [{ system: 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation', code: sn.r_status === 'Normal' ? 'N' : 'A', display: sn.r_status }]
+    }];
+  } else {
+    resource.clinicalStatus = {
+      coding: [{ system: 'http://terminology.hl7.org/CodeSystem/condition-clinical', code: sn.r_status.toLowerCase() }]
+    };
+  }
+
+  // Embed the canvas screenshot array directly into the remote HL7 standard
+  if(imgBase64){
+    resource.presentedForm = [{
+      contentType: "image/png",
+      title: `Anomaly Snapshot - ${ts}`,
+      data: imgBase64.split(',')[1]
+    }];
+  }
+  return resource;
+}
+function displayResult(m,r){
+  document.getElementById('ecg-card2').classList.remove('scanning');
+  if(r.error) {
+    // NO SUGAR COATING ERROR STATE
+    document.getElementById('class-val2').textContent = r.classification;
+    document.getElementById('class-val2').className = 'class-val danger';
+    document.getElementById('conf-pct2').textContent = r.message;
+    document.getElementById('conf-fill2').style.width = '100%';
+    document.getElementById('conf-fill2').style.background = '#ef4444';
+    document.getElementById('ecg-card2').className = 'card alarm';
+    const vEl=document.getElementById('verdict2');
+    vEl.className='verdict show fail';
+    document.getElementById('v-icon').textContent='❌';
+    document.getElementById('v-title').textContent=r.classification;
+    document.getElementById('v-sub').textContent=r.message;
+    document.getElementById('fhir2').innerHTML='<div class="fhir-ph" style="color:#f87171">Diagnostic generation aborted. No valid ECG signal.</div>';
+    if(mainChart) mainChart.options.plugins.aiHighlight = { active: false };
+    return;
+  }
+  const isA=r.is_arrhythmia;
+  const pass=canonicalLabel(r.classification)===canonicalLabel(m.expected);
+  results[m.id]={pass,predicted:r.classification};
+  updateProgress();
+  updateSidebarCard(m.id,pass);
+  // Classification
+  const cv=document.getElementById('class-val2');
+  cv.textContent=r.classification;
+  cv.className='class-val '+(isA?'danger':'safe');
+  const pct=Math.round(r.confidence*100);
+  document.getElementById('conf-fill2').style.width=pct+'%';
+  document.getElementById('conf-fill2').style.background = ''; // reset to default
+  document.getElementById('conf-pct2').textContent='Confidence: '+pct+'%';
+  // Metrics
+  document.getElementById('m-hr2').textContent=Math.round(r.heart_rate_bpm)+' bpm';
+  document.getElementById('m-rv2').textContent=r.rr_cv.toFixed(3);
+  document.getElementById('m-sq2').textContent=r.signal_quality;
+  document.getElementById('m-mo2').textContent=r.model_used;
+  // Card state
+  document.getElementById('ecg-card2').className='card '+(isA?'alarm':'safe');
+
+  // Apply AI Bounding Box Highlight on the main chart FIRST
+  if(mainChart){
+    mainChart.options.plugins.aiHighlight = { active: isA };
+    mainChart.update('none'); 
+  }
+
+  // Capture the visual graph specifically with the drawn Anomaly box 
+  let snapshotBase64 = null;
+  if(mainChart) {
+    snapshotBase64 = mainChart.toBase64Image(); 
+  }
+
+  // FHIR Generation & Display UI
+  const fhir = isA ? buildFhir(m, r.classification, r.confidence, snapshotBase64) : null;
+  const fhirEl=document.getElementById('fhir2');
+  if(fhir){
+    fhirEl.innerHTML=`<pre class="fhir-pre" style="max-height:220px">${JSON.stringify(fhir,null,2)}</pre>`;
+    if(snapshotBase64 && isA){
+      const tstr = new Date().toLocaleTimeString();
+      fhirEl.innerHTML += `<div style="margin-top:10px; font-size:0.65rem; color:#ef4444; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">📸 Anomaly Snapshot Attached (${tstr})</div>
+                           <img src="${snapshotBase64}" style="width:100%; border:1px solid #ef4444; border-radius:6px; box-shadow:0 0 16px rgba(239,68,68,0.15); margin-bottom:12px;">`;
+    }
+  } else {
+    fhirEl.innerHTML=`<div class="fhir-ph" style="color:var(--green)">✓ No abnormality detected. FHIR report not required.</div>`;
+  }
+
+  // Verdict
+  const vEl=document.getElementById('verdict2');
+  vEl.className='verdict show '+(pass?'pass':'fail');
+  document.getElementById('v-icon').textContent=pass?'✅':'⚠️';
+  document.getElementById('v-title').textContent=pass?`PASS — ${r.classification}`:`MISMATCH — Expected family: "${m.expected}"`;
+  document.getElementById('v-sub').textContent=`Mode ${m.id}: ${m.title} · ${m.ecgType.toUpperCase()}`;
+
+  // Apply AI Bounding Box Highlight on the main chart
+  if(mainChart){
+    mainChart.options.plugins.aiHighlight = { active: isA };
+  }
+}
+function updateProgress(){
+  const total=Object.keys(results).length,passed=Object.values(results).filter(r=>r.pass).length;
+  const pct=Math.round(total/MODES.length*100),acc=total>0?Math.round(passed/total*100):null;
+  document.getElementById('prog-fill2').style.width=pct+'%';
+  document.getElementById('prog-score2').textContent=total+' / '+MODES.length+' cases';
+  document.getElementById('prog-acc2').textContent=acc!==null?'Accuracy: '+acc+'%':'Accuracy: —';
+}
+function updateSidebarCard(id,pass){
+  const el=document.getElementById('mcard-'+id);
+  if(!el) return;
+  el.style.borderColor=pass?'rgba(16,185,129,.5)':'rgba(239,68,68,.4)';
+  const tag=el.querySelector('.mc-tag');
+  if(tag) tag.textContent=pass?'✅ PASS':'❌ FAIL';
 }
 
-// ── SIDEBAR BUILD ─────────────────────────────────────────────────────────────
-function buildSidebar() {
-  const list = document.getElementById('case-list');
-  CASES.forEach(cc => {
-    const tagClass = cc.type === 'normal' ? 'tag-normal' : cc.type === 'afib' ? 'tag-afib' : 'tag-pvc';
-    const tagText  = cc.type === 'normal' ? 'Normal' : cc.type === 'afib' ? 'AFib' : 'PVC';
-    const div = document.createElement('div');
-    div.className = 'case-card';
-    div.id = `cc-${cc.id}`;
-    div.onclick = () => selectCase(cc.id);
-    div.innerHTML = `
-      <div class="case-num">Case ${cc.id} <span class="verdict-icon"></span></div>
-      <div class="case-name">${cc.name}</div>
-      <div class="case-sub">${cc.age}y · ${cc.ageGroup.split('(')[0].trim()}</div>
-      <div class="case-sub" style="margin-top:3px">${cc.scenario}</div>
-      <span class="case-tag ${tagClass}">${tagText}</span>
-    `;
-    list.appendChild(div);
+// ── BACKEND ───────────────────────────────────────────────
+async function checkBackend(){
+  try{
+    const r=await fetch('http://127.0.0.1:8000/health',{signal:AbortSignal.timeout(2000)});
+    if(r.ok){
+      backendLive=true;
+      syncBeDots('live','Backend LIVE — HCTG-Net loaded');
+      return true;
+    }
+  }catch{}
+  backendLive=false;
+  syncBeDots('off','Backend offline — simulation mode');
+  return false;
+}
+function syncBeDots(cls,label){
+  ['be-dot2','be-dot3'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.className='dot '+(cls||'');
+  });
+  ['be-label2','be-label3'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&label) el.textContent=label;
   });
 }
 
-// ── UTILS ─────────────────────────────────────────────────────────────────────
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+// ── MODE GRID BUILD ───────────────────────────────────────
+function buildGrid(){
+  const grid=document.getElementById('mode-grid');
+  grid.innerHTML = ''; // Clear for rebuild
+  MODES.forEach(m=>{
+    const card=document.createElement('div');
+    card.className='mode-card'+(m.testing?' testing':'');
+    card.id='mcard-'+m.id;
+    card.onclick=()=>showDashboard(m.id);
+    card.innerHTML=`
+      <div class="mc-num">SYSTEM ID: #0${m.id}</div>
+      <span class="mc-icon">${m.icon}</span>
+      <div class="mc-title">${m.title}</div>
+      <div class="mc-desc">${m.desc}</div>
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <span class="badge b-blue" style="font-size:0.6rem; padding:2px 8px;">${m.ecgType.toUpperCase()}</span>
+        ${m.testing?'<span class="badge b-purple" style="font-size:0.6rem; padding:2px 8px;">HCL UNIT 1</span>':''}
+      </div>
+      <span class="mc-arrow">›</span>`;
+    grid.appendChild(card);
+  });
+}
 
-// ── BOOT ──────────────────────────────────────────────────────────────────────
-window.onload = async () => {
-  initChart();
-  buildSidebar();
+// ── UTILS ─────────────────────────────────────────────────
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ── BOOT ──────────────────────────────────────────────────
+window.onload=async()=>{
+  buildGrid();
+  initCharts();
   await checkBackend();
-  // Auto-check backend every 10s
-  setInterval(checkBackend, 10000);
-  // Auto-select case 0
-  selectCase(0);
+  setInterval(checkBackend,12000);
 };
 </script>
 </body>

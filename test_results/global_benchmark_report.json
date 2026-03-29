@@ -1,0 +1,102 @@
+{
+  "generated_at_utc": "2026-03-29T07:24:14.752487+00:00",
+  "model_status": {
+    "model_loaded": true,
+    "model_used": "keras:hctg_net_model.h5",
+    "model_path": "hctg_net_model.h5"
+  },
+  "global_sources": [],
+  "local_mitbih_evaluation": {
+    "ok": true,
+    "records_used": 48,
+    "windows_tested": 1152,
+    "arrhythmia_flag_rate": 0.3342,
+    "subtle_flag_rate": 0.6597,
+    "mean_confidence": 0.7936,
+    "binary_metrics_vs_annotations": {
+      "accuracy": 0.651,
+      "precision": 0.3325,
+      "recall": 0.4689,
+      "specificity": 0.7076,
+      "f1": 0.3891,
+      "tp": 128,
+      "tn": 622,
+      "fp": 257,
+      "fn": 145
+    },
+    "prediction_family_distribution": {
+      "subtle": 468,
+      "normal": 299,
+      "afib": 200,
+      "other": 185
+    },
+    "sample_record_outcomes": [
+      {
+        "record": "100",
+        "top_class": "Normal Sinus Rhythm",
+        "count": 12
+      },
+      {
+        "record": "101",
+        "top_class": "Normal Sinus Rhythm",
+        "count": 16
+      },
+      {
+        "record": "102",
+        "top_class": "Other Arrhythmia",
+        "count": 12
+      },
+      {
+        "record": "103",
+        "top_class": "Normal Sinus Rhythm",
+        "count": 19
+      },
+      {
+        "record": "104",
+        "top_class": "Other Arrhythmia",
+        "count": 17
+      },
+      {
+        "record": "105",
+        "top_class": "Subtle Rhythm Irregularity (Review)",
+        "count": 20
+      },
+      {
+        "record": "106",
+        "top_class": "Normal Sinus Rhythm",
+        "count": 10
+      },
+      {
+        "record": "107",
+        "top_class": "Other Arrhythmia",
+        "count": 16
+      },
+      {
+        "record": "108",
+        "top_class": "Atrial Fibrillation (AFib)",
+        "count": 16
+      },
+      {
+        "record": "109",
+        "top_class": "Atrial Fibrillation (AFib)",
+        "count": 14
+      },
+      {
+        "record": "111",
+        "top_class": "Subtle Rhythm Irregularity (Review)",
+        "count": 23
+      },
+      {
+        "record": "112",
+        "top_class": "Other Arrhythmia",
+        "count": 17
+      }
+    ]
+  },
+  "subtle_anomaly_challenge": {
+    "cases": 200,
+    "subtle_flag_detection_rate": 0.545,
+    "overall_arrhythmia_detection_rate": 0.01,
+    "mean_confidence": 0.8611
+  }
+}
