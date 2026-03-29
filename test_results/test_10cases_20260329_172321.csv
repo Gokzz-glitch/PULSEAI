@@ -1,0 +1,11 @@
+case_id,age,age_group,scenario,condition,expected,predicted,confidence,heart_rate_bpm,rr_cv,signal_quality,is_arrhythmia,model_used,timestamp,match
+1,22,Young Adult (18-25),Light activity - resting,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.761,,,fair,False,keras:hctg_net_model.h5,2026-03-29T17:23:16.445338,True
+2,20,Young Adult (18-25),Post-exercise recovery,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.651,95.5,0.055,good,False,keras:hctg_net_model.h5,2026-03-29T17:23:17.004948,True
+3,40,Middle Age (35-45),Moderate exercise - gym session,Normal Sinus Rhythm (elevated HR),Normal Sinus Rhythm,Normal Sinus Rhythm,0.532,108.1,0.013,good,False,keras:hctg_net_model.h5,2026-03-29T17:23:17.568686,True
+4,42,Middle Age (35-45),At rest - stress test result,Atrial Fibrillation Risk,Atrial Fibrillation (AFib),Other Arrhythmia,0.7,135.1,0.116,good,True,keras:hctg_net_model.h5+safety-floor,2026-03-29T17:23:18.245791,False
+5,55,Adult (50-60),Baseline - morning checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.768,,,fair,False,keras:hctg_net_model.h5,2026-03-29T17:23:18.902323,True
+6,58,Adult (50-60),Symptomatic - palpitations,Possible AFib,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.755,83.4,0.09,good,True,keras:hctg_net_model.h5,2026-03-29T17:23:19.477605,True
+7,68,Elderly (65-75),Healthy - routine checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.752,,,fair,False,keras:hctg_net_model.h5,2026-03-29T17:23:20.093878,True
+8,72,Elderly (65-75),Symptomatic - irregular heartbeats,Premature Ventricular Contractions,Other Arrhythmia,Normal Sinus Rhythm,0.772,,,fair,False,keras:hctg_net_model.h5,2026-03-29T17:23:20.706961,False
+9,82,Very Elderly (80+),Baseline - bradycardia normal,Normal Sinus Rhythm (slow),Normal Sinus Rhythm,Normal Sinus Rhythm,0.758,,,fair,False,keras:hctg_net_model.h5,2026-03-29T17:23:21.286329,True
+10,85,Very Elderly (80+),Symptomatic - rapid irregular,AFib with Rapid Ventricular Response,Atrial Fibrillation (AFib),Normal Sinus Rhythm,0.43,104.9,0.156,good,False,keras:hctg_net_model.h5,2026-03-29T17:23:21.866415,False

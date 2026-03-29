@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-29T11:28:00.796101+00:00",
+  "generated_at_utc": "2026-03-29T11:55:55.034458+00:00",
   "model_status": {
     "model_loaded": true,
     "model_used": "keras:hctg_net_model.h5",
@@ -10,25 +10,25 @@
     "ok": true,
     "records_used": 24,
     "windows_tested": 288,
-    "arrhythmia_flag_rate": 0.2917,
+    "arrhythmia_flag_rate": 0.309,
     "subtle_flag_rate": 0.7049,
     "mean_confidence": 0.7907,
     "binary_metrics_vs_annotations": {
-      "accuracy": 0.6701,
-      "precision": 0.2381,
+      "accuracy": 0.6528,
+      "precision": 0.2247,
       "recall": 0.3922,
-      "specificity": 0.73,
-      "f1": 0.2963,
+      "specificity": 0.7089,
+      "f1": 0.2857,
       "tp": 20,
-      "tn": 173,
-      "fp": 64,
+      "tn": 168,
+      "fp": 69,
       "fn": 31
     },
     "prediction_family_distribution": {
-      "subtle": 139,
+      "subtle": 134,
       "normal": 65,
       "afib": 36,
-      "other": 48
+      "other": 53
     },
     "sample_record_outcomes": [
       {

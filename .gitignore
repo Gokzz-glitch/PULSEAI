@@ -9,3 +9,48 @@ research_content.txt
 dist/
 .vite/
 pulseasi-firebase-adminsdk-*.json
+
+# Python caches and packages
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+*.pot
+
+# Conda/venv
+venv/
+venv2/
+env/
+.conda/
+anaconda3/pkgs/
+.keras/
+.cache/pip/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*.temp
+_temp/
+
+# Test artifacts (keep results in GitHub, not local)
+test_results/*tmp*
+test_results/*bak*
+
+# Model files - track with Git LFS (see .gitattributes)
+*.h5

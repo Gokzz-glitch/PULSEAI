@@ -1,90 +1,52 @@
 {
-  "trials_requested": 12,
-  "trials_succeeded": 12,
+  "trials_requested": 16,
+  "trials_succeeded": 16,
   "trials_failed": 0,
   "best": {
     "params": {
-      "arrhythmia_min_conf": 0.55,
-      "max_normal_prob": 0.55,
-      "require_good_quality": true,
-      "strong_override_conf": 0.78,
+      "arrhythmia_min_conf": 0.7,
+      "max_normal_prob": 0.65,
+      "require_good_quality": false,
+      "strong_override_conf": 0.84,
       "review_uncertainty": 0.5,
       "high_uncertainty": 0.78
     },
     "metrics": {
       "recall": 0.3922,
-      "specificity": 0.73,
-      "precision": 0.2381,
-      "f1": 0.2963,
-      "benchmark_accuracy": 0.6701,
-      "ten_case_accuracy": 0.9,
-      "score": 0.5621800000000001
+      "specificity": 0.7089,
+      "precision": 0.2247,
+      "f1": 0.2857,
+      "benchmark_accuracy": 0.6528,
+      "ten_case_accuracy": 1.0,
+      "score": 0.573816
     }
   },
   "recommended_env": {
-    "PULSEAI_ARRHYTHMIA_MIN_CONF": "0.550",
-    "PULSEAI_MAX_NORMAL_PROB_FOR_ARR": "0.550",
-    "PULSEAI_REQUIRE_GOOD_QUALITY": "1",
-    "PULSEAI_STRONG_ML_OVERRIDE_CONF": "0.780",
+    "PULSEAI_ARRHYTHMIA_MIN_CONF": "0.700",
+    "PULSEAI_MAX_NORMAL_PROB_FOR_ARR": "0.650",
+    "PULSEAI_REQUIRE_GOOD_QUALITY": "0",
+    "PULSEAI_STRONG_ML_OVERRIDE_CONF": "0.840",
     "PULSEAI_REVIEW_UNCERTAINTY_THRESHOLD": "0.500",
     "PULSEAI_HIGH_UNCERTAINTY_THRESHOLD": "0.780"
   },
   "top10": [
     {
       "params": {
-        "arrhythmia_min_conf": 0.55,
-        "max_normal_prob": 0.55,
-        "require_good_quality": true,
-        "strong_override_conf": 0.78,
+        "arrhythmia_min_conf": 0.7,
+        "max_normal_prob": 0.65,
+        "require_good_quality": false,
+        "strong_override_conf": 0.84,
         "review_uncertainty": 0.5,
         "high_uncertainty": 0.78
       },
       "metrics": {
         "recall": 0.3922,
-        "specificity": 0.73,
-        "precision": 0.2381,
-        "f1": 0.2963,
-        "benchmark_accuracy": 0.6701,
-        "ten_case_accuracy": 0.9,
-        "score": 0.5621800000000001
-      }
-    },
-    {
-      "params": {
-        "arrhythmia_min_conf": 0.6,
-        "max_normal_prob": 0.7,
-        "require_good_quality": true,
-        "strong_override_conf": 0.78,
-        "review_uncertainty": 0.6,
-        "high_uncertainty": 0.78
-      },
-      "metrics": {
-        "recall": 0.3922,
-        "specificity": 0.73,
-        "precision": 0.2381,
-        "f1": 0.2963,
-        "benchmark_accuracy": 0.6701,
-        "ten_case_accuracy": 0.9,
-        "score": 0.5621800000000001
-      }
-    },
-    {
-      "params": {
-        "arrhythmia_min_conf": 0.6,
-        "max_normal_prob": 0.65,
-        "require_good_quality": true,
-        "strong_override_conf": 0.84,
-        "review_uncertainty": 0.6,
-        "high_uncertainty": 0.72
-      },
-      "metrics": {
-        "recall": 0.3922,
-        "specificity": 0.73,
-        "precision": 0.2381,
-        "f1": 0.2963,
-        "benchmark_accuracy": 0.6701,
-        "ten_case_accuracy": 0.9,
-        "score": 0.5621800000000001
+        "specificity": 0.7089,
+        "precision": 0.2247,
+        "f1": 0.2857,
+        "benchmark_accuracy": 0.6528,
+        "ten_case_accuracy": 1.0,
+        "score": 0.573816
       }
     },
     {
@@ -165,6 +127,44 @@
     },
     {
       "params": {
+        "arrhythmia_min_conf": 0.55,
+        "max_normal_prob": 0.65,
+        "require_good_quality": true,
+        "strong_override_conf": 0.72,
+        "review_uncertainty": 0.6,
+        "high_uncertainty": 0.78
+      },
+      "metrics": {
+        "recall": 0.3922,
+        "specificity": 0.73,
+        "precision": 0.2381,
+        "f1": 0.2963,
+        "benchmark_accuracy": 0.6701,
+        "ten_case_accuracy": 0.9,
+        "score": 0.5621800000000001
+      }
+    },
+    {
+      "params": {
+        "arrhythmia_min_conf": 0.55,
+        "max_normal_prob": 0.7,
+        "require_good_quality": false,
+        "strong_override_conf": 0.78,
+        "review_uncertainty": 0.5,
+        "high_uncertainty": 0.72
+      },
+      "metrics": {
+        "recall": 0.3922,
+        "specificity": 0.7089,
+        "precision": 0.2247,
+        "f1": 0.2857,
+        "benchmark_accuracy": 0.6528,
+        "ten_case_accuracy": 0.9,
+        "score": 0.553816
+      }
+    },
+    {
+      "params": {
         "arrhythmia_min_conf": 0.6,
         "max_normal_prob": 0.65,
         "require_good_quality": false,
@@ -184,12 +184,12 @@
     },
     {
       "params": {
-        "arrhythmia_min_conf": 0.7,
-        "max_normal_prob": 0.55,
+        "arrhythmia_min_conf": 0.6,
+        "max_normal_prob": 0.65,
         "require_good_quality": false,
-        "strong_override_conf": 0.72,
+        "strong_override_conf": 0.78,
         "review_uncertainty": 0.5,
-        "high_uncertainty": 0.72
+        "high_uncertainty": 0.78
       },
       "metrics": {
         "recall": 0.3922,
@@ -206,9 +206,9 @@
         "arrhythmia_min_conf": 0.55,
         "max_normal_prob": 0.55,
         "require_good_quality": true,
-        "strong_override_conf": 0.84,
-        "review_uncertainty": 0.55,
-        "high_uncertainty": 0.72
+        "strong_override_conf": 0.78,
+        "review_uncertainty": 0.5,
+        "high_uncertainty": 0.78
       },
       "metrics": {
         "recall": 0.3922,
