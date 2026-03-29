@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-29T07:24:28.467460+00:00",
+  "generated_at_utc": "2026-03-29T09:26:12.748185+00:00",
   "criteria": [
     {
       "id": "C1",
@@ -23,9 +23,9 @@
       "id": "C3",
       "name": "10-Case Real-Time Accuracy",
       "target": ">= 90%",
-      "status": "PASS",
-      "measured": "90.0%",
-      "evidence": "test_results\\test_10cases_20260329_125104.json",
+      "status": "FAIL",
+      "measured": "80.0%",
+      "evidence": "test_results\\test_10cases_20260329_145545.json",
       "remediation": "Increase PVC/other-arrhythmia representation and retain safety-floor escalation for severe rhythms."
     },
     {
@@ -50,6 +50,6 @@
   "sources": {
     "global_report": "test_results\\global_benchmark_report.json",
     "latency_report": "test_results\\latency_benchmark_report.json",
-    "latest_10case_report": "test_results\\test_10cases_20260329_125104.json"
+    "latest_10case_report": "test_results\\test_10cases_20260329_145545.json"
   }
 }

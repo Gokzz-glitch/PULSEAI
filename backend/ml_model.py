@@ -32,6 +32,8 @@ class ArrhythmiaEngine:
         self.min_arrhythmia_confidence = self._env_float("PULSEAI_ARRHYTHMIA_MIN_CONF", 0.66)
         self.max_normal_prob_for_arrhythmia = self._env_float("PULSEAI_MAX_NORMAL_PROB_FOR_ARR", 0.68)
         self.require_good_quality_for_non_critical = self._env_bool("PULSEAI_REQUIRE_GOOD_QUALITY", False)
+        self.review_uncertainty_threshold = self._env_float("PULSEAI_REVIEW_UNCERTAINTY_THRESHOLD", 0.55)
+        self.high_uncertainty_threshold = self._env_float("PULSEAI_HIGH_UNCERTAINTY_THRESHOLD", 0.75)
         self.critical_arrhythmia_labels = {
             "ventricular fibrillation (vf)",
             "ventricular tachycardia (vt)",
@@ -92,6 +94,50 @@ class ArrhythmiaEngine:
                 result["classification"] = "Subtle Rhythm Irregularity (Review)"
                 result["model_used"] = f"{result.get('model_used', self.model_version)}+policy-gate"
 
+        return result
+
+    def _attach_uncertainty(self, out: Dict) -> Dict:
+        """Attach calibrated uncertainty metadata used by clinical review flow."""
+        result = dict(out)
+        conf = float(result.get("confidence", 0.0) or 0.0)
+        probs = result.get("probabilities") if isinstance(result.get("probabilities"), dict) else {}
+        values: List[float] = []
+        if isinstance(probs, dict):
+            for k in ("normal", "afib", "other"):
+                if k in probs:
+                    values.append(float(probs.get(k, 0.0) or 0.0))
+
+        entropy_component = 0.0
+        if values:
+            arr = np.asarray(values, dtype=np.float64)
+            arr = np.clip(arr, 1e-8, 1.0)
+            arr = arr / max(float(np.sum(arr)), 1e-8)
+            entropy = -float(np.sum(arr * np.log(arr)))
+            max_entropy = float(np.log(len(arr))) if len(arr) > 1 else 1.0
+            entropy_component = entropy / max(max_entropy, 1e-8)
+
+        uncertainty = max(1.0 - conf, entropy_component)
+        cls_l = str(result.get("classification", "")).strip().lower()
+        review_like = (
+            "review" in cls_l
+            or "poor signal" in cls_l
+            or "insufficient" in cls_l
+            or bool(result.get("subtle_anomaly_flag", False))
+        )
+        if review_like:
+            uncertainty = max(uncertainty, 0.65)
+
+        uncertainty = float(np.clip(uncertainty, 0.0, 1.0))
+        if uncertainty >= self.high_uncertainty_threshold:
+            band = "high"
+        elif uncertainty >= self.review_uncertainty_threshold:
+            band = "moderate"
+        else:
+            band = "low"
+
+        result["uncertainty_score"] = float(np.round(uncertainty, 3))
+        result["uncertainty_band"] = band
+        result["needs_manual_review"] = bool(uncertainty >= self.review_uncertainty_threshold)
         return result
 
     def _load_model_if_available(self) -> None:
@@ -495,7 +541,7 @@ class ArrhythmiaEngine:
                     "feature_focus": "Subtle rhythm irregularity signature",
                 }
 
-        return self._apply_decision_policy(res)
+        return self._attach_uncertainty(self._apply_decision_policy(res))
 
     def status(self) -> Dict:
         return {

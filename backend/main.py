@@ -218,14 +218,44 @@ def _startup_safety_checks() -> None:
 
 def _apply_clinical_advisory(result: dict) -> dict:
     out = dict(result)
+    uncertainty_score = float(out.get("uncertainty_score", 0.0) or 0.0)
+    conf = float(out.get("confidence", 0.0) or 0.0)
+    interval_half = float(min(0.25, max(0.03, uncertainty_score * 0.20)))
+    out["uncertainty_interval"] = {
+        "confidence_low": float(max(0.0, round(conf - interval_half, 3))),
+        "confidence_high": float(min(1.0, round(conf + interval_half, 3))),
+    }
+
     out["clinical_decision_support_only"] = not ALLOW_AUTONOMOUS_DIAGNOSIS
     out["requires_clinician_review"] = bool(
         out.get("is_arrhythmia", False)
         or out.get("hold_still_required", False)
+        or out.get("needs_manual_review", False)
         or out["clinical_decision_support_only"]
     )
     if out["clinical_decision_support_only"]:
         out["advisory"] = "Not for autonomous diagnosis. Clinician confirmation required."
+    return out
+
+
+def _apply_uncertainty_guard(result: dict) -> dict:
+    """Make uncertainty explicit so ambiguous windows are never presented as definitive."""
+    out = dict(result)
+    cls_l = str(out.get("classification", "")).strip().lower()
+    is_critical = cls_l in CRITICAL_LABELS
+    needs_review = bool(out.get("needs_manual_review", False))
+    uncertainty = float(out.get("uncertainty_score", 0.0) or 0.0)
+
+    if is_critical:
+        return out
+
+    if needs_review or uncertainty >= 0.75:
+        if bool(out.get("is_arrhythmia", False)):
+            out["classification"] = f"{out.get('classification', 'Arrhythmia')} (Uncertain - Clinical Review Required)"
+        else:
+            out["classification"] = "Uncertain Rhythm - Clinical Review Required"
+            out["is_arrhythmia"] = False
+
     return out
 
 
@@ -349,6 +379,7 @@ async def predict_logic(window: list, pid: str, sqi: float | None = None) -> dic
     if sqi is not None:
         result = _apply_sqi_gate(result, sqi)
 
+    result = _apply_uncertainty_guard(result)
     result = _apply_clinical_advisory(result)
 
     if result.get("is_arrhythmia"):
