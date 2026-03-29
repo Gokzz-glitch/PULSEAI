@@ -1,5 +1,6 @@
 {
-  "pythonPath": "C:/Users/gokul/anaconda3/python.exe",
+  "pythonPath": ".venv/Scripts/python.exe",
+  "pythonVersion": "3.10",
   "extraPaths": [
     "./backend"
   ],

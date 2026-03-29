@@ -27,13 +27,13 @@ class ArrhythmiaEngine:
         self.labels = ["Normal Sinus Rhythm", "Atrial Fibrillation (AFib)", "Other Arrhythmia"]
         self.binary_decision_threshold = 0.50
         # Allow high-confidence ML calls to survive consensus gating by default.
-        self.strong_ml_override_confidence = self._env_float("PULSEAI_STRONG_ML_OVERRIDE_CONF", 0.80)
+        self.strong_ml_override_confidence = self._env_float("PULSEAI_STRONG_ML_OVERRIDE_CONF", 0.84)
         self.enable_heuristic_safety_override = self._env_bool("PULSEAI_ENABLE_HEURISTIC_SAFETY", False)
-        self.min_arrhythmia_confidence = self._env_float("PULSEAI_ARRHYTHMIA_MIN_CONF", 0.66)
-        self.max_normal_prob_for_arrhythmia = self._env_float("PULSEAI_MAX_NORMAL_PROB_FOR_ARR", 0.68)
+        self.min_arrhythmia_confidence = self._env_float("PULSEAI_ARRHYTHMIA_MIN_CONF", 0.70)
+        self.max_normal_prob_for_arrhythmia = self._env_float("PULSEAI_MAX_NORMAL_PROB_FOR_ARR", 0.65)
         self.require_good_quality_for_non_critical = self._env_bool("PULSEAI_REQUIRE_GOOD_QUALITY", False)
-        self.review_uncertainty_threshold = self._env_float("PULSEAI_REVIEW_UNCERTAINTY_THRESHOLD", 0.55)
-        self.high_uncertainty_threshold = self._env_float("PULSEAI_HIGH_UNCERTAINTY_THRESHOLD", 0.75)
+        self.review_uncertainty_threshold = self._env_float("PULSEAI_REVIEW_UNCERTAINTY_THRESHOLD", 0.50)
+        self.high_uncertainty_threshold = self._env_float("PULSEAI_HIGH_UNCERTAINTY_THRESHOLD", 0.78)
         self.critical_arrhythmia_labels = {
             "ventricular fibrillation (vf)",
             "ventricular tachycardia (vt)",
@@ -497,8 +497,8 @@ class ArrhythmiaEngine:
                 heuristic_conf = float(heuristic_res.get("confidence", 0.0) or 0.0)
                 heuristic_support = bool(heuristic_res.get("is_arrhythmia", False))
                 physiologic_support = (
-                    (isinstance(rr_h, (int, float)) and float(rr_h) >= 0.16)
-                    or (isinstance(hr_h, (int, float)) and (float(hr_h) < 45.0 or float(hr_h) > 120.0))
+                    (isinstance(rr_h, (int, float)) and float(rr_h) >= 0.14)
+                    or (isinstance(hr_h, (int, float)) and (float(hr_h) < 48.0 or float(hr_h) > 115.0))
                 )
                 strong_ml = float(res.get("confidence", 0.0)) >= self.strong_ml_override_confidence
 
