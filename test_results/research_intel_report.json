@@ -1,0 +1,119 @@
+{
+  "generated_at_utc": "2026-03-28T13:02:49.170515+00:00",
+  "summary": {
+    "total_sources": 10,
+    "reachable_sources": 10,
+    "datasets": 4,
+    "papers": 2,
+    "repos": 3,
+    "pretrained_candidates": 1
+  },
+  "sources": [
+    {
+      "kind": "dataset",
+      "name": "MIT-BIH Arrhythmia Database",
+      "url": "https://physionet.org/content/mitdb/1.0.0/",
+      "why_it_matters": "Gold-standard beat annotations for binary arrhythmia detection benchmarking.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "MIT-BIH Arrhythmia Database v1.0.0",
+      "content_size_bytes": 91142
+    },
+    {
+      "kind": "dataset",
+      "name": "MIT-BIH Noise Stress Test Database",
+      "url": "https://physionet.org/content/nstdb/1.0.0/",
+      "why_it_matters": "Directly supports robustness testing under ambulatory noise.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "MIT-BIH Noise Stress Test Database v1.0.0",
+      "content_size_bytes": 47828
+    },
+    {
+      "kind": "dataset",
+      "name": "PTB-XL",
+      "url": "https://physionet.org/content/ptb-xl/1.0.3/",
+      "why_it_matters": "Large-scale ECG dataset with recommended train/val/test folds and rich metadata.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "PTB-XL, a large publicly available electrocardiography dataset v1.0.3",
+      "content_size_bytes": 51714
+    },
+    {
+      "kind": "dataset",
+      "name": "INCART 12-lead Arrhythmia Database",
+      "url": "https://physionet.org/content/incartdb/1.0.0/",
+      "why_it_matters": "External-domain arrhythmia data for generalization checks.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "St Petersburg INCART 12-lead Arrhythmia Database v1.0.0",
+      "content_size_bytes": 98652
+    },
+    {
+      "kind": "paper",
+      "name": "Deep Learning for ECG Analysis: Benchmarks and Insights from PTB-XL",
+      "url": "https://arxiv.org/abs/2004.13701",
+      "why_it_matters": "Benchmarking blueprint and transfer-learning guidance for ECG models.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "[2004.13701] Deep Learning for ECG Analysis: Benchmarks and Insights from PTB-XL",
+      "content_size_bytes": 47973
+    },
+    {
+      "kind": "paper",
+      "name": "ECG Heartbeat Classification: A Deep Transferable Representation",
+      "url": "https://arxiv.org/abs/1805.00794",
+      "why_it_matters": "Transfer-learning strategy across arrhythmia and related ECG tasks.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "[1805.00794] ECG Heartbeat Classification: A Deep Transferable Representation",
+      "content_size_bytes": 47681
+    },
+    {
+      "kind": "repo",
+      "name": "resnet1d",
+      "url": "https://github.com/hsd1503/resnet1d",
+      "why_it_matters": "Strong 1D backbone family for signal tasks; useful for model refresh experiments.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "GitHub - hsd1503/resnet1d: PyTorch implementations of several SOTA backbone deep neural networks (such as ResNet, ResNeXt, RegNet) on one-dimensional (1D) signa",
+      "content_size_bytes": 309335
+    },
+    {
+      "kind": "repo",
+      "name": "automatic-ecg-diagnosis",
+      "url": "https://github.com/antonior92/automatic-ecg-diagnosis",
+      "why_it_matters": "Well-known ECG classification training pipeline with publication lineage.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "GitHub - antonior92/automatic-ecg-diagnosis: Scripts and modules for training and testing neural network for ECG automatic classification. Companion code to the",
+      "content_size_bytes": 301440
+    },
+    {
+      "kind": "repo",
+      "name": "py-ecg-detectors",
+      "url": "https://github.com/berndporr/py-ecg-detectors",
+      "why_it_matters": "Reference QRS detector implementations to harden preprocessing and HR estimates.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "GitHub - berndporr/py-ecg-detectors: Popular ECG QRS detectors written in python \u00b7 GitHub",
+      "content_size_bytes": 308466
+    },
+    {
+      "kind": "pretrained_candidate",
+      "name": "PTB-XL benchmark checkpoints ecosystem",
+      "url": "https://arxiv.org/abs/2004.13701",
+      "why_it_matters": "Candidate source for initialization and transfer to single-lead edge model.",
+      "status_code": 200,
+      "reachable": true,
+      "page_title": "[2004.13701] Deep Learning for ECG Analysis: Benchmarks and Insights from PTB-XL",
+      "content_size_bytes": 47973
+    }
+  ],
+  "recommendations": [
+    "Prioritize PTB-XL transfer pretraining, then fine-tune on MIT-BIH rhythm targets.",
+    "Add noise-stress evaluation (NSTDB) to quantify robustness before deployment.",
+    "Benchmark at least one ResNet1D baseline against the current HCTG-Net model.",
+    "Gate deployment by constrained metrics (specificity floor + recall floor), not accuracy alone."
+  ]
+}

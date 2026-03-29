@@ -1,0 +1,102 @@
+{
+  "generated_at_utc": "2026-03-28T18:12:10.884415+00:00",
+  "window_definition": {
+    "segment_len": 1000,
+    "fs": 500
+  },
+  "dataset": {
+    "total_windows": 67200,
+    "train_windows_before_balance": 53200,
+    "train_windows_after_balance": 80540,
+    "val_windows": 14000,
+    "train_positive_rate_before_balance": 0.243,
+    "train_positive_rate_after_balance": 0.5,
+    "val_positive_rate": 0.1152,
+    "train_records": [
+      "111",
+      "112",
+      "113",
+      "114",
+      "115",
+      "116",
+      "117",
+      "118",
+      "119",
+      "121",
+      "122",
+      "123",
+      "124",
+      "200",
+      "201",
+      "202",
+      "203",
+      "205",
+      "207",
+      "208",
+      "209",
+      "210",
+      "212",
+      "213",
+      "214",
+      "215",
+      "217",
+      "219",
+      "220",
+      "221",
+      "222",
+      "223",
+      "228",
+      "230",
+      "231",
+      "232",
+      "233",
+      "234"
+    ],
+    "val_records": [
+      "100",
+      "101",
+      "102",
+      "103",
+      "104",
+      "105",
+      "106",
+      "107",
+      "108",
+      "109"
+    ]
+  },
+  "training": {
+    "epochs_requested": 12,
+    "epochs_ran": 4,
+    "final_history": {
+      "accuracy": 0.9551651477813721,
+      "auc": 0.9850959777832031,
+      "loss": 0.12867893278598785,
+      "precision": 0.9795160293579102,
+      "recall": 0.9297740459442139,
+      "val_accuracy": 0.18692857027053833,
+      "val_auc": 0.35494494438171387,
+      "val_loss": 3.9692251682281494,
+      "val_precision": 0.08566582202911377,
+      "val_recall": 0.6261624097824097,
+      "learning_rate": 0.00039999998989515007
+    }
+  },
+  "validation_best_threshold_metrics": {
+    "threshold": 0.69,
+    "accuracy": 0.7951,
+    "precision": 0.1699,
+    "recall": 0.2002,
+    "specificity": 0.8726,
+    "f1": 0.1838,
+    "balanced_accuracy": 0.5364,
+    "tp": 323,
+    "tn": 10809,
+    "fp": 1578,
+    "fn": 1290
+  },
+  "artifacts": {
+    "model_path": "G:\\My Drive\\PULSEAI\\hctg_net_model.h5",
+    "thresholds_path": "G:\\My Drive\\PULSEAI\\model_thresholds.json"
+  }
+}

@@ -1,0 +1,6 @@
+scenario,predicted,confidence,quality,pass
+Clean NSR,Normal Sinus Rhythm,0.748,fair,True
+Noisy (25dB SNR),Normal Sinus Rhythm,0.746,fair,True
+Baseline Wander (High),Normal Sinus Rhythm,0.746,fair,True
+Strong Mains Hum (50Hz),Normal Sinus Rhythm,0.729,good,True
+Leads-Off,Atrial Fibrillation (AFib),0.764,disconnected,True

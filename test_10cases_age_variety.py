@@ -340,8 +340,13 @@ for idx, row in df.iterrows():
     print(f"  Condition: {row['condition']}")
     print(f"  Expected → Predicted: {row['expected']} → {row['predicted']}")
     print(f"  Confidence: {row['confidence']:.2%} | Signal Quality: {row['signal_quality']}")
-    if row['heart_rate_bpm']:
-        print(f"  Heart Rate: {int(row['heart_rate_bpm'])} bpm | RR-CV: {row['rr_cv']:.3f}" if row['rr_cv'] else f"  Heart Rate: {int(row['heart_rate_bpm'])} bpm")
+    hr = row.get('heart_rate_bpm')
+    rr = row.get('rr_cv')
+    if pd.notna(hr):
+        if pd.notna(rr):
+            print(f"  Heart Rate: {int(hr)} bpm | RR-CV: {float(rr):.3f}")
+        else:
+            print(f"  Heart Rate: {int(hr)} bpm")
 
 # ============================================================================
 # PART 7: Save Reports

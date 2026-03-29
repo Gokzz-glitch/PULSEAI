@@ -1,0 +1,55 @@
+{
+  "generated_at_utc": "2026-03-29T07:24:28.467460+00:00",
+  "criteria": [
+    {
+      "id": "C1",
+      "name": "Arrhythmia Sensitivity",
+      "target": ">= 90%",
+      "status": "FAIL",
+      "measured": "46.9%",
+      "evidence": "test_results\\global_benchmark_report.json",
+      "remediation": "Retrain on harder positives and tune operating threshold with false-negative penalty."
+    },
+    {
+      "id": "C2",
+      "name": "Arrhythmia Specificity",
+      "target": ">= 90%",
+      "status": "FAIL",
+      "measured": "70.8%",
+      "evidence": "test_results\\global_benchmark_report.json",
+      "remediation": "Add stronger non-arrhythmia hard negatives and post-filter to suppress noise-induced positives."
+    },
+    {
+      "id": "C3",
+      "name": "10-Case Real-Time Accuracy",
+      "target": ">= 90%",
+      "status": "PASS",
+      "measured": "90.0%",
+      "evidence": "test_results\\test_10cases_20260329_125104.json",
+      "remediation": "Increase PVC/other-arrhythmia representation and retain safety-floor escalation for severe rhythms."
+    },
+    {
+      "id": "C4",
+      "name": "Sampling Frequency",
+      "target": ">= 500 Hz",
+      "status": "PASS",
+      "measured": "500 Hz",
+      "evidence": "backend/signal_processing.py",
+      "remediation": "Increase ADC sampling task priority and verify effective sampling under network load."
+    },
+    {
+      "id": "C5",
+      "name": "Classification Latency",
+      "target": "< 100 ms",
+      "status": "PASS",
+      "measured": "p95=81.16 ms",
+      "evidence": "test_results\\latency_benchmark_report.json",
+      "remediation": "Instrument and log per-window inference latency in backend main loop and include p50/p95 metrics."
+    }
+  ],
+  "sources": {
+    "global_report": "test_results\\global_benchmark_report.json",
+    "latency_report": "test_results\\latency_benchmark_report.json",
+    "latest_10case_report": "test_results\\test_10cases_20260329_125104.json"
+  }
+}

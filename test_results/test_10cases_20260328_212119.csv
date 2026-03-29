@@ -1,0 +1,11 @@
+case_id,age,age_group,scenario,condition,expected,predicted,confidence,heart_rate_bpm,rr_cv,signal_quality,is_arrhythmia,model_used,timestamp,match
+1,22,Young Adult (18-25),Light activity - resting,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.741,70.8,0.0,good,False,keras:hctg_net_model.h5,2026-03-28T21:21:04.959985,True
+2,20,Young Adult (18-25),Post-exercise recovery,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.691,96.8,0.064,good,False,keras:hctg_net_model.h5,2026-03-28T21:21:07.847608,True
+3,40,Middle Age (35-45),Moderate exercise - gym session,Normal Sinus Rhythm (elevated HR),Normal Sinus Rhythm,Normal Sinus Rhythm,0.57,107.9,0.018,good,False,keras:hctg_net_model.h5,2026-03-28T21:21:09.309202,True
+4,42,Middle Age (35-45),At rest - stress test result,Atrial Fibrillation Risk,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.856,111.7,0.049,good,True,keras:hctg_net_model.h5,2026-03-28T21:21:11.185116,True
+5,55,Adult (50-60),Baseline - morning checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.772,68.2,0.0,good,False,keras:hctg_net_model.h5,2026-03-28T21:21:12.958564,True
+6,58,Adult (50-60),Symptomatic - palpitations,Possible AFib,Atrial Fibrillation (AFib),Atrial Fibrillation (AFib),0.813,154.4,0.391,good,True,keras:hctg_net_model.h5,2026-03-28T21:21:14.172538,True
+7,68,Elderly (65-75),Healthy - routine checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.769,57.9,0.0,good,False,keras:hctg_net_model.h5,2026-03-28T21:21:15.054278,True
+8,72,Elderly (65-75),Symptomatic - irregular heartbeats,Premature Ventricular Contractions,Other Arrhythmia,Subtle Rhythm Irregularity (Review),0.7,428.6,0.0,good,False,keras:hctg_net_model.h5+safety-floor+policy-gate,2026-03-28T21:21:16.210454,False
+9,82,Very Elderly (80+),Baseline - bradycardia normal,Normal Sinus Rhythm (slow),Normal Sinus Rhythm,Subtle Rhythm Irregularity (Review),0.743,491.8,0.0,good,False,keras:hctg_net_model.h5+safety-floor+policy-gate,2026-03-28T21:21:17.543045,False
+10,85,Very Elderly (80+),Symptomatic - rapid irregular,AFib with Rapid Ventricular Response,Atrial Fibrillation (AFib),Subtle Rhythm Irregularity (Review),0.58,106.0,0.111,good,False,keras:hctg_net_model.h5,2026-03-28T21:21:19.388527,False

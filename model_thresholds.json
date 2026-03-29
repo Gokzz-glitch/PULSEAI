@@ -1,0 +1,7 @@
+{
+  "binary_decision_threshold": 0.69,
+  "generated_at_utc": "2026-03-28T18:12:10.856197+00:00",
+  "model": "hctg_net_model.h5",
+  "segment_len": 1000,
+  "fs": 500
+}

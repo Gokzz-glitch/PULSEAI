@@ -1,0 +1,712 @@
+{
+  "best_trial": {
+    "min_conf": 0.8,
+    "max_normal_prob": 1.0,
+    "require_good_quality": false,
+    "score": 0.4519,
+    "accuracy": 0.2188,
+    "precision": 0.1525,
+    "recall": 1.0,
+    "specificity": 0.0909,
+    "f1": 0.2647
+  },
+  "all_trials": [
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 1.0,
+      "require_good_quality": true,
+      "score": 0.3884,
+      "accuracy": 0.5078,
+      "precision": 0.1311,
+      "recall": 0.4444,
+      "specificity": 0.5182,
+      "f1": 0.2025
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 1.0,
+      "require_good_quality": false,
+      "score": 0.4155,
+      "accuracy": 0.1406,
+      "precision": 0.1406,
+      "recall": 1.0,
+      "specificity": 0.0,
+      "f1": 0.2466
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.85,
+      "require_good_quality": true,
+      "score": 0.3884,
+      "accuracy": 0.5078,
+      "precision": 0.1311,
+      "recall": 0.4444,
+      "specificity": 0.5182,
+      "f1": 0.2025
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.85,
+      "require_good_quality": false,
+      "score": 0.4155,
+      "accuracy": 0.1406,
+      "precision": 0.1406,
+      "recall": 1.0,
+      "specificity": 0.0,
+      "f1": 0.2466
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.7,
+      "require_good_quality": true,
+      "score": 0.3884,
+      "accuracy": 0.5078,
+      "precision": 0.1311,
+      "recall": 0.4444,
+      "specificity": 0.5182,
+      "f1": 0.2025
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.7,
+      "require_good_quality": false,
+      "score": 0.4155,
+      "accuracy": 0.1406,
+      "precision": 0.1406,
+      "recall": 1.0,
+      "specificity": 0.0,
+      "f1": 0.2466
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.55,
+      "require_good_quality": true,
+      "score": 0.3884,
+      "accuracy": 0.5078,
+      "precision": 0.1311,
+      "recall": 0.4444,
+      "specificity": 0.5182,
+      "f1": 0.2025
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.55,
+      "require_good_quality": false,
+      "score": 0.4155,
+      "accuracy": 0.1406,
+      "precision": 0.1406,
+      "recall": 1.0,
+      "specificity": 0.0,
+      "f1": 0.2466
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.4,
+      "require_good_quality": true,
+      "score": 0.3923,
+      "accuracy": 0.5156,
+      "precision": 0.1333,
+      "recall": 0.4444,
+      "specificity": 0.5273,
+      "f1": 0.2051
+    },
+    {
+      "min_conf": 0.0,
+      "max_normal_prob": 0.4,
+      "require_good_quality": false,
+      "score": 0.4191,
+      "accuracy": 0.1484,
+      "precision": 0.1417,
+      "recall": 1.0,
+      "specificity": 0.0091,
+      "f1": 0.2483
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 1.0,
+      "require_good_quality": true,
+      "score": 0.3923,
+      "accuracy": 0.5156,
+      "precision": 0.1333,
+      "recall": 0.4444,
+      "specificity": 0.5273,
+      "f1": 0.2051
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 1.0,
+      "require_good_quality": false,
+      "score": 0.4263,
+      "accuracy": 0.1641,
+      "precision": 0.144,
+      "recall": 1.0,
+      "specificity": 0.0273,
+      "f1": 0.2517
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.85,
+      "require_good_quality": true,
+      "score": 0.3923,
+      "accuracy": 0.5156,
+      "precision": 0.1333,
+      "recall": 0.4444,
+      "specificity": 0.5273,
+      "f1": 0.2051
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.85,
+      "require_good_quality": false,
+      "score": 0.4263,
+      "accuracy": 0.1641,
+      "precision": 0.144,
+      "recall": 1.0,
+      "specificity": 0.0273,
+      "f1": 0.2517
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.7,
+      "require_good_quality": true,
+      "score": 0.3923,
+      "accuracy": 0.5156,
+      "precision": 0.1333,
+      "recall": 0.4444,
+      "specificity": 0.5273,
+      "f1": 0.2051
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.7,
+      "require_good_quality": false,
+      "score": 0.4263,
+      "accuracy": 0.1641,
+      "precision": 0.144,
+      "recall": 1.0,
+      "specificity": 0.0273,
+      "f1": 0.2517
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.55,
+      "require_good_quality": true,
+      "score": 0.3923,
+      "accuracy": 0.5156,
+      "precision": 0.1333,
+      "recall": 0.4444,
+      "specificity": 0.5273,
+      "f1": 0.2051
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.55,
+      "require_good_quality": false,
+      "score": 0.4263,
+      "accuracy": 0.1641,
+      "precision": 0.144,
+      "recall": 1.0,
+      "specificity": 0.0273,
+      "f1": 0.2517
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.4,
+      "require_good_quality": true,
+      "score": 0.3923,
+      "accuracy": 0.5156,
+      "precision": 0.1333,
+      "recall": 0.4444,
+      "specificity": 0.5273,
+      "f1": 0.2051
+    },
+    {
+      "min_conf": 0.55,
+      "max_normal_prob": 0.4,
+      "require_good_quality": false,
+      "score": 0.4263,
+      "accuracy": 0.1641,
+      "precision": 0.144,
+      "recall": 1.0,
+      "specificity": 0.0273,
+      "f1": 0.2517
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 1.0,
+      "require_good_quality": true,
+      "score": 0.3962,
+      "accuracy": 0.5234,
+      "precision": 0.1356,
+      "recall": 0.4444,
+      "specificity": 0.5364,
+      "f1": 0.2078
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 1.0,
+      "require_good_quality": false,
+      "score": 0.4409,
+      "accuracy": 0.1953,
+      "precision": 0.1488,
+      "recall": 1.0,
+      "specificity": 0.0636,
+      "f1": 0.259
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.85,
+      "require_good_quality": true,
+      "score": 0.3962,
+      "accuracy": 0.5234,
+      "precision": 0.1356,
+      "recall": 0.4444,
+      "specificity": 0.5364,
+      "f1": 0.2078
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.85,
+      "require_good_quality": false,
+      "score": 0.4409,
+      "accuracy": 0.1953,
+      "precision": 0.1488,
+      "recall": 1.0,
+      "specificity": 0.0636,
+      "f1": 0.259
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.7,
+      "require_good_quality": true,
+      "score": 0.3962,
+      "accuracy": 0.5234,
+      "precision": 0.1356,
+      "recall": 0.4444,
+      "specificity": 0.5364,
+      "f1": 0.2078
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.7,
+      "require_good_quality": false,
+      "score": 0.4409,
+      "accuracy": 0.1953,
+      "precision": 0.1488,
+      "recall": 1.0,
+      "specificity": 0.0636,
+      "f1": 0.259
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.55,
+      "require_good_quality": true,
+      "score": 0.3962,
+      "accuracy": 0.5234,
+      "precision": 0.1356,
+      "recall": 0.4444,
+      "specificity": 0.5364,
+      "f1": 0.2078
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.55,
+      "require_good_quality": false,
+      "score": 0.4409,
+      "accuracy": 0.1953,
+      "precision": 0.1488,
+      "recall": 1.0,
+      "specificity": 0.0636,
+      "f1": 0.259
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.4,
+      "require_good_quality": true,
+      "score": 0.3962,
+      "accuracy": 0.5234,
+      "precision": 0.1356,
+      "recall": 0.4444,
+      "specificity": 0.5364,
+      "f1": 0.2078
+    },
+    {
+      "min_conf": 0.7,
+      "max_normal_prob": 0.4,
+      "require_good_quality": false,
+      "score": 0.4409,
+      "accuracy": 0.1953,
+      "precision": 0.1488,
+      "recall": 1.0,
+      "specificity": 0.0636,
+      "f1": 0.259
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 1.0,
+      "require_good_quality": true,
+      "score": 0.4001,
+      "accuracy": 0.5312,
+      "precision": 0.1379,
+      "recall": 0.4444,
+      "specificity": 0.5455,
+      "f1": 0.2105
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 1.0,
+      "require_good_quality": false,
+      "score": 0.4519,
+      "accuracy": 0.2188,
+      "precision": 0.1525,
+      "recall": 1.0,
+      "specificity": 0.0909,
+      "f1": 0.2647
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.85,
+      "require_good_quality": true,
+      "score": 0.4001,
+      "accuracy": 0.5312,
+      "precision": 0.1379,
+      "recall": 0.4444,
+      "specificity": 0.5455,
+      "f1": 0.2105
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.85,
+      "require_good_quality": false,
+      "score": 0.4519,
+      "accuracy": 0.2188,
+      "precision": 0.1525,
+      "recall": 1.0,
+      "specificity": 0.0909,
+      "f1": 0.2647
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.7,
+      "require_good_quality": true,
+      "score": 0.4001,
+      "accuracy": 0.5312,
+      "precision": 0.1379,
+      "recall": 0.4444,
+      "specificity": 0.5455,
+      "f1": 0.2105
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.7,
+      "require_good_quality": false,
+      "score": 0.4519,
+      "accuracy": 0.2188,
+      "precision": 0.1525,
+      "recall": 1.0,
+      "specificity": 0.0909,
+      "f1": 0.2647
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.55,
+      "require_good_quality": true,
+      "score": 0.4001,
+      "accuracy": 0.5312,
+      "precision": 0.1379,
+      "recall": 0.4444,
+      "specificity": 0.5455,
+      "f1": 0.2105
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.55,
+      "require_good_quality": false,
+      "score": 0.4519,
+      "accuracy": 0.2188,
+      "precision": 0.1525,
+      "recall": 1.0,
+      "specificity": 0.0909,
+      "f1": 0.2647
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.4,
+      "require_good_quality": true,
+      "score": 0.4001,
+      "accuracy": 0.5312,
+      "precision": 0.1379,
+      "recall": 0.4444,
+      "specificity": 0.5455,
+      "f1": 0.2105
+    },
+    {
+      "min_conf": 0.8,
+      "max_normal_prob": 0.4,
+      "require_good_quality": false,
+      "score": 0.4519,
+      "accuracy": 0.2188,
+      "precision": 0.1525,
+      "recall": 1.0,
+      "specificity": 0.0909,
+      "f1": 0.2647
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 1.0,
+      "require_good_quality": true,
+      "score": 0.4041,
+      "accuracy": 0.5391,
+      "precision": 0.1404,
+      "recall": 0.4444,
+      "specificity": 0.5545,
+      "f1": 0.2133
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 1.0,
+      "require_good_quality": false,
+      "score": 0.3905,
+      "accuracy": 0.2109,
+      "precision": 0.1327,
+      "recall": 0.8333,
+      "specificity": 0.1091,
+      "f1": 0.229
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.85,
+      "require_good_quality": true,
+      "score": 0.4041,
+      "accuracy": 0.5391,
+      "precision": 0.1404,
+      "recall": 0.4444,
+      "specificity": 0.5545,
+      "f1": 0.2133
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.85,
+      "require_good_quality": false,
+      "score": 0.3905,
+      "accuracy": 0.2109,
+      "precision": 0.1327,
+      "recall": 0.8333,
+      "specificity": 0.1091,
+      "f1": 0.229
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.7,
+      "require_good_quality": true,
+      "score": 0.4041,
+      "accuracy": 0.5391,
+      "precision": 0.1404,
+      "recall": 0.4444,
+      "specificity": 0.5545,
+      "f1": 0.2133
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.7,
+      "require_good_quality": false,
+      "score": 0.3905,
+      "accuracy": 0.2109,
+      "precision": 0.1327,
+      "recall": 0.8333,
+      "specificity": 0.1091,
+      "f1": 0.229
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.55,
+      "require_good_quality": true,
+      "score": 0.4041,
+      "accuracy": 0.5391,
+      "precision": 0.1404,
+      "recall": 0.4444,
+      "specificity": 0.5545,
+      "f1": 0.2133
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.55,
+      "require_good_quality": false,
+      "score": 0.3905,
+      "accuracy": 0.2109,
+      "precision": 0.1327,
+      "recall": 0.8333,
+      "specificity": 0.1091,
+      "f1": 0.229
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.4,
+      "require_good_quality": true,
+      "score": 0.4041,
+      "accuracy": 0.5391,
+      "precision": 0.1404,
+      "recall": 0.4444,
+      "specificity": 0.5545,
+      "f1": 0.2133
+    },
+    {
+      "min_conf": 0.9,
+      "max_normal_prob": 0.4,
+      "require_good_quality": false,
+      "score": 0.3905,
+      "accuracy": 0.2109,
+      "precision": 0.1327,
+      "recall": 0.8333,
+      "specificity": 0.1091,
+      "f1": 0.229
+    }
+  ],
+  "final_full_report": {
+    "generated_at_utc": "2026-03-28T12:03:19.753921+00:00",
+    "model_status": {
+      "model_loaded": true,
+      "model_used": "keras:hctg_net_model.h5",
+      "model_path": "hctg_net_model.h5"
+    },
+    "global_sources": [
+      {
+        "region": "North America",
+        "country": "USA",
+        "name": "MIT-BIH Arrhythmia Database",
+        "url": "https://physionet.org/content/mitdb/1.0.0/",
+        "status_code": 200,
+        "reachable": true,
+        "page_title": "MIT-BIH Arrhythmia Database v1.0.0"
+      },
+      {
+        "region": "Europe",
+        "country": "Germany",
+        "name": "PTB-XL ECG Dataset",
+        "url": "https://physionet.org/content/ptb-xl/1.0.3/",
+        "status_code": 200,
+        "reachable": true,
+        "page_title": "PTB-XL, a large publicly available electrocardiography dataset v1.0.3"
+      },
+      {
+        "region": "Asia",
+        "country": "China",
+        "name": "CPSC 2018 ECG Challenge Data",
+        "url": "https://physionet.org/content/challenge-2020/1.0.2/",
+        "status_code": 200,
+        "reachable": true,
+        "page_title": "Classification of 12-lead ECGs: The PhysioNet/Computing in Cardiology Challenge 2020 v1.0.2"
+      },
+      {
+        "region": "Asia",
+        "country": "Israel",
+        "name": "Long Term AF Database",
+        "url": "https://physionet.org/content/ltafdb/1.0.0/",
+        "status_code": 200,
+        "reachable": true,
+        "page_title": "Long Term AF Database v1.0.0"
+      },
+      {
+        "region": "South America",
+        "country": "Brazil",
+        "name": "INCART 12-lead Arrhythmia",
+        "url": "https://physionet.org/content/incartdb/1.0.0/",
+        "status_code": 200,
+        "reachable": true,
+        "page_title": "St Petersburg INCART 12-lead Arrhythmia Database v1.0.0"
+      }
+    ],
+    "local_mitbih_evaluation": {
+      "ok": true,
+      "records_used": 28,
+      "windows_tested": 224,
+      "arrhythmia_flag_rate": 0.9241,
+      "subtle_flag_rate": 0.0223,
+      "mean_confidence": 0.9517,
+      "binary_metrics_vs_annotations": {
+        "accuracy": 0.2232,
+        "precision": 0.1643,
+        "recall": 0.9714,
+        "specificity": 0.0847,
+        "f1": 0.281,
+        "tp": 34,
+        "tn": 16,
+        "fp": 173,
+        "fn": 1
+      },
+      "prediction_family_distribution": {
+        "afib": 80,
+        "other": 127,
+        "subtle": 17
+      },
+      "sample_record_outcomes": [
+        {
+          "record": "100",
+          "top_class": "Atrial Fibrillation (AFib)",
+          "count": 5
+        },
+        {
+          "record": "101",
+          "top_class": "Atrial Fibrillation (AFib)",
+          "count": 4
+        },
+        {
+          "record": "102",
+          "top_class": "Other Arrhythmia",
+          "count": 8
+        },
+        {
+          "record": "103",
+          "top_class": "Atrial Fibrillation (AFib)",
+          "count": 5
+        },
+        {
+          "record": "104",
+          "top_class": "Other Arrhythmia",
+          "count": 6
+        },
+        {
+          "record": "105",
+          "top_class": "Other Arrhythmia",
+          "count": 5
+        },
+        {
+          "record": "106",
+          "top_class": "Other Arrhythmia",
+          "count": 6
+        },
+        {
+          "record": "107",
+          "top_class": "Other Arrhythmia",
+          "count": 7
+        },
+        {
+          "record": "108",
+          "top_class": "Atrial Fibrillation (AFib)",
+          "count": 4
+        },
+        {
+          "record": "109",
+          "top_class": "Other Arrhythmia",
+          "count": 7
+        },
+        {
+          "record": "111",
+          "top_class": "Other Arrhythmia",
+          "count": 6
+        },
+        {
+          "record": "112",
+          "top_class": "Atrial Fibrillation (AFib)",
+          "count": 5
+        }
+      ]
+    },
+    "subtle_anomaly_challenge": {
+      "cases": 140,
+      "subtle_flag_detection_rate": 0.0,
+      "overall_arrhythmia_detection_rate": 0.8571,
+      "mean_confidence": 0.9451
+    }
+  }
+}

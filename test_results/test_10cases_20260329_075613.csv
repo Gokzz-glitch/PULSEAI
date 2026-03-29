@@ -1,0 +1,11 @@
+case_id,age,age_group,scenario,condition,expected,predicted,confidence,heart_rate_bpm,rr_cv,signal_quality,is_arrhythmia,model_used,timestamp,match
+1,22,Young Adult (18-25),Light activity - resting,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.731,,,fair,False,keras:hctg_net_model.h5,2026-03-29T07:56:09.559144,True
+2,20,Young Adult (18-25),Post-exercise recovery,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.686,94.5,0.017,good,False,keras:hctg_net_model.h5,2026-03-29T07:56:09.964125,True
+3,40,Middle Age (35-45),Moderate exercise - gym session,Normal Sinus Rhythm (elevated HR),Normal Sinus Rhythm,Normal Sinus Rhythm,0.542,110.1,0.013,good,False,keras:hctg_net_model.h5,2026-03-29T07:56:10.421332,True
+4,42,Middle Age (35-45),At rest - stress test result,Atrial Fibrillation Risk,Atrial Fibrillation (AFib),Subtle Rhythm Irregularity (Review),0.58,90.9,0.064,good,False,keras:hctg_net_model.h5,2026-03-29T07:56:10.771031,False
+5,55,Adult (50-60),Baseline - morning checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.771,,,fair,False,keras:hctg_net_model.h5,2026-03-29T07:56:11.143625,True
+6,58,Adult (50-60),Symptomatic - palpitations,Possible AFib,Atrial Fibrillation (AFib),Subtle Rhythm Irregularity (Review),0.58,96.2,0.254,good,False,keras:hctg_net_model.h5,2026-03-29T07:56:11.490802,False
+7,68,Elderly (65-75),Healthy - routine checkup,Normal Sinus Rhythm,Normal Sinus Rhythm,Normal Sinus Rhythm,0.758,,,fair,False,keras:hctg_net_model.h5,2026-03-29T07:56:11.858827,True
+8,72,Elderly (65-75),Symptomatic - irregular heartbeats,Premature Ventricular Contractions,Other Arrhythmia,Normal Sinus Rhythm,0.68,,,fair,False,keras:hctg_net_model.h5,2026-03-29T07:56:12.237174,False
+9,82,Very Elderly (80+),Baseline - bradycardia normal,Normal Sinus Rhythm (slow),Normal Sinus Rhythm,Normal Sinus Rhythm,0.733,,,fair,False,keras:hctg_net_model.h5,2026-03-29T07:56:12.583818,True
+10,85,Very Elderly (80+),Symptomatic - rapid irregular,AFib with Rapid Ventricular Response,Atrial Fibrillation (AFib),Normal Sinus Rhythm,0.612,94.0,0.121,good,False,keras:hctg_net_model.h5,2026-03-29T07:56:12.998665,False

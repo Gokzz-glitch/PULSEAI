@@ -1,0 +1,59 @@
+{
+  "trials_per_case": 20,
+  "filter_config": {
+    "mains_hz": 50,
+    "notch_enabled": true,
+    "hp_enabled": true,
+    "lp_enabled": true,
+    "ma_enabled": false,
+    "median_enabled": true,
+    "hampel_enabled": true,
+    "clip_enabled": false
+  },
+  "overall_fused_family_accuracy": 50.0,
+  "correct": 40,
+  "total": 80,
+  "fused_prediction_family_distribution": {
+    "afib": 60,
+    "other": 20
+  },
+  "cases": [
+    {
+      "case": "Normal",
+      "expected_family": "normal",
+      "fused_accuracy": 0.0,
+      "mean_fused_confidence": 1.0,
+      "lead_family_counts": {
+        "afib": 59,
+        "other": 1
+      }
+    },
+    {
+      "case": "AFib-like",
+      "expected_family": "afib",
+      "fused_accuracy": 100.0,
+      "mean_fused_confidence": 0.9988,
+      "lead_family_counts": {
+        "afib": 60
+      }
+    },
+    {
+      "case": "PVC-like",
+      "expected_family": "other",
+      "fused_accuracy": 100.0,
+      "mean_fused_confidence": 1.0,
+      "lead_family_counts": {
+        "other": 60
+      }
+    },
+    {
+      "case": "Tachy-like",
+      "expected_family": "tachy",
+      "fused_accuracy": 0.0,
+      "mean_fused_confidence": 1.0,
+      "lead_family_counts": {
+        "afib": 60
+      }
+    }
+  ]
+}

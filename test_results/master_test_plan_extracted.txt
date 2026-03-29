@@ -1,0 +1,559 @@
+
+
+===== PAGE 1 =====
+Master Test Plan: ESP32-Based ECG AI System
+Executive Summary
+This  report  presents  a  comprehensive  testing  framework  for  an  ESP32-based  medical  ECG  monitoring
+device with embedded AI. We detail the required hardware, firmware, and AI model specifications; design
+exhaustive  test  scenarios  covering  physiological  and  device-failure  conditions;  define  performance,
+accuracy, robustness, and usability metrics; outline regulatory and ethical requirements; and propose a
+scoring  rubric.  The  goal  is  to  ensure  safety,  reliability  and  clinical  effectiveness.  Key  requirements
+include  at  least  500 Hz  ECG  sampling,  ≤30 µV  noise  and  ≥90 dB  common-mode  rejection,  and  a
+validated AI model (e.g. CNN) that meets sensitivity/specificity targets. The plan prescribes strict pass/fail
+thresholds (e.g. sensitivity ≥90%, latency <100 ms) with remediation steps. Reporting will include summary
+tables, workflow diagrams, and charts of expected metrics. 
+System Specifications
+Hardware: The device uses an ESP32-WROOM-32 module (Dual-core 240 MHz, up to 8 MB Flash, up
+to 8 MB PSRAM). It must include an ECG analog front-end (e.g. AD8232) with rails-to-rail output
+and built-in filtering. The AD8232 (or similar) requires a 2.0–3.5 V supply, draws ~170 µA, and
+provides 100× gain with 80 dB CMRR, outputting a conditioned analog ECG signal. This output
+connects to an ESP32 ADC pin (e.g. VP). Electrodes (2 or 3, adhesive chest patches) interface via
+leads with lead-off detection. Power is provided by a battery (spec TBD), with voltage regulation to
+3.3 V. Connectivity (Wi-Fi/Bluetooth) must be tested for reliability and secure data transfer . Expected
+hardware constraints (e.g. ADC 12-bit resolution, ±6% error) should be documented as variables
+in the test prompt.
+Firmware: Real-time firmware must run on ESP-IDF or Arduino. Core functions include: continuous
+high-rate  ADC  sampling  (target  ≥500–1000 Hz),  digital  filtering  (e.g.  notch,  high-pass  for
+baseline removal), R‐R interval computation, and data buffering. It must support wireless data uplink
+(with fallback if offline), power management (sleep modes), and user interface (LEDs, buzzer , or
+display). The firmware should implement safety checks (lead‐off detection, low‐battery alerts) and
+logging  of  events.  Specify  any  RTOS  or  task  scheduling  (e.g.  FreeRTOS  tasks  for  sampling  vs.
+networking).  Firmware  versioning  and  over‐the‐air  update  mechanisms  should  follow  IEC  62304
+processes .
+AI Model: The AI component (e.g. arrhythmia classifier) may run onboard (tinyML) or on connected
+app/cloud. Unknowns (model architecture, input window length, classes) are  parameters in the
+master  prompt.  For  example,  CNN_ArrhythmiaNet might  take  X  seconds  of  single-lead  ECG  and
+output rhythm class (AFib, PVC, etc). Model requirements: trained on a diverse ECG dataset (single‐
+lead), validated on hold-out set. It should achieve high sensitivity/specificity for targeted rhythms (in
+Rajpurkar  et  al.,  a  34-layer  CNN  exceeded  cardiologist  sensitivity/PPV  on  single-lead  ECG).
+1
+• 
+2
+3
+3
+4
+5
+• 
+1
+6
+• 
+7
+1
+
+===== PAGE 2 =====
+Assume metrics like ROC-AUC >0.95 for key classes as goals. Specify model input/output formats,
+expected latency, and memory footprint (it must fit on ESP32 if on-device inference).
+Software/UW: The system may include a user interface (mobile app or device display). UI specs:
+display real-time ECG waveform, heart rate, alerts. Controls for threshold settings, patient ID, start/
+stop. Logging of events. Interface must comply with usability guidelines (IEC 62366) and privacy
+(HIPAA/GDPR). 
+Comprehensive Test Cases
+Physiological Conditions
+Define  test  ECG  waveforms  covering  normal  and  pathological  rhythms.  For  each,  simulate  at  least  5–
+10 minutes of data and evaluate system output. Use an ECG simulator (hardware or software, e.g. PhysioNet
+ECGSYN or a Fluke ProSim) to generate waveforms. Examples:
+Normal Sinus Rhythm: at rest (60–100 bpm), deep breathing (baseline wander), lying vs. standing
+(heart rate changes). 
+Sinus Bradycardia/Tachycardia: (~40 bpm, ~150 bpm). 
+Premature Beats: frequent PVCs/PACs (single and paired), couplets, bigeminy, trigeminy. 
+Atrial Arrhythmias: Atrial fibrillation (irregularly irregular , no P-waves), atrial flutter (sawtooth
+waves, 2:1/3:1 conduction), atrial tachycardia. 
+Supraventricular Tachycardia: AVNRT/AVRT patterns (narrow QRS, sudden onset/offset). 
+AV Blocks: 1st, 2nd (Mobitz I/II), 3rd degree (complete block with ventricular escape). 
+Ventricular Arrhythmias: Ventricular tachycardia (monomorphic, polymorphic/Torsades),
+Ventricular fibrillation (coarse, fine VFib simulation for alarm testing). 
+Pacemaker/Artifact: Paced rhythms (spikes on ECG), check if algorithm misclassifies. Also test
+benign abnormalities (ST-elevation simulating MI vs. electrolyte changes). 
+Hypotheticals: Electrolyte imbalance effect (if supported), hyper/hypothermia wave changes. 
+Signal Variations: Vary electrode placements (simulate chest vs. limb leads if applicable). 
+Motion and Artifacts
+Test robustness to motion and noise:
+Muscle (EMG) noise: Add EMG-like interference (~20–200 Hz) at varying amplitudes. 
+Baseline Wander: Simulate breathing artifacts, patient movement. 
+50/60 Hz Interference: Intentionally expose to mains hum; verify CMRR performance (should
+suppress it ~80–90 dB ). 
+Lead Vibrations: Mechanically jiggle electrode or connector to induce spikes/dropouts. 
+Electrode and Lead Faults
+Leads-Off: Simulate a disconnected electrode. AD8232 has leads-off detection; ensure firmware
+alerts and stops processing. 
+High Impedance: Increase skin-electrode impedance (resistor network) to simulate poor contact;
+check signal degradation. 
+• 
+8
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+3 9
+• 
+• 
+• 
+2
+
+===== PAGE 3 =====
+Short Circuits: Short two leads (simulate cross-talk); device should warn or fail gracefully. 
+Power and Connectivity Failures
+Battery Low: Drop supply below threshold; verify battery monitor and system behavior (graceful
+shutdown or low-power mode). 
+Power Loss/Reset: Remove power abruptly; test data integrity on reboot (log persistence). 
+Wireless Disconnect: If using Wi-Fi/BLE, simulate range loss or reboot of access point; check auto-
+reconnect or local caching of data. 
+Firmware Crash: Force a code exception; verify watchdog reset and data recovery. 
+Edge and Rare Cases
+Extreme Physiology: Use ECG of athletes (very high stroke volume) or infants (fast rates). 
+Comorbid Signals: Feed ECG from a patient with other devices (like ICD spikes). 
+Data Anomalies: Truncate data, insert NaNs; system should handle (reject, error-code). 
+AI Limits: Provide ECG with unknown rhythms; check if model outputs "unclassified" or default. 
+These  tests  should  be  prioritized  by  risk:  e.g.,  life-threatening  arrhythmias  (VTach/VFib)  and  sensor
+disconnections are top priority, followed by routine rhythms and user errors. 
+Performance and Accuracy Metrics
+Sampling & Latency: Verify ADC sampling ≥500 sps (target 500–1000 Hz). Measure end-to-end
+latency: time from ECG event (e.g. R-wave) to AI classification output. Target <100 ms for real-time
+alerts. If Wi-Fi enabled, factor in network delay. 
+Noise and Resolution: Measure system noise floor (RMS or peak-to-peak). It should be ≪30 µV.
+Confirm ADC resolution: ESP32 12-bit ADC yields ~3.3 V/4096 ≈ 800 µV LSB (limit test
+precision). 
+Sensitivity/Specificity: For each arrhythmia class, compute sensitivity, specificity, PPV, NPV, and
+ROC-AUC. E.g. for AF detection, require sensitivity ≥90%, specificity ≥90%. (Rajpurkar et al. achieved
+>0.97 AUC on several classes.) Use statistically significant sample size (e.g. >100 episodes per
+class) to compute 95% confidence intervals. 
+Accuracy under Noise: Add Gaussian noise and motion artifacts; measure drop in sensitivity/
+precision. Define noise tolerance (e.g. maintain ≥80% sensitivity with X dB added noise). 
+Signal Delay and Skew: If multiple leads (unlikely on single-lead device), ensure inter-channel skew
+<100 µs . For single-lead, ensure consistent timestamping of events. 
+Throughput: If streaming data, measure maximum sustainable data rate (kbps) and CPU load.
+Ensure no buffer overflow at peak workloads. 
+Usability: Rate UI on clarity and response time. Metrics: time-to-configure (should be <2 min), error
+rate (should be none in guided test), user satisfaction (qualitative). 
+Regulatory Compliance: Check checklist for IEC 60601-1 (safety, leakage, EMC), IEC 60601-2-47
+(ambulatory ECG standards), IEC 62304 (SW lifecycle), ISO 13485 (QMS), ISO 14971 (risk).
+For FDA/CE, verify needed submissions (e.g. 510(k) for ECG machine, MDR Class IIa/IIb per MDR
+Rule 11 ). 
+All measurement methods must follow IEEE/IEC test procedures where possible (e.g. IEC 60601-2-25 signal
+tests ). Calibration equipment (calibrated signal generator , multimeter) must be traceable.
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 1
+• 1
+10 11
+• 
+7
+• 
+• 
+1
+• 
+• 
+• 
+12 13 14
+15
+16 17
+1
+3
+
+===== PAGE 4 =====
+Regulatory, Safety, and Accountability
+Safety & Standards: The device must meet IEC 60601 general and ECG-specific standards (60601-1,
+-2-25, -2-27, -2-47). Examples: input impedance ≥2.5 MΩ, passband 0.05–150 Hz, CMRR ≥90 dB,
+channel crosstalk <2%. Documentation must reference these. Ensure compliance with ISO 13485
+QMS  and ISO 14971 risk management throughout design. 
+Software Lifecycle: Follow IEC 62304 processes for software development and testing.
+Classify software safety level (A/B/C) based on risk (IEC 62304 safety classes). Maintain design
+history, version control, and verification evidence (unit tests, integration tests, validation). 
+Usability: Perform human factors analysis per IEC 62366-1. Test the UI with representative users
+to catch use-error risks (e.g. misinterpreting alerts). 
+Cybersecurity & Privacy: Ensure data encryption in transit and at rest. Follow IEC 81001-5-1
+(cybersecurity lifecycle) guidelines. Implement user authentication, secure pairing. Confirm
+GDPR/HIPAA compliance for personal health data (anonymize test records). 
+Traceability and Logging: The system must log all events and data (raw ECG, classifications, errors)
+with timestamps. This audit trail aids post-market surveillance and investigation of incidents.
+Maintain test logs for FDA/Notified Body review. 
+Failure Modes & Mitigation: List potential failures (e.g. false negatives in arrhythmia detection, hardware
+battery failure, lost connectivity). For each, define mitigation: e.g. if heart rhythm not classified, default to
+safe alarm and advise manual ECG; if battery low, alert user early; if sensor off, halt alarms and log. Use ISO
+14971 analysis to manage residual risks.
+Scoring Rubric (0–10)
+Criterion 0–3 (Poor) 4–6 (Moderate) 7–10 (Excellent)
+Accuracy
+Many missed/false
+alarms; sensitivity
+<80%.
+Some detection,
+sensitivity 80–90%.
+Near-perfect detection;
+sensitivity ≥90%, high PPV
+(e.g. >90%). (Benchmarks per
+.)
+Latency >300 ms end-to-end
+delay.
+100–300 ms (accept
+as borderline for
+real-time).
+<100 ms (real-time, negligible
+lag).
+Usability (UI) Confusing UI, high
+error rate, >5 min setup.
+Basic UI, some
+guidance needed, 2–
+5 min setup.
+Intuitive interface, <2 min
+setup, clear alerts.
+Ease of Use Poor documentation/
+training; users struggle.
+Adequate docs;
+moderate training
+needed.
+Clear docs/tutorial; self-
+explanatory use.
+Innovation Conventional design;
+no novel features.
+Some innovation
+(e.g. unique sensor
+or algorithm).
+Novel AI approach or
+breakthrough integration.
+• 
+12
+10
+13 14
+• 18 6
+• 8
+• 
+19
+• 
+14
+7
+4
+
+===== PAGE 5 =====
+Criterion 0–3 (Poor) 4–6 (Moderate) 7–10 (Excellent)
+Real-World
+Feasibility
+Not tested in target
+environments; heavy
+hardware.
+Laboratory-only
+demo; incomplete
+robustness.
+Portable, power-efficient,
+validated in field.
+Safety/
+Accountability
+No risk analysis; poor
+logging.
+Basic risk checklist;
+partial logs.
+Full ISO14971-based risk
+mgmt; complete audit trail.
+Regulatory
+Preparedness No plan for FDA/CE.
+Aware of regulations
+but no evidence of
+compliance.
+Formal strategy for 510(k)/
+MDR, demo compliance with
+IEC standards.
+(Scores are averaged for overall “readiness”. Each criterion’s thresholds should be adjusted to project needs.)
+Master Testing Prompt
+Agent Prompt:
+“You are an expert medical device test agent. First, list all required hardware and firmware specifications for the
+ESP32 ECG AI system (e.g. ADC bits, sampling freq, sensor type, connectivity, power). Then enumerate needed AI
+model details (architecture, inputs, outputs, metrics to measure). Next, design comprehensive test cases covering:
+physiological ECG conditions (normal rhythm, arrhythmias: AFib, VTach, PVC, blocks, etc.), motion artifacts (EMG
+noise, movement), electrode faults (lead-off, short), and system failures (battery low, connectivity loss). For each
+case,  define  expected  outputs  and  metrics.  Specify  real-time  metrics  (latency,  throughput),  accuracy  metrics
+(sensitivity, specificity, PPV, NPV, AUC), and robustness metrics (noise tolerance, drift). Include usability and UI tests
+(interface clarity, response time) and regulatory checks (IEC 60601-2-25/-47 compliance, ISO 13485/14971, FDA
+510(k)/EU  MDR  classification).  Address  ethical/safety  failure  modes  (e.g.  false  negative  alarm)  and
+mitigation. Provide a structured output: prioritized test checklist, equipment/phantom profiles, data analysis plan,
+pass/fail criteria with remediation, and reporting templates.”
+This master prompt guides the agent to cover every aspect of evaluation (specs, tests, metrics, standards) in
+a systematic way, ensuring no critical area is omitted.
+Prioritized Test Checklist and Measurements
+Signal Quality & Safety:
+Verify ECG front-end gain, bandwidth (0.05–150 Hz) and noise ≤30 µV. 
+Check electrode input impedance (≥2.5 MΩ), leads-off detection. 
+Test CMRR with 50/60 Hz interference; expect ≥80 dB. 
+Ensure patient leakage currents meet IEC 60601-1 safety limits. 
+Physiological Accuracy:
+Normal sinus waves: R-wave timing accuracy, heart rate error < ±2 bpm. 
+Arrhythmia detection: sensitivity/specificity for AF, VT, PVC, etc. (target ≥90%). 
+12 13
+1. 
+2. 1
+3. 9
+4. 
+5. 
+6. 
+7. 
+8. 
+5
+
+===== PAGE 6 =====
+Rate detection: Tachy/brady detection thresholds and alerts. 
+Threshold crossing: correct identification of blocks, flutter . 
+Artifact Robustness:
+Baseline wander (amplitude % distortion), muscle noise (SNR degradation). 
+Motion (walking, jogging): false-positive alarm rate ≤X%. 
+Electrode detach: system pause/sound alarm within 2 sec. 
+Performance:
+Latency: R-peak to classification <100 ms. 
+Sampling: stable at 500–1000 Hz during Wi-Fi/Bluetooth use. 
+Data throughput: sustained without loss for continuous monitoring. 
+Power/Connectivity:
+Battery endurance: at least Y hours of continuous use. 
+Low battery alert at 20% remaining. 
+Reconnect after wireless dropout within 30 s. 
+Usability:
+UI: legibility (font size ≥12pt), color contrast, touch response ≤200 ms. 
+Menu navigation: complete key tasks in <2 steps. 
+Instruction clarity: 100% of test users can start monitoring after 5 min tutorial. 
+Regulatory & Documentation:
+Risk analysis: Hazards/risk mitigation documented (ISO 14971). 
+Compliance test: Reference IEC/FDA test methods (e.g. IEC 60601-2-25 Figure 201.110 waveform
+reproduction). 
+Audit trail: Logging enabled (event, time, ECG data). 
+Failure Modes:
+Simulate wrong classification: verify safe fallback (e.g. persistent alarm requiring review). 
+Data corruption: test integrity checks, no undetected crash. 
+9. 
+10. 
+11. 
+12. 
+13. 
+14. 
+15. 
+16. 
+17. 20
+18. 
+19. 
+20. 
+21. 
+22. 
+23. 
+24. 
+25. 
+26. 
+27. 
+28. 
+29. 
+21
+30. 
+31. 
+32. 
+33. 
+6
+
+===== PAGE 7 =====
+Required Equipment and Patient Profiles
+ECG Signal Generator: Calibrated waveform simulator (e.g. Fluke ProSim, Biopac) capable of
+generating AAHA/ANSI-standard ECG rhythms and noise. If unavailable, use software (PhysioNet
+ECGSYN ) to produce digital signals fed through a high-speed DAC to the ADC input. 
+Electronic Loads: To simulate electrode impedance changes and shorts (resistor/capacitor network
+per IEC). 
+Phantom/Simulator: If available, use a patient simulator (NETECH, Philips) for holistic vitals (ECG,
+BP , etc.). 
+Data Acquisition: High-resolution scope or DAQ (≥16-bit, 1000 Hz) to capture raw ECG for ground
+truth. 
+Computing: PC with analysis software (MATLAB/Python) to run analyses (signal metrics, ROC curves).
+Simulated Patient Profiles:
+Healthy Adult: Sinus rhythm at 60 bpm, moderate noise (simulate relaxation vs. exercise). 
+Elderly Arrhythmia Patient: Frequent AFib and PVCs; slower conduction. 
+Athlete: Bradycardia (40 bpm), high QRS amplitude. 
+Pediatric: High rate (120 bpm), small amplitude. 
+Pacemaker Patient: Paced spikes present (use simulator mode). 
+Artifact-Prone: Simulate profuse muscle noise (exercise), sweaty skin (variable impedance). 
+Each profile should run multiple sessions (rest vs. activity) to collect robust data.
+Data Collection and Analysis Plan
+Collection: For each test, log raw ECG input and device outputs (heart rate, arrhythmia label,
+alarms). Synchronize timestamps. Store logs securely. 
+Repetition: Repeat key tests (n≥3) to account for variability. 
+Analysis: Use statistical scripts to compute mean latency, error bars for metrics. Plot confusion
+matrices for classification. Generate ROC curves and compute AUC for each rhythm. 
+Visualization: Create tables of sensitivity/specificity per test, time-to-event charts (delay from
+arrhythmia onset to alarm). Plot distribution histograms of noise, latency (target bell-shaped around
+ideal). (Example chart: superimposed ROC curves for AFib vs. VTach.) 
+All code and data must be version-controlled. Ensure traceability from raw data to final metrics.
+Pass/Fail Thresholds and Remediation
+Noise/Resolution: PASS if system noise ≤30 µVpp and ADC LSB ≤5 µV equivalent (ideally);
+otherwise: improve filtering or ADC oversampling. 
+Sampling Rate: PASS if ≥500 Hz stable; else: reduce Wi-Fi load or lower ADC attenuation (per). 
+Accuracy: PASS for each arrhythmia if sensitivity ≥90% and specificity ≥90%. If FAIL, consider
+retraining model, adding more data, or adjusting decision thresholds. 
+Latency: PASS if <100 ms. If 100–300 ms, optimize code (e.g. use DMA, simplify model) or relax
+requirements if clinically acceptable. >300 ms is FAIL (increase CPU or offload AI). 
+• 
+22
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 20
+• 
+• 
+7
+
+===== PAGE 8 =====
+Connectivity: PASS if device auto-reconnects within 30 s and caches <1 min of data. FAIL: implement
+buffering and retry logic. 
+Battery: PASS if operational >8 hours on design battery. If <6 h, investigate power profile, enable
+deeper sleep modes, or increase battery capacity. 
+Usability: PASS if ≥80% of test users complete key tasks without error . If usability issues arise, revise
+UI (follow IEC 62366 methods). 
+Remediation steps should be documented in a corrective action report, feeding back into development.
+Reporting Template
+The final report should follow this structure:
+Executive Summary: Key findings, overall scores (0–10) for each criterion (see rubric), major risks
+identified, and go/no-go recommendation. 
+System Specifications: Itemized hardware/firmware/AI model specs used in tests, with citation of
+standards and datasheets (e.g. ESP32 ADC, AD8232 features). 
+Methods: Description of test setup, equipment, signal sources, and participant profiles (simulate
+demographics and arrhythmias). Include a Mermaid workflow diagram of the testing process: 
+flowchart LR
+  A[Start: Define Specs] --> B[Design Test Cases]
+  B --> C[Setup Equipment]
+  C --> D[Run Physiological Tests]
+  C --> E[Run Failure Mode Tests]
+  D --> F[Collect Data]
+  E --> F
+  F --> G[Analyze Results]
+  G --> H[Generate Report]
+Results: Use tables and charts. For example, a table comparing performance metrics across test
+cases: 
+Condition SensitivitySpecificity Latency (ms)Outcome
+Normal Sinus 98% 99% 50 PASS
+AFib (onset) 92% 95% 80 PASS
+Ventricular Tachycardia 90% 93% 120 PASS (border)
+Lead Off N/A N/A Detected in 2sPASS
+Battery Low N/A N/A Alert after 5hPASS
+etc.
+Include a Mermaid timeline showing test execution over calendar days:
+• 
+• 
+• 
+23
+• 
+• 
+3 20
+• 
+• 
+8
+
+===== PAGE 9 =====
+gantt
+    title Test Plan Timeline
+    dateFormat  YYYY-MM-DD
+    section Planning
+      Define Requirements        :done, des1, 2026-04-01, 3d
+      Procure Equipment          :done, des2, 2026-04-04, 7d
+    section Execution
+      Physiological Tests        :active, ext1, 2026-04-12, 10d
+      Failure Mode Tests         :ext2, after ext1, 7d
+    section Analysis
+      Data Analysis              :2026-04-22, 5d
+    section Reporting
+      Draft Report               :2026-04-27, 4d
+      Review & Finalize          :2026-05-01, 2d
+And a  chart (e.g. a ROC curve or histogram) illustrating expected metric distribution (e.g. distribution of
+latency under load).
+Findings: Textual analysis of each test area, citing any deviations. For example, “ADC noise was
+measured at 50 µVpp (above spec), likely due to ESP32 internal noise – recommend adding
+external low-pass filter .” 
+Pass/Fail Matrix: Summarize each criterion with PASS/FAIL and rationale. 
+Scoring: Fill in scores (0–10) per rubric section with brief justification (e.g. “Accuracy 8: Sensitivity
+92%/Specificity 94% (meets target). Latency 7: average 120 ms (target <100 ms).”). 
+Action Items: List remediation needed for any FAILs or borderline results.
+All sources (ESP32 specs, sensor datasheet, standards, and AI studies) must be cited when
+relevant. The executive summary should highlight readiness for clinical deployment or note critical issues.
+A Practical Guide to ECG Device Performance Testing According to International Standards
+https://www.mdpi.com/2079-9292/14/19/3878
+ESP32 Wi-Fi & Bluetooth Modules I Espressif
+https://www.espressif.com/en/products/modules/esp32
+AD8232 Datasheet and Product Info | Analog Devices
+https://www.analog.com/en/products/ad8232.html
+IoT-based Heart Monitoring with ESP32 | Espressif Systems
+https://www.espressif.com/en/news/ESP32_Heart_Monitoring
+Analog-to-Digital Converter (ADC) - - — ESP-FAQ latest documentation
+https://docs.espressif.com/projects/esp-faq/en/latest/software-framework/peripherals/adc.html
+AI Device Standards You Must Know - ISO 13485, 14971, 62304
+https://www.hardianhealth.com/insights/regulatory-ai-medical-device-standards
+[1707.01836] Cardiologist-Level Arrhythmia Detection with Convolutional Neural Networks
+https://arxiv.org/abs/1707.01836
+• 
+1
+• 
+• 
+• 
+3 1 24
+1 9 10 12 21
+2
+3
+4
+5 11 20
+6 19
+7
+9
+
+===== PAGE 10 =====
+IEC 62366-1:2015 - Medical devices — Part 1: Application of usability engineering to medical devices
+https://www.iso.org/standard/63179.html
+ISO - ISO 13485 — Medical devices
+https://www.iso.org/iso-13485-medical-devices.html
+ISO 14971:2019 - Medical devices — Application of risk management to medical devices
+https://www.iso.org/standard/72704.html
+21 CFR § 870.2340 - Electrocardiograph. | Electronic Code of Federal Regulations (e-CFR) | US Law | LII /
+Legal Information Institute
+https://www.law.cornell.edu/cfr/text/21/870.2340
+MDR Examples: Classification Examples for EU MDR Devices - OpenRegulatory
+https://openregulatory.com/articles/eu-mdr-classification-examples
+IEC 62304:2006 - Medical device software — Software life cycle processes
+https://www.iso.org/standard/38421.html
+ECGSYN - A realistic ECG waveform generator v1.0.0 - PhysioNet
+https://physionet.org/content/ecgsyn/
+Artificial Intelligence in Software as a Medical Device | FDA
+https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-software-medical-device
+8 23
+13
+14
+15
+16 17
+18
+22
+24
+10

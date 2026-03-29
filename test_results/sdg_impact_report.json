@@ -1,0 +1,104 @@
+{
+  "generated_at_utc": "2026-03-28T13:32:14.121842+00:00",
+  "input_metrics": {
+    "specificity": 0.492,
+    "recall": 0.5203,
+    "precision": 0.1312,
+    "has_safety_docs": true,
+    "has_research_intel": true,
+    "has_policy_tuning": true
+  },
+  "overall_sdg_alignment_score": 66.2,
+  "sdg_coverage": [
+    {
+      "id": "SDG-3",
+      "title": "Good Health and Well-Being",
+      "rationale": "Core objective is safer arrhythmia triage and early risk detection.",
+      "evidence": [
+        "test_results\\global_benchmark_report.json",
+        "docs\\safety_operating_standard.md"
+      ],
+      "status": "in-progress",
+      "score": 65,
+      "gaps": [
+        "Specificity remains below clinical-grade threshold.",
+        "Need prospective validation on diverse real-world cohorts."
+      ]
+    },
+    {
+      "id": "SDG-9",
+      "title": "Industry, Innovation and Infrastructure",
+      "rationale": "Digital health infrastructure using streaming, edge inference, and interoperable outputs.",
+      "evidence": [
+        "docs\\clinical_grade_execution_plan.md",
+        "test_results\\research_intel_report.json"
+      ],
+      "status": "strong",
+      "score": 72,
+      "gaps": [
+        "Need full DICOM waveform export implementation for hospital systems."
+      ]
+    },
+    {
+      "id": "SDG-10",
+      "title": "Reduced Inequalities",
+      "rationale": "Potentially expands screening access via low-cost sensing pathways.",
+      "evidence": [
+        "docs\\clinical_grade_execution_plan.md"
+      ],
+      "status": "in-progress",
+      "score": 55,
+      "gaps": [
+        "Need explicit bias/fairness audits across age/sex/comorbidity cohorts."
+      ]
+    },
+    {
+      "id": "SDG-12",
+      "title": "Responsible Consumption and Production",
+      "rationale": "Safety gates and strict deployment checks reduce unsafe releases.",
+      "evidence": [
+        "docs\\safety_operating_standard.md",
+        "test_results\\policy_tuning_report.json"
+      ],
+      "status": "in-progress",
+      "score": 68,
+      "gaps": [
+        "Need mandatory CI release blocking on safety and benchmark thresholds."
+      ]
+    },
+    {
+      "id": "SDG-16",
+      "title": "Peace, Justice and Strong Institutions",
+      "rationale": "Medical trust requires privacy, security, and accountable decision support.",
+      "evidence": [
+        "docs\\safety_operating_standard.md",
+        "docs\\clinical_grade_execution_plan.md"
+      ],
+      "status": "in-progress",
+      "score": 62,
+      "gaps": [
+        "Need formal audit logging and immutable access trails.",
+        "Need external compliance assessment process."
+      ]
+    },
+    {
+      "id": "SDG-17",
+      "title": "Partnerships for the Goals",
+      "rationale": "Open datasets and research integration accelerate responsible clinical innovation.",
+      "evidence": [
+        "test_results\\research_intel_report.json"
+      ],
+      "status": "strong",
+      "score": 75,
+      "gaps": [
+        "Need active clinical/hospital partner validation programs."
+      ]
+    }
+  ],
+  "priority_actions": [
+    "Raise specificity to clinically acceptable threshold before deployment claims.",
+    "Add fairness and subgroup performance reporting into benchmark pipeline.",
+    "Add CI gate to block release when safety benchmark floors are unmet.",
+    "Establish pilot clinical partnerships for prospective validation."
+  ]
+}
