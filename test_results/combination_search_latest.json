@@ -1,0 +1,604 @@
+{
+  "generated_at_utc": "2026-03-29T13:47:28.577871+00:00",
+  "searched_combinations": 1200,
+  "full_design_space_size": 1166400,
+  "all_ge_8_count": 64,
+  "winner": {
+    "combo": {
+      "hardware": "ADS1292R_ESP32",
+      "leads": "pseudo12",
+      "imu": "mpu6050",
+      "connectivity": "ble_wifi_hybrid",
+      "dataset_strategy": "mitbih_ptbxl_incart_challenge2020",
+      "backbone": "cnn_transformer_hybrid",
+      "pretrained": "challenge2020_pretrain",
+      "filter_profile": "artifact_aware_imu_gated",
+      "policy_profile": "recall_guard",
+      "deployment": "hybrid_failover"
+    },
+    "scores": {
+      "UI": 8.2,
+      "Ease_of_Use": 8.54,
+      "Accuracy": 8.87,
+      "Novelty": 8.84,
+      "Innovation": 8.73,
+      "Invention": 8.54,
+      "Latency": 8.85,
+      "Real_World": 8.7,
+      "Safety": 8.49,
+      "Reliability": 8.64,
+      "Composite": 8.68
+    },
+    "pass_all_categories_ge_8": true
+  },
+  "failure_reason_counts": {
+    "accuracy_below_8": 691,
+    "safety_below_8": 825,
+    "real_world_below_8": 674,
+    "latency_below_8": 767,
+    "other_dimension_below_8": 1126
+  },
+  "top_20": [
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_incart_challenge2020",
+        "backbone": "cnn_transformer_hybrid",
+        "pretrained": "challenge2020_pretrain",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "recall_guard",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.54,
+        "Accuracy": 8.87,
+        "Novelty": 8.84,
+        "Innovation": 8.73,
+        "Invention": 8.54,
+        "Latency": 8.85,
+        "Real_World": 8.7,
+        "Safety": 8.49,
+        "Reliability": 8.64,
+        "Composite": 8.68
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "mqtt_tls",
+        "dataset_strategy": "mitbih_ptbxl_incart",
+        "backbone": "transformer_ecg",
+        "pretrained": "self_supervised_ecg",
+        "filter_profile": "artifact_aware",
+        "policy_profile": "high_review_safety",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.48,
+        "Accuracy": 8.7,
+        "Novelty": 8.76,
+        "Innovation": 8.61,
+        "Invention": 8.54,
+        "Latency": 8.7,
+        "Real_World": 8.73,
+        "Safety": 8.55,
+        "Reliability": 8.66,
+        "Composite": 8.63
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_transfer",
+        "backbone": "hctg_net",
+        "pretrained": "self_supervised_ecg",
+        "filter_profile": "artifact_plus_ood_gated",
+        "policy_profile": "high_review_safety",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.55,
+        "Accuracy": 8.62,
+        "Novelty": 8.5,
+        "Innovation": 8.69,
+        "Invention": 8.57,
+        "Latency": 8.67,
+        "Real_World": 8.67,
+        "Safety": 8.62,
+        "Reliability": 8.73,
+        "Composite": 8.61
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_plus_noise",
+        "backbone": "hctg_net",
+        "pretrained": "self_supervised_ecg",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "high_review_safety",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.71,
+        "Accuracy": 8.34,
+        "Novelty": 8.28,
+        "Innovation": 8.62,
+        "Invention": 8.74,
+        "Latency": 8.67,
+        "Real_World": 8.65,
+        "Safety": 8.74,
+        "Reliability": 8.84,
+        "Composite": 8.58
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "mqtt_tls",
+        "dataset_strategy": "mitbih_ptbxl_transfer",
+        "backbone": "cnn_transformer_hybrid",
+        "pretrained": "self_supervised_ecg",
+        "filter_profile": "artifact_aware",
+        "policy_profile": "high_review_safety",
+        "deployment": "edge_server"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.65,
+        "Accuracy": 8.66,
+        "Novelty": 8.77,
+        "Innovation": 8.68,
+        "Invention": 8.74,
+        "Latency": 8.44,
+        "Real_World": 8.66,
+        "Safety": 8.58,
+        "Reliability": 8.48,
+        "Composite": 8.58
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_transfer",
+        "backbone": "transformer_ecg",
+        "pretrained": "self_supervised_ecg",
+        "filter_profile": "basic_notch_bandpass",
+        "policy_profile": "high_review_safety",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.55,
+        "Accuracy": 8.4,
+        "Novelty": 8.68,
+        "Innovation": 8.28,
+        "Invention": 8.57,
+        "Latency": 8.79,
+        "Real_World": 8.67,
+        "Safety": 8.62,
+        "Reliability": 8.73,
+        "Composite": 8.57
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_incart_challenge2020",
+        "backbone": "cnn_transformer_hybrid",
+        "pretrained": "challenge2020_pretrain",
+        "filter_profile": "artifact_aware",
+        "policy_profile": "balanced",
+        "deployment": "edge_server"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.71,
+        "Accuracy": 8.78,
+        "Novelty": 8.84,
+        "Innovation": 8.4,
+        "Invention": 8.74,
+        "Latency": 8.53,
+        "Real_World": 8.55,
+        "Safety": 8.35,
+        "Reliability": 8.27,
+        "Composite": 8.54
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "three",
+        "imu": "bmi160",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_incart",
+        "backbone": "transformer_ecg",
+        "pretrained": "challenge2020_pretrain",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "specificity_guard",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.36,
+        "Accuracy": 8.63,
+        "Novelty": 8.69,
+        "Innovation": 8.6,
+        "Invention": 8.33,
+        "Latency": 8.79,
+        "Real_World": 8.43,
+        "Safety": 8.44,
+        "Reliability": 8.55,
+        "Composite": 8.54
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "MAX30003_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "mqtt_tls",
+        "dataset_strategy": "mitbih_ptbxl_transfer",
+        "backbone": "hctg_net",
+        "pretrained": "ptbxl_pretrain",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "recall_guard",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.6,
+        "Accuracy": 8.47,
+        "Novelty": 8.29,
+        "Innovation": 8.54,
+        "Invention": 8.69,
+        "Latency": 8.58,
+        "Real_World": 8.69,
+        "Safety": 8.56,
+        "Reliability": 8.62,
+        "Composite": 8.54
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "AD8232_ESP32_BMI160",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_incart_challenge2020",
+        "backbone": "cnn_transformer_hybrid",
+        "pretrained": "challenge2020_pretrain",
+        "filter_profile": "artifact_plus_ood_gated",
+        "policy_profile": "specificity_guard",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.28,
+        "Accuracy": 8.9,
+        "Novelty": 8.84,
+        "Innovation": 8.72,
+        "Invention": 8.25,
+        "Latency": 8.85,
+        "Real_World": 8.4,
+        "Safety": 8.2,
+        "Reliability": 8.39,
+        "Composite": 8.54
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_incart_challenge2020",
+        "backbone": "resnet1d",
+        "pretrained": "incart_pretrain",
+        "filter_profile": "basic_notch_bandpass",
+        "policy_profile": "recall_guard",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.71,
+        "Accuracy": 8.23,
+        "Novelty": 8.28,
+        "Innovation": 7.99,
+        "Invention": 8.74,
+        "Latency": 8.64,
+        "Real_World": 8.85,
+        "Safety": 8.64,
+        "Reliability": 8.74,
+        "Composite": 8.54
+      },
+      "pass_all_categories_ge_8": false
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_plus_noise",
+        "backbone": "transformer_ecg",
+        "pretrained": "ptbxl_pretrain",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "high_review_safety",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.54,
+        "Accuracy": 8.34,
+        "Novelty": 8.25,
+        "Innovation": 8.76,
+        "Invention": 8.54,
+        "Latency": 8.79,
+        "Real_World": 8.5,
+        "Safety": 8.59,
+        "Reliability": 8.73,
+        "Composite": 8.53
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_transfer",
+        "backbone": "transformer_ecg",
+        "pretrained": "challenge2020_pretrain",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "high_review_safety",
+        "deployment": "edge_server"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.54,
+        "Accuracy": 8.66,
+        "Novelty": 8.61,
+        "Innovation": 8.76,
+        "Invention": 8.54,
+        "Latency": 8.47,
+        "Real_World": 8.51,
+        "Safety": 8.47,
+        "Reliability": 8.45,
+        "Composite": 8.52
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "mpu6050",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_only",
+        "backbone": "transformer_ecg",
+        "pretrained": "challenge2020_pretrain",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "recall_guard",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.71,
+        "Accuracy": 8.26,
+        "Novelty": 8.25,
+        "Innovation": 8.66,
+        "Invention": 8.74,
+        "Latency": 8.79,
+        "Real_World": 8.48,
+        "Safety": 8.64,
+        "Reliability": 8.74,
+        "Composite": 8.52
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "AD8232_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_incart",
+        "backbone": "transformer_ecg",
+        "pretrained": "incart_pretrain",
+        "filter_profile": "artifact_plus_ood_gated",
+        "policy_profile": "high_review_safety",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.24,
+        "Accuracy": 8.64,
+        "Novelty": 8.45,
+        "Innovation": 8.83,
+        "Invention": 8.21,
+        "Latency": 8.79,
+        "Real_World": 8.46,
+        "Safety": 8.35,
+        "Reliability": 8.55,
+        "Composite": 8.51
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "mqtt_tls",
+        "dataset_strategy": "mitbih_ptbxl_transfer",
+        "backbone": "cnn_transformer_hybrid",
+        "pretrained": "self_supervised_ecg",
+        "filter_profile": "artifact_plus_ood_gated",
+        "policy_profile": "balanced",
+        "deployment": "edge_server"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.67,
+        "Accuracy": 8.78,
+        "Novelty": 8.77,
+        "Innovation": 8.62,
+        "Invention": 8.77,
+        "Latency": 8.44,
+        "Real_World": 8.45,
+        "Safety": 8.32,
+        "Reliability": 8.2,
+        "Composite": 8.5
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "ble_wifi_hybrid",
+        "dataset_strategy": "mitbih_ptbxl_incart",
+        "backbone": "transformer_ecg",
+        "pretrained": "ptbxl_pretrain",
+        "filter_profile": "artifact_plus_ood_gated",
+        "policy_profile": "balanced",
+        "deployment": "edge_server"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.73,
+        "Accuracy": 8.7,
+        "Novelty": 8.55,
+        "Innovation": 8.55,
+        "Invention": 8.77,
+        "Latency": 8.47,
+        "Real_World": 8.51,
+        "Safety": 8.37,
+        "Reliability": 8.27,
+        "Composite": 8.5
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "MAX30003_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "mqtt_tls",
+        "dataset_strategy": "mitbih_ptbxl_incart_challenge2020",
+        "backbone": "hctg_net",
+        "pretrained": "none",
+        "filter_profile": "artifact_aware_imu_gated",
+        "policy_profile": "high_review_safety",
+        "deployment": "hybrid_failover"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.6,
+        "Accuracy": 8.14,
+        "Novelty": 7.59,
+        "Innovation": 8.64,
+        "Invention": 8.69,
+        "Latency": 8.58,
+        "Real_World": 8.86,
+        "Safety": 8.66,
+        "Reliability": 8.72,
+        "Composite": 8.5
+      },
+      "pass_all_categories_ge_8": false
+    },
+    {
+      "combo": {
+        "hardware": "MAX30003_ESP32_MPU6050",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "mqtt_tls",
+        "dataset_strategy": "mitbih_ptbxl_incart_challenge2020",
+        "backbone": "cnn_transformer_hybrid",
+        "pretrained": "ptbxl_pretrain",
+        "filter_profile": "artifact_aware",
+        "policy_profile": "specificity_guard",
+        "deployment": "edge_server"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.6,
+        "Accuracy": 8.7,
+        "Novelty": 8.7,
+        "Innovation": 8.52,
+        "Invention": 8.69,
+        "Latency": 8.44,
+        "Real_World": 8.57,
+        "Safety": 8.36,
+        "Reliability": 8.26,
+        "Composite": 8.5
+      },
+      "pass_all_categories_ge_8": true
+    },
+    {
+      "combo": {
+        "hardware": "ADS1292R_ESP32",
+        "leads": "pseudo12",
+        "imu": "bmi160",
+        "connectivity": "mqtt_tls",
+        "dataset_strategy": "mitbih_ptbxl_incart",
+        "backbone": "cnn_transformer_hybrid",
+        "pretrained": "challenge2020_pretrain",
+        "filter_profile": "artifact_plus_ood_gated",
+        "policy_profile": "specificity_guard",
+        "deployment": "edge_server"
+      },
+      "scores": {
+        "UI": 8.2,
+        "Ease_of_Use": 8.5,
+        "Accuracy": 8.83,
+        "Novelty": 8.78,
+        "Innovation": 8.72,
+        "Invention": 8.57,
+        "Latency": 8.44,
+        "Real_World": 8.43,
+        "Safety": 8.27,
+        "Reliability": 8.2,
+        "Composite": 8.49
+      },
+      "pass_all_categories_ge_8": true
+    }
+  ],
+  "method_note": "Systems-level surrogate scoring search for architecture+hardware+policy planning; must be followed by real bench + clinical validation."
+}

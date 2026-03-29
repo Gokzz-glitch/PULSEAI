@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware  # type: ignore
 from typing import List, Optional, Deque, Dict
 from ingestion import DataIngestor  # type: ignore
 from firebase_service import FirebaseService  # type: ignore
+from audit_log import AuditLogger, stable_client_id  # type: ignore
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -108,6 +109,8 @@ class State:
             "clip_enabled": False,
         }
         self.prediction_history: Deque[Dict] = collections.deque(maxlen=STABILIZER_WINDOW)
+        self.audit_logger = AuditLogger(os.getenv("PULSEAI_AUDIT_LOG_PATH", "audit/pulseai_audit.log"))
+        self.active_viewers: Dict[str, Dict[str, str]] = {}
         
         # Firebase Service Initialization
         self.firebase_service = FirebaseService(
@@ -166,6 +169,22 @@ class ConnectionManager:
         self.active_connections.append(websocket)
         logger.info(f"WebSocket connected. Active: {len(self.active_connections)}")
 
+        peer = None
+        if websocket.client is not None:
+            peer = f"{websocket.client.host}:{websocket.client.port}"
+        ua = websocket.headers.get("user-agent")
+        viewer_id = stable_client_id(peer, ua)
+        state.active_viewers[viewer_id] = {
+            "peer": peer or "unknown",
+            "user_agent": ua or "unknown",
+        }
+        websocket.state.viewer_id = viewer_id
+        state.audit_logger.append("viewer_connected", {
+            "viewer_id": viewer_id,
+            "peer": peer or "unknown",
+            "user_agent": ua or "unknown",
+        })
+
         initial_state = {
             "type": "snapshot",
             "leads_off": state.leads_off,
@@ -178,6 +197,10 @@ class ConnectionManager:
     def disconnect(self, websocket: WebSocket):
         if websocket in self.active_connections:
             self.active_connections.remove(websocket)
+        viewer_id = getattr(websocket.state, "viewer_id", None)
+        if viewer_id:
+            state.active_viewers.pop(str(viewer_id), None)
+            state.audit_logger.append("viewer_disconnected", {"viewer_id": str(viewer_id)})
 
     async def broadcast(self, message: str):
         dead = []
@@ -321,6 +344,14 @@ async def run_inference_cycle():
     state.latest_prediction = res
     if res.get("fhir_report"):
         state.latest_diagnostic = res["fhir_report"]
+        state.audit_logger.append("critical_alert_generated", {
+            "patient_id": pid,
+            "classification": str(res.get("classification", "Unknown")),
+            "confidence": float(res.get("confidence", 0.0) or 0.0),
+            "model_used": str(res.get("model_used", "unknown")),
+            "uncertainty_score": float(res.get("uncertainty_score", 0.0) or 0.0),
+            "active_viewers": list(state.active_viewers.keys()),
+        })
 
     state.firebase_service.push_prediction_event({
         "patient_id": pid,
@@ -341,6 +372,14 @@ async def run_inference_cycle():
         **res,
         "ecg_snapshot": [*state.ecg_buffer]
     }))
+    state.audit_logger.append("prediction_emitted", {
+        "patient_id": pid,
+        "classification": str(res.get("classification", "Unknown")),
+        "confidence": float(res.get("confidence", 0.0) or 0.0),
+        "is_arrhythmia": bool(res.get("is_arrhythmia", False)),
+        "model_used": str(res.get("model_used", "unknown")),
+        "active_viewers": list(state.active_viewers.keys()),
+    })
 
 def _apply_sqi_gate(result: dict, sqi: float) -> dict:
     out = dict(result)
@@ -528,7 +567,15 @@ async def predict_ecg_window(payload: dict, x_api_key: Optional[str] = Header(de
     cleaned = process_ecg(ecg_window, filter_config=active_cfg)
     sqi = compute_signal_quality_index(ecg_window, cleaned)
     window  = extract_beat_window(cleaned)
-    return await predict_logic(window, pid, sqi=sqi)
+    result = await predict_logic(window, pid, sqi=sqi)
+    state.audit_logger.append("api_predict_call", {
+        "patient_id": pid,
+        "classification": str(result.get("classification", "Unknown")),
+        "confidence": float(result.get("confidence", 0.0) or 0.0),
+        "is_arrhythmia": bool(result.get("is_arrhythmia", False)),
+        "uncertainty_score": float(result.get("uncertainty_score", 0.0) or 0.0),
+    })
+    return result
 
 
 @app.post("/api/firebase/publish-benchmark")
@@ -539,6 +586,18 @@ async def publish_benchmark(payload: dict, x_api_key: Optional[str] = Header(def
         raise HTTPException(status_code=400, detail="'report' object is required.")
     state.firebase_service.push_benchmark_report(report)
     return {"status": "success", "published": True}
+
+
+@app.get("/api/audit/recent")
+async def get_recent_audit(limit: int = 100, x_api_key: Optional[str] = Header(default=None, alias="X-API-Key")):
+    _enforce_api_key(x_api_key)
+    safe_limit = max(1, min(int(limit), 1000))
+    rows = state.audit_logger.recent(safe_limit)
+    return {
+        "status": "success",
+        "count": len(rows),
+        "records": rows,
+    }
 if __name__ == "__main__":
     import uvicorn  # type: ignore
     uvicorn.run(app, host="127.0.0.1", port=8000)

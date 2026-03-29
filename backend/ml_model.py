@@ -27,13 +27,14 @@ class ArrhythmiaEngine:
         self.labels = ["Normal Sinus Rhythm", "Atrial Fibrillation (AFib)", "Other Arrhythmia"]
         self.binary_decision_threshold = 0.50
         # Allow high-confidence ML calls to survive consensus gating by default.
-        self.strong_ml_override_confidence = self._env_float("PULSEAI_STRONG_ML_OVERRIDE_CONF", 0.84)
+        self.strong_ml_override_confidence = self._env_float("PULSEAI_STRONG_ML_OVERRIDE_CONF", 0.78)
         self.enable_heuristic_safety_override = self._env_bool("PULSEAI_ENABLE_HEURISTIC_SAFETY", False)
-        self.min_arrhythmia_confidence = self._env_float("PULSEAI_ARRHYTHMIA_MIN_CONF", 0.70)
+        self.min_arrhythmia_confidence = self._env_float("PULSEAI_ARRHYTHMIA_MIN_CONF", 0.65)
         self.max_normal_prob_for_arrhythmia = self._env_float("PULSEAI_MAX_NORMAL_PROB_FOR_ARR", 0.65)
         self.require_good_quality_for_non_critical = self._env_bool("PULSEAI_REQUIRE_GOOD_QUALITY", False)
         self.review_uncertainty_threshold = self._env_float("PULSEAI_REVIEW_UNCERTAINTY_THRESHOLD", 0.50)
         self.high_uncertainty_threshold = self._env_float("PULSEAI_HIGH_UNCERTAINTY_THRESHOLD", 0.78)
+        self.no_guess_uncertainty_threshold = self._env_float("PULSEAI_NO_GUESS_UNCERTAINTY_THRESHOLD", 0.88)
         self.critical_arrhythmia_labels = {
             "ventricular fibrillation (vf)",
             "ventricular tachycardia (vt)",
@@ -138,7 +139,43 @@ class ArrhythmiaEngine:
         result["uncertainty_score"] = float(np.round(uncertainty, 3))
         result["uncertainty_band"] = band
         result["needs_manual_review"] = bool(uncertainty >= self.review_uncertainty_threshold)
+
+        # "I don't know" is safer than an incorrect confident diagnosis.
+        cls_l = str(result.get("classification", "")).strip().lower()
+        if uncertainty >= self.no_guess_uncertainty_threshold and cls_l not in self.critical_arrhythmia_labels:
+            result["is_arrhythmia"] = False
+            result["classification"] = "I don't know - Clinical Review Required"
+            result["model_used"] = f"{result.get('model_used', self.model_version)}+no-guess"
         return result
+
+    def _attach_ood_signal_flag(self, result: Dict, signal_window: np.ndarray) -> Dict:
+        """Flag out-of-distribution windows so frontend and clinicians can gate trust."""
+        out = dict(result)
+        if signal_window.size == 0:
+            out["ood_flag"] = True
+            out["ood_reason"] = "empty_window"
+            return out
+
+        z = self._normalize(signal_window)
+        amp_span = float(np.percentile(z, 99) - np.percentile(z, 1))
+        saturation_ratio = float(np.mean(np.abs(z) > 4.0))
+        nan_ratio = float(np.mean(~np.isfinite(signal_window)))
+
+        ood_flag = bool(
+            amp_span > 12.0
+            or saturation_ratio > 0.08
+            or nan_ratio > 0.0
+        )
+        out["ood_flag"] = ood_flag
+        if ood_flag:
+            out["ood_reason"] = "distribution_shift_or_sensor_artifact"
+            out["needs_manual_review"] = True
+            out["uncertainty_band"] = "high"
+            out["uncertainty_score"] = float(max(float(out.get("uncertainty_score", 0.0) or 0.0), 0.90))
+            if str(out.get("classification", "")).strip().lower() not in self.critical_arrhythmia_labels:
+                out["is_arrhythmia"] = False
+                out["classification"] = "I don't know - Out-of-Distribution Signal"
+        return out
 
     def _load_model_if_available(self) -> None:
         if keras is None:
@@ -506,8 +543,8 @@ class ArrhythmiaEngine:
                 if (not is_critical) and is_other_label:
                     other_supported = (
                         physiologic_support
-                        or (heuristic_support and heuristic_conf >= 0.68)
-                        or (float(res.get("confidence", 0.0)) >= 0.85)
+                        or (heuristic_support and heuristic_conf >= 0.65)
+                        or (float(res.get("confidence", 0.0)) >= 0.75)
                     )
                     if not other_supported:
                         res["is_arrhythmia"] = False
@@ -521,13 +558,13 @@ class ArrhythmiaEngine:
         subtle_score, subtle_metrics = self._subtle_anomaly_score(signal_window)
         subtle_rr_cv = float(subtle_metrics.get("rr_cv", 0.0) or 0.0)
         subtle_spike = float(subtle_metrics.get("spike_ratio", 0.0) or 0.0)
-        subtle_flag = subtle_score >= 0.68 and (subtle_rr_cv >= 0.10 or subtle_spike >= 0.02)
+        subtle_flag = subtle_score >= 0.62 and (subtle_rr_cv >= 0.08 or subtle_spike >= 0.015)
         res["subtle_anomaly_score"] = float(np.round(subtle_score, 3))
         res["subtle_anomaly_flag"] = subtle_flag
         res["subtle_anomaly_metrics"] = subtle_metrics
 
         # Safety-focused escalation for likely missed arrhythmia windows.
-        if (not bool(res.get("is_arrhythmia", False))) and subtle_score >= 0.82:
+        if (not bool(res.get("is_arrhythmia", False))) and subtle_score >= 0.75:
             res["is_arrhythmia"] = True
             res["classification"] = "Other Arrhythmia"
             res["confidence"] = float(np.round(max(float(res.get("confidence", 0.0)), 0.70), 3))
@@ -549,7 +586,10 @@ class ArrhythmiaEngine:
                     "feature_focus": "Subtle rhythm irregularity signature",
                 }
 
-        return self._attach_uncertainty(self._apply_decision_policy(res))
+        res = self._apply_decision_policy(res)
+        res = self._attach_uncertainty(res)
+        res = self._attach_ood_signal_flag(res, signal_window)
+        return res
 
     def status(self) -> Dict:
         return {

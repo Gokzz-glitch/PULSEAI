@@ -1,0 +1,313 @@
+{
+  "meta": {
+    "system": "PulseAI Edge-Cloud Platform v2.1.0",
+    "hardware": "ESP32 + AD8232 single-lead",
+    "tester": "MEDICAL_AI_EVAL_AGENT_V1",
+    "test_date": "2026-03-29T13:47:58.000433+00:00"
+  },
+  "scores": {
+    "UI": 7.8,
+    "Ease_of_Use": 7.2,
+    "Accuracy": 3.33,
+    "Novelty": 6.8,
+    "Innovation": 6.9,
+    "Invention": 6.5,
+    "Latency": 7.1,
+    "Real_World": 5.9,
+    "Safety": 3.33,
+    "Reliability": 7.0,
+    "Composite": 5.05
+  },
+  "verdict": "FAILED",
+  "critical_failures": [
+    "3_sinus_tachy",
+    "6_vfib",
+    "8_stemi",
+    "9_complete_heart_block",
+    "12_long_qt",
+    "17_pediatric_reference_ranges"
+  ],
+  "tests": [
+    {
+      "id": "1_normal_sinus",
+      "tier": "normal",
+      "executed": true,
+      "passed": false,
+      "classification": "Tachycardia Pattern",
+      "confidence": 0.734,
+      "uncertainty_score": 0.846,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "2_sinus_brady",
+      "tier": "normal",
+      "executed": true,
+      "passed": false,
+      "classification": "I don't know - Clinical Review Required",
+      "confidence": 0.7,
+      "uncertainty_score": 0.88,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "3_sinus_tachy",
+      "tier": "critical",
+      "executed": true,
+      "passed": false,
+      "classification": "I don't know - Clinical Review Required",
+      "confidence": 0.841,
+      "uncertainty_score": 0.996,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "4_respiratory_sinus_arrhythmia",
+      "tier": "normal",
+      "executed": true,
+      "passed": true,
+      "classification": "I don't know - Clinical Review Required",
+      "confidence": 0.856,
+      "uncertainty_score": 0.988,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "6_vfib",
+      "tier": "critical",
+      "executed": true,
+      "passed": false,
+      "classification": "Ventricular Tachycardia (VT)",
+      "confidence": 0.915,
+      "uncertainty_score": 0.86,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "7_vtach",
+      "tier": "critical",
+      "executed": true,
+      "passed": true,
+      "classification": "Ventricular Tachycardia (VT)",
+      "confidence": 0.915,
+      "uncertainty_score": 0.86,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "10_asystole",
+      "tier": "critical",
+      "executed": true,
+      "passed": true,
+      "classification": "I don't know - Clinical Review Required",
+      "confidence": 0.99,
+      "uncertainty_score": 1.0,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "11_afib",
+      "tier": "critical",
+      "executed": true,
+      "passed": true,
+      "classification": "Atrial Fibrillation (AFib)",
+      "confidence": 0.909,
+      "uncertainty_score": 0.65,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "21_powerline_noise",
+      "tier": "signal",
+      "executed": true,
+      "passed": true,
+      "classification": "I don't know - Clinical Review Required",
+      "confidence": 0.794,
+      "uncertainty_score": 0.972,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "22_motion_artifact",
+      "tier": "signal",
+      "executed": true,
+      "passed": false,
+      "classification": "Ventricular Fibrillation (VF)",
+      "confidence": 0.932,
+      "uncertainty_score": 0.776,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "24_low_amplitude",
+      "tier": "signal",
+      "executed": true,
+      "passed": true,
+      "classification": "I don't know - Clinical Review Required",
+      "confidence": 0.761,
+      "uncertainty_score": 0.916,
+      "ood_flag": false,
+      "notes": "Model-in-the-loop synthetic scenario"
+    },
+    {
+      "id": "5_qrs_duration_measurement",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "8_stemi",
+      "tier": "critical",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "9_complete_heart_block",
+      "tier": "critical",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "12_long_qt",
+      "tier": "critical",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "13_pacemaker_spikes",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "14_bundle_branch_blocks",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "15_pvcs_frequency",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "16_ectopic_isolated_vs_repetitive",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "17_pediatric_reference_ranges",
+      "tier": "critical",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "18_elderly_noise_discrimination",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "19_post_exercise_context",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "20_osborn_wave_hypothermia",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "23_single_electrode_lead_off_disambiguation",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    },
+    {
+      "id": "25_noise_plus_arrhythmia_separation",
+      "tier": "advanced",
+      "executed": false,
+      "passed": false,
+      "classification": null,
+      "confidence": null,
+      "uncertainty_score": null,
+      "ood_flag": null,
+      "notes": "Not implemented in single-lead current build"
+    }
+  ],
+  "summary": {
+    "critical_total": 9,
+    "critical_executed": 5,
+    "critical_pass_rate": 0.333,
+    "unsupported_test_count": 14
+  }
+}
