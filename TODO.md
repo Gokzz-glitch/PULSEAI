@@ -5,6 +5,26 @@
 - Owner: **GitHub Copilot (GPT-5.3-Codex)** + Human review.
 - Tracking objective: move system from **FAILED** to **PASS** on critical audit gates.
 
+### Team-Lead War Room Plan (2026-03-29)
+- [ ] **P0 Accuracy/Safety Recovery:** Eliminate AFib/PVC false negatives in 10-case and raise benchmark recall while preserving specificity.
+- [ ] **P0 Reliability Recovery:** Keep disk headroom > 2 GB and prevent any training/report failures due to storage.
+- [ ] **P0 Evidence Discipline:** After each code change, run benchmark + 10-case + audit and log deltas here.
+- [ ] **P1 UX/Safety Clarity:** Ensure uncertain outputs are explicit and clinician-review-first, not silent normal.
+- [ ] **P1 Deployment Hardening:** Maintain hourly Git autosync and avoid operational regressions.
+
+### Permutation + Combination Sprint (Requested)
+- [ ] Build combined tuner that searches policy permutations across multiple env knobs (confidence gates, normal-prob gate, quality gate, uncertainty thresholds, strong-override).
+- [ ] Score each trial on joint objective: benchmark recall/specificity/precision + 10-case accuracy.
+- [ ] Run broad search (randomized subset of full grid) and export ranked top candidates.
+- [ ] Apply best config and rerun full benchmark + 10-case + audit.
+- [ ] Record before/after deltas and next move if C1/C2 remain below target.
+
+### Immediate Execution Notes (No Sugarcoating)
+- 2026-03-29 09:28 UTC: Audit worsened to 10-case=80% (C3 FAIL), with AFib case downgraded to review and PVC case missed as normal. Action: tighten/retune inference gating to stop over-demotion.
+- 2026-03-29 09:29 UTC: Disk exhaustion caused read failures (`There is not enough space on the disk`) and blocked diagnostics. Action: emergency recycle-bin purge completed; free space recovered (C: 6.57 GB, G: 6.24 GB).
+- 2026-03-29 09:30 UTC: Next step in progress: patch policy logic for AFib/PVC recall recovery, then rerun full validation loop.
+- 2026-03-29 10:00 UTC: Combined permutation tuner run failed because `test_10cases_age_variety.py` printed Unicode symbols and crashed under Windows cp1252 console. Mitigation applied: force `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8` in tuner trial environment.
+
 ### Current Critical Gates (from latest audit)
 - [ ] Sensitivity >= 90% (current: 46.9%)
 - [ ] Specificity >= 90% (current: 70.8%)

@@ -497,8 +497,8 @@ class ArrhythmiaEngine:
                 heuristic_conf = float(heuristic_res.get("confidence", 0.0) or 0.0)
                 heuristic_support = bool(heuristic_res.get("is_arrhythmia", False))
                 physiologic_support = (
-                    (isinstance(rr_h, (int, float)) and float(rr_h) >= 0.22)
-                    or (isinstance(hr_h, (int, float)) and (float(hr_h) < 45.0 or float(hr_h) > 130.0))
+                    (isinstance(rr_h, (int, float)) and float(rr_h) >= 0.16)
+                    or (isinstance(hr_h, (int, float)) and (float(hr_h) < 45.0 or float(hr_h) > 120.0))
                 )
                 strong_ml = float(res.get("confidence", 0.0)) >= self.strong_ml_override_confidence
 
@@ -506,8 +506,8 @@ class ArrhythmiaEngine:
                 if (not is_critical) and is_other_label:
                     other_supported = (
                         physiologic_support
-                        or (heuristic_support and heuristic_conf >= 0.74)
-                        or (float(res.get("confidence", 0.0)) >= 0.90)
+                        or (heuristic_support and heuristic_conf >= 0.68)
+                        or (float(res.get("confidence", 0.0)) >= 0.85)
                     )
                     if not other_supported:
                         res["is_arrhythmia"] = False
@@ -525,6 +525,14 @@ class ArrhythmiaEngine:
         res["subtle_anomaly_score"] = float(np.round(subtle_score, 3))
         res["subtle_anomaly_flag"] = subtle_flag
         res["subtle_anomaly_metrics"] = subtle_metrics
+
+        # Safety-focused escalation for likely missed arrhythmia windows.
+        if (not bool(res.get("is_arrhythmia", False))) and subtle_score >= 0.82:
+            res["is_arrhythmia"] = True
+            res["classification"] = "Other Arrhythmia"
+            res["confidence"] = float(np.round(max(float(res.get("confidence", 0.0)), 0.70), 3))
+            res["probabilities"] = {"normal": 0.18, "afib": 0.24, "other": 0.58}
+            res["model_used"] = f"{self.model_version}+subtle-safety-escalation"
 
         # If no hard arrhythmia but subtle score is high, raise a review class for early detection.
         if (not bool(res.get("is_arrhythmia", False))) and subtle_flag:
